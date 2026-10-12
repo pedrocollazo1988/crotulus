@@ -1,0 +1,12 @@
+<!-- Marcador de MAPA: reemplazar por el <iframe> de Google Maps (ver index.html) -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Mapa de ubicacion de C-ROTULUS">
+  <rect width="640" height="360" fill="#e8eef7"/>
+  <g stroke="#c3d3ea" stroke-width="8" fill="none">
+    <path d="M0 90 H640"/><path d="M0 220 H640"/><path d="M120 0 V360"/><path d="M400 0 V360"/><path d="M0 300 L640 120"/>
+  </g>
+  <g fill="#1E6BE6">
+    <path d="M320 120 c-26 0 -46 20 -46 46 0 34 46 78 46 78 s46 -44 46 -78 c0 -26 -20 -46 -46 -46 z"/>
+  </g>
+  <circle cx="320" cy="166" r="17" fill="#fff"/>
+  <text x="320" y="330" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="20" fill="#5b6b82">Ubicacion aproximada (editable)</text>
+</svg>
