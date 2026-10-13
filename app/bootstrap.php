@@ -21,7 +21,7 @@ define('DATA_DIR', __DIR__ . '/data');
 /* --- Version de los recursos del panel (cache-busting) -------------------
    Sube este valor al editar admin.css o admin-auth.js para que los
    navegadores no usen la version guardada en cache. */
-define('APP_ASSET_VERSION', '20261015h');
+define('APP_ASSET_VERSION', '20261015i');
 
 /* --- Configuracion: config.local.php tiene prioridad ---------------------- */
 $config = require APP_DIR . '/config.php';

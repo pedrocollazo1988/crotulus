@@ -570,26 +570,24 @@ p { margin: 0 0 1rem; }
 .hero {
   position: relative;
   padding: 3.25rem 0 3.75rem;
-  background:
-    radial-gradient(1100px 520px at 82% -12%, rgba(0,80,160,.35), transparent 60%),
-    radial-gradient(760px 420px at -8% 18%, rgba(30,111,191,.18), transparent 62%),
-    linear-gradient(160deg, #062A52 0%, #08325F 55%, #041E3D 100%);
+  background: linear-gradient(155deg, var(--color-primary) 0%, var(--color-primary-dark) 50%, var(--color-navy) 100%);
   color: #EAF2FF;
   overflow: hidden;
   isolation: isolate;
 }
-/* Retícula de circuitos sutil sobre el navy */
+/* Retícula de puntos tenue sobre el azul (igual que las secciones azules) */
 .hero::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
+  opacity: .55;
   background-image:
-    linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
-  background-size: 52px 52px;
-  -webkit-mask: radial-gradient(circle at 60% 20%, #000 0%, transparent 72%);
-  mask: radial-gradient(circle at 60% 20%, #000 0%, transparent 72%);
+    radial-gradient(circle at 18% 22%, rgba(255,255,255,.45) 0 3px, transparent 4px),
+    radial-gradient(circle at 72% 40%, rgba(143,180,222,.55) 0 2px, transparent 3px),
+    radial-gradient(circle at 40% 78%, rgba(255,255,255,.30) 0 2px, transparent 3px),
+    radial-gradient(circle at 88% 82%, rgba(143,180,222,.45) 0 2px, transparent 3px);
+  background-size: 240px 240px, 300px 300px, 360px 360px, 420px 420px;
 }
 /* Halo animado que "respira" detrás del contenido */
 .hero::after {
@@ -599,7 +597,7 @@ p { margin: 0 0 1rem; }
   width: 60vmax; height: 60vmax;
   right: -18vmax; top: -30vmax;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(0,80,160,.45), transparent 65%);
+  background: radial-gradient(circle, rgba(143,180,222,.35), transparent 65%);
   filter: blur(30px);
   animation: hero-glow 14s ease-in-out infinite;
 }
@@ -607,6 +605,9 @@ p { margin: 0 0 1rem; }
   0%, 100% { transform: translate3d(0,0,0) scale(1); opacity: .8; }
   50%      { transform: translate3d(-3%, 4%, 0) scale(1.1); opacity: 1; }
 }
+/* La capa de bolas del hero va por detrás del contenido (que no está
+   posicionado), igual que sus capas ::before/::after. */
+.hero > .section-orbs { z-index: -1; }
 
 .hero__grid { display: grid; gap: 2.5rem; }
 

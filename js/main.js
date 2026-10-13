@@ -608,7 +608,7 @@
      Además aplica un parallax muy suave al hacer scroll (solo transform).
      ========================================================================== */
   function setupSectionOrbs() {
-    var secciones = $$(".section--alt, .section--blue, .site-footer");
+    var secciones = $$(".section--alt, .section--blue, .hero, .site-footer");
     if (!secciones.length) return;
 
     /* Cada bola: color, tamaño (px), posición (%) y ritmo de la animación. */
