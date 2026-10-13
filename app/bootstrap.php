@@ -18,6 +18,11 @@ define('APP_ROOT', dirname(__DIR__));
 define('APP_DIR', __DIR__);
 define('DATA_DIR', __DIR__ . '/data');
 
+/* --- Version de los recursos del panel (cache-busting) -------------------
+   Sube este valor al editar admin.css o admin-auth.js para que los
+   navegadores no usen la version guardada en cache. */
+define('APP_ASSET_VERSION', '20261015b');
+
 /* --- Configuracion: config.local.php tiene prioridad ---------------------- */
 $config = require APP_DIR . '/config.php';
 if (is_file(APP_DIR . '/config.local.php')) {
@@ -62,6 +67,14 @@ require_once APP_DIR . '/lib/http.php';
 require_once APP_DIR . '/lib/mailer.php';
 require_once APP_DIR . '/lib/auth.php';
 require_once APP_DIR . '/lib/settings.php';
+require_once APP_DIR . '/lib/reviews.php';
+require_once APP_DIR . '/lib/faq.php';
+require_once APP_DIR . '/lib/submissions.php';
+
+/* --- Los ajustes guardados en la base de datos tienen prioridad -----------
+   Permiten cambiar correo, seguridad, etc. desde el panel sin editar
+   app/config.php. Si aún no hay base de datos, se mantiene config.php. */
+settings_apply_overrides($GLOBALS['CROTULUS_CONFIG']);
 
 /* --- Inicializa la base de datos (crea el esquema la primera vez) --------- */
 db_init();

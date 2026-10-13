@@ -80,6 +80,38 @@ function db_all(string $sql, array $params = []): array
     return db_query($sql, $params)->fetchAll();
 }
 
+/**
+ * Añade una columna si no existe (migración sin pérdida de datos).
+ * Se usa para actualizar instalaciones creadas antes de añadir el campo.
+ */
+function db_add_column(string $table, string $column, string $definition): void
+{
+    try {
+        $pdo = db();
+        if (db_driver() === 'mysql') {
+            $exists = db_one(
+                'SELECT COUNT(*) AS c FROM information_schema.columns
+                  WHERE table_schema = DATABASE() AND table_name = ? AND column_name = ?',
+                [$table, $column]
+            );
+        } else {
+            $cols = db_all('PRAGMA table_info(' . $table . ')');
+            $exists = null;
+            foreach ($cols as $c) {
+                if (($c['name'] ?? '') === $column) {
+                    $exists = ['c' => 1];
+                    break;
+                }
+            }
+        }
+        if (!$exists || (int) $exists['c'] === 0) {
+            $pdo->exec("ALTER TABLE $table ADD COLUMN $column $definition");
+        }
+    } catch (Throwable $e) {
+        app_log("db_add_column $table.$column: " . $e->getMessage());
+    }
+}
+
 /** Inserta una fila y devuelve el id generado. */
 function db_insert(string $table, array $data): int
 {
@@ -162,6 +194,7 @@ function db_init(): void
 
         'contact_messages' => "CREATE TABLE IF NOT EXISTS contact_messages (
             id $serial,
+            user_id INT NOT NULL DEFAULT 0,
             name $str NOT NULL,
             email $str NOT NULL,
             phone VARCHAR(40) DEFAULT '',
@@ -195,15 +228,53 @@ function db_init(): void
             body $text DEFAULT NULL,
             meta $text DEFAULT NULL,
             sort_order INT NOT NULL DEFAULT 0,
+            -- Peso manual de importancia (0-5) usado por las FAQ.
+            score INT NOT NULL DEFAULT 0,
             is_active INT NOT NULL DEFAULT 1,
             created_at $dt DEFAULT NULL,
             updated_at $dt DEFAULT NULL
+        ) $engine",
+
+        // Aportaciones de los usuarios registrados (testimonios y preguntas).
+        'user_submissions' => "CREATE TABLE IF NOT EXISTS user_submissions (
+            id $serial,
+            user_id INT NOT NULL,
+            stype VARCHAR(20) NOT NULL,
+            title $str DEFAULT '',
+            body $text DEFAULT NULL,
+            status VARCHAR(20) NOT NULL DEFAULT 'pendiente',
+            score INT NOT NULL DEFAULT 0,
+            ip VARCHAR(45) DEFAULT '',
+            created_at $dt DEFAULT NULL,
+            updated_at $dt DEFAULT NULL
+        ) $engine",
+
+        'reviews' => "CREATE TABLE IF NOT EXISTS reviews (
+            id $serial,
+            target_type VARCHAR(20) NOT NULL,
+            target_id INT NOT NULL DEFAULT 0,
+            target_label $str DEFAULT '',
+            rating INT NOT NULL DEFAULT 5,
+            author_name $str NOT NULL,
+            author_email $str DEFAULT '',
+            comment $text DEFAULT NULL,
+            -- Usuario registrado que envía la valoración (0 = anónimo antiguo).
+            user_id INT NOT NULL DEFAULT 0,
+            status VARCHAR(20) NOT NULL DEFAULT 'pendiente',
+            ip VARCHAR(45) DEFAULT '',
+            user_agent $str DEFAULT '',
+            created_at $dt DEFAULT NULL
         ) $engine",
     ];
 
     foreach ($tables as $sql) {
         $pdo->exec($sql);
     }
+
+    // Migración ligera: añade columnas nuevas a tablas ya existentes.
+    db_add_column('content_items', 'score', 'INT NOT NULL DEFAULT 0');
+    db_add_column('reviews', 'user_id', 'INT NOT NULL DEFAULT 0');
+    db_add_column('contact_messages', 'user_id', 'INT NOT NULL DEFAULT 0');
 
     // Indices (se ignoran si ya existen)
     $indexes = [
@@ -215,6 +286,9 @@ function db_init(): void
         'CREATE UNIQUE INDEX idx_rate_unique ON rate_limits (bucket, ip)',
         'CREATE INDEX idx_content_type ON content_items (ctype)',
         'CREATE INDEX idx_contact_created ON contact_messages (created_at)',
+        'CREATE INDEX idx_reviews_status ON reviews (status)',
+        'CREATE INDEX idx_reviews_target ON reviews (target_type, target_id)',
+        'CREATE INDEX idx_submissions_type ON user_submissions (stype, status)',
     ];
     foreach ($indexes as $sql) {
         try {
@@ -225,6 +299,7 @@ function db_init(): void
     }
 
     seed_defaults();
+    seed_content();
 }
 
 /** Inserta los valores por defecto (solo si la tabla esta vacia). */
@@ -237,6 +312,75 @@ function seed_defaults(): void
                 'skey'       => $key,
                 'svalue'     => (string) $value,
                 'updated_at' => date('Y-m-d H:i:s'),
+            ]);
+        }
+    }
+}
+
+/**
+ * Siembra el contenido editable la primera vez (servicios, proyectos,
+ * testimonios, proceso y FAQ). Solo actua si content_items esta vacia, asi
+ * que nunca pisa lo que el administrador haya creado o editado. A partir de
+ * ahi la web se alimenta de la base de datos y el panel lo gestiona.
+ */
+function seed_content(): void
+{
+    if ((int) (db_one('SELECT COUNT(*) AS c FROM content_items')['c'] ?? 0) > 0) {
+        return;
+    }
+
+    $demo = [
+        'servicio' => [
+            ['Desarrollo web y aplicaciones', 'Diseño y programación', 'Webs corporativas, tiendas online y aplicaciones a medida rápidas y fáciles de gestionar.'],
+            ['Automatización y agentes de IA', 'Productividad', 'Automatizamos tareas repetitivas y creamos asistentes que atienden, filtran y organizan información.'],
+            ['Soporte técnico', 'Atención continua', 'Atención rápida para tu equipo: incidencias, equipos y software resueltos sin perder tiempo.'],
+            ['Redes y ciberseguridad', 'Infraestructura', 'Infraestructura de red estable y protegida, con copias de seguridad y planes de contingencia.'],
+            ['Consultoría tecnológica', 'Estrategia', 'Analizamos qué necesitas de verdad y trazamos un plan realista, con presupuesto claro.'],
+            ['Mantenimiento integral', 'Continuidad', 'Nos ocupamos de que todo siga funcionando: actualizaciones, monitorización y mejoras continuas.'],
+        ],
+        'proyecto' => [
+            ['Tienda online para distribuidora local', 'Desarrollo web', 'Catálogo de más de 2.000 referencias, pago integrado y panel de gestión para el equipo.', ['image' => 'assets/img/proyecto-web.svg']],
+            ['Asistente que atiende consultas 24/7', 'Automatización e IA', 'Un agente de IA que responde dudas frecuentes y deriva las incidencias al equipo humano.', ['image' => 'assets/img/proyecto-ia.svg']],
+            ['Renovación de red en oficinas', 'Redes y seguridad', 'Cableado, Wi-Fi profesional y firewall gestionado para 60 puestos de trabajo.', ['image' => 'assets/img/proyecto-redes.svg']],
+        ],
+        'testimonio' => [
+            // [nombre, cargo, texto, ['photo' => ruta de la foto]]
+            ['Marta López', 'Gerente, Distribuciones ML', 'Nos renovaron la web y automatizaron los presupuestos. Ahora ahorramos varias horas cada semana y todo es mucho más claro.', ['photo' => 'assets/img/testimonios/marta-lopez.jpg']],
+            ['Javier Ruiz', 'Director, Talleres Ruiz', 'En una semana teníamos la red y las copias de seguridad funcionando. El soporte responde siempre rápido.', ['photo' => 'assets/img/testimonios/javier-ruiz.jpg']],
+            ['Cristina Serra', 'Fundadora, CliniSalud', 'Un asistente de IA atiende nuestras consultas fuera de horario. Ha mejorado la atención al cliente notablemente.', ['photo' => 'assets/img/testimonios/cristina-serra.jpg']],
+        ],
+        'proceso' => [
+            ['Diagnóstico', '', 'Escuchamos tus necesidades y analizamos el estado actual de tu tecnología.'],
+            ['Propuesta', '', 'Recibes una solución clara, con alcance, plazos y precio cerrado.'],
+            ['Implementación', '', 'Ejecutamos el proyecto con seguimiento y pruebas antes de la entrega.'],
+            ['Soporte', '', 'Te acompañamos después: mantenimiento, mejoras y atención cuando lo necesites.'],
+        ],
+        'faq' => [
+            // [pregunta, '', respuesta, score(0-5) de importancia para la portada]
+            ['¿Cuánto cuesta un proyecto?', '', 'Depende del alcance. Tras el diagnóstico gratuito te entregamos un presupuesto cerrado y sin compromiso, con todo detallado.', 5],
+            ['¿Cuánto tardáis en entregar?', '', 'Una web corporativa suele estar en 2-4 semanas. Los proyectos de automatización o redes dependen del alcance; acordamos plazos antes de empezar.', 4],
+            ['¿Ofrecéis garantía?', '', 'Sí. Todo trabajo incluye garantía sobre lo entregado y, opcionalmente, un plan de mantenimiento para mantenerlo actualizado y seguro.', 3],
+            ['¿Qué incluye el soporte?', '', 'Atención por teléfono, correo o WhatsApp, resolución de incidencias, actualizaciones de seguridad y asesoramiento según el plan contratado.', 2],
+            ['¿Cómo puedo pagar?', '', 'Aceptamos transferencia bancaria y pago con tarjeta. En proyectos grandes, un anticipo al empezar y el resto a la entrega.', 2],
+            ['¿Cómo empiezo?', '', 'Escríbenos por el formulario o WhatsApp. Concertamos una llamada o reunión sin coste y te proponemos los siguientes pasos.', 3],
+        ],
+    ];
+
+    $now = date('Y-m-d H:i:s');
+    foreach ($demo as $ctype => $items) {
+        foreach ($items as $i => $it) {
+            db_insert('content_items', [
+                'ctype'      => $ctype,
+                'title'      => $it[0],
+                'subtitle'   => $it[1],
+                'body'       => $it[2],
+                'meta'       => isset($it[3]) && is_array($it[3]) ? json_encode($it[3], JSON_UNESCAPED_UNICODE) : null,
+                // En las FAQ, el 4º valor es el peso de importancia (0-5).
+                'score'      => ($ctype === 'faq' && isset($it[3]) && is_int($it[3])) ? $it[3] : 0,
+                'sort_order' => $i,
+                'is_active'  => 1,
+                'created_at' => $now,
+                'updated_at' => $now,
             ]);
         }
     }

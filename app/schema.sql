@@ -79,9 +79,39 @@ CREATE TABLE IF NOT EXISTS content_items (
   body TEXT DEFAULT NULL,
   meta TEXT DEFAULT NULL,
   sort_order INT NOT NULL DEFAULT 0,
+  score INT NOT NULL DEFAULT 0,
   is_active INT NOT NULL DEFAULT 1,
   created_at DATETIME DEFAULT NULL,
   updated_at DATETIME DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS user_submissions (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  stype VARCHAR(20) NOT NULL,
+  title VARCHAR(255) DEFAULT '',
+  body TEXT DEFAULT NULL,
+  status VARCHAR(20) NOT NULL DEFAULT 'pendiente',
+  score INT NOT NULL DEFAULT 0,
+  ip VARCHAR(45) DEFAULT '',
+  created_at DATETIME DEFAULT NULL,
+  updated_at DATETIME DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS reviews (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  target_type VARCHAR(20) NOT NULL,
+  target_id INT NOT NULL DEFAULT 0,
+  target_label VARCHAR(255) DEFAULT '',
+  rating INT NOT NULL DEFAULT 5,
+  author_name VARCHAR(255) NOT NULL,
+  author_email VARCHAR(255) DEFAULT '',
+  comment TEXT DEFAULT NULL,
+  user_id INT NOT NULL DEFAULT 0,
+  status VARCHAR(20) NOT NULL DEFAULT 'pendiente',
+  ip VARCHAR(45) DEFAULT '',
+  user_agent VARCHAR(255) DEFAULT '',
+  created_at DATETIME DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE UNIQUE INDEX idx_users_email  ON users (email);
@@ -92,3 +122,6 @@ CREATE INDEX idx_tokens_hash         ON tokens (token_hash);
 CREATE UNIQUE INDEX idx_rate_unique  ON rate_limits (bucket, ip);
 CREATE INDEX idx_content_type        ON content_items (ctype);
 CREATE INDEX idx_contact_created     ON contact_messages (created_at);
+CREATE INDEX idx_reviews_status      ON reviews (status);
+CREATE INDEX idx_reviews_target      ON reviews (target_type, target_id);
+CREATE INDEX idx_submissions_type    ON user_submissions (stype, status);

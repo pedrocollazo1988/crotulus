@@ -3,17 +3,18 @@ declare(strict_types=1);
 
 /**
  * ============================================================================
- *  RESTABLECER CONTRASEÑA  ->  /admin/reset.php?token=...
- *  Muestra el formulario y procesa el cambio.
+ *  RESTABLECER CONTRASENA  ->  /admin/reset.php?token=...
+ *  Muestra el formulario y procesa el cambio (valida token y CSRF).
  * ============================================================================
  */
 
-require_once __DIR__ . '/../app/bootstrap.php';
+require_once __DIR__ . '/bootstrap.php';
 
 $token = (string) ($_GET['token'] ?? $_POST['token'] ?? '');
 $csrf  = csrf_token();
 $error = '';
 $done  = false;
+$min   = (int) config('security.password_min', 8);
 
 // Validamos el token antes de mostrar el formulario.
 $user = $token !== '' ? db_one(
@@ -55,40 +56,45 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         }
     }
 }
+
+admin_auth_page('Nueva contraseña', '<li>Elige una contraseña segura</li><li>Se cerrarán las sesiones abiertas</li><li>Podrás entrar con la nueva al instante</li>');
 ?>
-<!doctype html>
-<html lang="es">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Nueva contraseña · <?= e(config('site_name')) ?></title>
-  <link rel="stylesheet" href="<?= e(url('admin/assets/admin.css')) ?>">
-</head>
-<body>
-<div class="auth">
 <?php if ($done): ?>
-  <div class="alert alert--ok">Contraseña actualizada. Ya puedes iniciar sesión.</div>
-  <p style="text-align:center"><a class="btn" href="<?= e(url('admin/login.php')) ?>">Iniciar sesión</a></p>
+  <div class="alert alert--ok" role="status">Contraseña actualizada correctamente.</div>
+  <p style="text-align:center"><a class="btn" href="<?= e(url('admin/login.php?status=reset')) ?>">Iniciar sesión</a></p>
 <?php elseif (!$user): ?>
-  <div class="alert alert--error">El enlace de recuperación no es válido o ha caducado.</div>
-  <p style="text-align:center"><a href="<?= e(url('admin/forgot.php')) ?>">Pedir un enlace nuevo</a></p>
+  <div class="alert alert--error" role="alert">El enlace de recuperación no es válido o ha caducado.</div>
+  <p style="text-align:center"><a class="btn btn--ghost" href="<?= e(url('admin/forgot.php')) ?>">Pedir un enlace nuevo</a></p>
 <?php else: ?>
-  <form method="post" action="<?= e(url('admin/reset.php')) ?>">
+  <form id="resetForm" class="js-auth-form" method="post" novalidate action="<?= e(url('admin/reset.php')) ?>">
     <h1>Nueva contraseña</h1>
-    <?php if ($error): ?><div class="alert alert--error"><?= e($error) ?></div><?php endif; ?>
+    <?php if ($error): ?><div class="alert alert--error" role="alert"><?= e($error) ?></div><?php endif; ?>
     <input type="hidden" name="_csrf" value="<?= e($csrf) ?>">
     <input type="hidden" name="token" value="<?= e($token) ?>">
+
     <div class="field">
       <label for="password">Contraseña nueva</label>
-      <input type="password" id="password" name="password" autocomplete="new-password" required>
+      <input type="password" id="password" name="password" data-validate="password"
+             autocomplete="new-password" required data-min="<?= $min ?>">
+      <div class="strength" data-strength-for="password" data-score="0">
+        <div class="strength__bars" aria-hidden="true">
+          <span class="strength__bar"></span><span class="strength__bar"></span>
+          <span class="strength__bar"></span><span class="strength__bar"></span>
+        </div>
+        <span class="strength__text" aria-live="polite"></span>
+      </div>
+      <?= field_error_span('password') ?>
     </div>
+
     <div class="field">
       <label for="password2">Repite la contraseña</label>
-      <input type="password" id="password2" name="password2" autocomplete="new-password" required>
+      <input type="password" id="password2" name="password2" data-validate="password2"
+             autocomplete="new-password" required>
+      <?= field_error_span('password2') ?>
     </div>
-    <button class="btn" type="submit" style="width:100%">Guardar contraseña</button>
+
+    <button class="btn btn--block" type="submit">Guardar contraseña</button>
+    <div class="links"><a href="<?= e(url('admin/login.php')) ?>">Volver al inicio de sesión</a></div>
   </form>
 <?php endif; ?>
-</div>
-</body>
-</html>
+<?php admin_auth_footer(); ?>

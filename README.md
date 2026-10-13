@@ -15,7 +15,8 @@ assets/img/
   logo-header.png        Logo para cabecera (fondo transparente)
   logo-footer.png        Logo para el pie (sobre fondo oscuro)
   favicon.png            Favicon basado en el logo
-  hero-tech.svg          Ilustración de portada   (marcador reemplazable)
+  og-image.png           Imagen de vista previa para redes (1200x630)
+  hero-tech.svg          Ilustración de portada: transformación digital (marcador reemplazable)
   equipo.svg             Ilustración "Sobre nosotros" (marcador reemplazable)
   mapa.svg               Marcador de mapa          (reemplazable por iframe)
   proyecto-web.svg       Proyecto: desarrollo web  (reemplazable por foto)
@@ -58,7 +59,7 @@ sitios: el atributo `action` del `<form>` en `index.html` y la constante
 ## Arranque local
 
 ```bash
-# PHP 8 + extensión pdo_sqlite (o pdo_mysql). No hace falta instalar nada mas:
+# PHP 8 + extensión pdo_sqlite (o pdo_mysql). No hace falta instalar nada más:
 php -S localhost:8000 -t .
 # abre http://localhost:8000
 ```
@@ -70,12 +71,12 @@ y el correo en modo **log** (`app/data/mail.log`), ideal para probar.
 #  BACKEND (PHP + base de datos) — deployment en hosting con dominio
 # ============================================================================
 
-## Que incluye
+## Qué incluye
 
 ```
-api/          Endpoints JSON (contacto, autenticacion, ajustes, contenido, salud)
-admin/        Panel de administracion (mensajes, contenido, ajustes, usuarios)
-app/          Nucleo: config, bootstrap, lib/ (db, auth, security, mailer, ...)
+api/          Endpoints JSON (contacto, autenticación, ajustes, contenido, salud)
+admin/        Panel de administración (mensajes, contenido, ajustes, usuarios)
+app/          Núcleo: config, bootstrap, lib/ (db, auth, security, mailer, ...)
 app/schema.sql  Esquema de la base de datos para crear las tablas a mano
 .htaccess     Reglas de Apache (protege app/ y fuerza HTTPS)
 ```
@@ -83,7 +84,7 @@ app/schema.sql  Esquema de la base de datos para crear las tablas a mano
 ## Base de datos
 
 El backend soporta **MySQL/MariaDB** (recomendado en hosting) y **SQLite** (sin
-configuracion, ideal para pruebas o hostings muy basicos). Se elige con
+configuración, ideal para pruebas o hostings muy básicos). Se elige con
 `db.driver` en `app/config.php`.
 
 Las tablas se crean **solas** la primera vez que se abre el sitio:
@@ -93,26 +94,86 @@ Las tablas se crean **solas** la primera vez que se abre el sitio:
 
 ## Seguridad aplicada
 
-- **Contrasenas**: hash con `password_hash()` (bcrypt) y politica de longitud.
+- **Contraseñas**: hash con `password_hash()` (bcrypt) y política de longitud.
 - **Sesiones**: cookie `HttpOnly`, `SameSite=Lax`, `Secure` bajo HTTPS; el token
-  se guarda hasheado en la base de datos y se rota al iniciar sesion.
+  se guarda hasheado en la base de datos y se rota al iniciar sesión.
 - **CSRF**: cada formulario (web y panel) lleva un token; el JS lo pide a
   `api/index.php?action=csrf`. Las peticiones sin token se rechazan.
 - **Fuerza bruta**: limite de intentos de login y de envios del formulario por IP.
-- **Entradas**: validacion y saneado en servidor; el contenido dinamico se escapa
+- **Entradas**: validación y saneado en servidor; el contenido dinámico se escapa
   en el navegador (defensa XSS). El campo del mapa solo admite URLs `https://`.
 - **Anti-spam**: campo trampa (`_gotcha`) y limite por IP.
 - **Acceso al panel**: solo usuarios con `role = admin`. El **primer usuario**
-  registrado se convierte en administrador automaticamente.
+  registrado se convierte en administrador automáticamente.
 
-## Autenticacion
+## Autenticación
 
-- **Correo + contrasena** con verificacion por enlace y recuperacion de contrasena.
+- **Correo + contraseña** con verificación por enlace y recuperación de contraseña.
 - **Google OAuth 2.0** (boton "Continuar con Google").
 - Para activar Google: crea credenciales en Google Cloud Console y rellena
   `google.client_id` y `google.client_secret` en `app/config.php`.
   URI de redireccion autorizada:
   `https://TU-DOMINIO/api/auth.php?action=google_callback`
+
+  *Ruta rápida:* entra en **Ajustes** del panel. Si Google aún no está configurado,
+  verás la URI de redirección exacta lista para copiar en Google Cloud. Al pegar
+  `client_id` y `client_secret` en `app/config.php` (o en `app/config.local.php`),
+  el botón «Continuar con Google» aparece solo en la pantalla de acceso.
+
+## Correo real (envío de verificación y avisos)
+
+El modo de envío se elige en `app/config.php`, apartado `mail`:
+
+| `transport` | Qué hace | Cuándo usarlo |
+|---|---|---|
+| `log` | No envía; escribe en `app/data/mail.log` | Pruebas locales |
+| `mail` | Usa la función `mail()` del hosting | Hosting sencillo |
+| `smtp` | Conecta a tu servidor SMTP (con TLS/SSL y autenticación) | **Recomendado** |
+
+Para correo real, pon `transport` a `smtp` y rellena `smtp_host`, `smtp_port`,
+`smtp_user`, `smtp_pass` y `smtp_secure` (`tls` en el 587, `ssl` en el 465).
+Después, en **Ajustes**, pulsa **«Enviar correo de prueba»** para comprobar que
+funciona sin esperar a un registro real. Ejemplo con Gmail:
+
+```php
+'mail' => [
+    'transport'   => 'smtp',
+    'from_email'  => 'no-reply@tudominio.com',
+    'from_name'   => 'C-ROTULUS',
+    'smtp_host'   => 'smtp.gmail.com',
+    'smtp_port'   => 587,
+    'smtp_user'   => 'tucuenta@gmail.com',
+    'smtp_pass'   => 'contrasena-de-aplicacion', // Contraseña de aplicación de Google
+    'smtp_secure' => 'tls',
+],
+```
+
+> En Gmail/Google Workspace necesitas una **contraseña de aplicación** (no la de
+> tu cuenta). Otros proveedores (IONOS, Hostinger, Outlook...) dan datos SMTP
+> equivalentes en su panel.
+
+## Valoraciones y reseñas de servicios y proyectos
+
+Los clientes pueden puntuar con estrellas cada servicio y proyecto (1-5) y dejar
+un comentario. Se guardan en tu base de datos y se moderan en el panel.
+
+- **En la web** (sección *Valoraciones*): selector de qué valorar (empresa,
+  servicio o proyecto), estrellas, nombre, correo opcional y opinión. Se muestra la
+  media y el listado de reseñas aprobadas.
+- **En el panel** (`/admin/reviews.php`): aprobar, rechazar o eliminar, con filtros
+  por estado y contador de pendientes.
+- **Ajustes** (`/admin/settings.php`): activar/desactivar el módulo, publicar
+  automáticamente sin moderar, y elegir herramienta externa.
+- **Trustpilot**: la vía fiable es el **widget oficial (TrustBox)**. En Ajustes pega
+  el enlace de tu ficha y el *Business Unit ID*; la web muestra tus reseñas reales
+  en la sección de valoraciones (carrusel o mini estrellas, a elegir).
+  La nota media que ve el visitante combina tus valoraciones propias con las de
+  Trustpilot. Opciones: `trustpilot`, `google` o `custom` (solo valoraciones propias).
+
+  > Trustpilot bloquea (HTTP 403) la lectura automática de su web, por eso no se
+  > rastrean las reseñas: el widget oficial es la forma correcta y sin API key.
+
+- **Anti-abuso**: token CSRF, campo trampa y límite por IP (`review_rate_max`).
 
 ## Pasos para publicar en el hosting
 
@@ -124,29 +185,51 @@ Las tablas se crean **solas** la primera vez que se abre el sitio:
    - `mail` (SMTP de tu proveedor, o `mail` para usar `mail()`),
    - `google` si quieres el acceso con Google.
 3. Asegura permisos de escritura en `app/data/` (solo si usas SQLite o modo log).
-4. Entra en `https://TU-DOMINIO/admin/` y **registra el primer usuario** (sera el
-   administrador). Verifica el correo si el envio esta configurado.
-5. En el panel, revisa **Ajustes** (telefono, correo, direccion, mapa, redes) y
+4. Entra en `https://TU-DOMINIO/admin/` y **registra el primer usuario** (será el
+   administrador). Verifica el correo si el envío está configurado.
+5. En el panel, revisa **Ajustes** (teléfono, correo, dirección, mapa, redes) y
    **Contenido** (servicios, proyectos, testimonios, FAQ, proceso).
 
-> `app/config.local.php` **no** debe subirse a un repositorio publico: contiene
-> contrasenas. Ya esta excluido en `.gitignore`.
+> `app/config.local.php` **no** debe subirse a un repositorio público: contiene
+> contraseñas. Ya está excluido en `.gitignore`.
 
 ## Mapa
 
 En el panel, **Ajustes → Mapa**, pega la URL de *incrustacion* de Google Maps
 (Compartir → Insertar un mapa → copia solo el `src` del iframe, debe empezar por
-`https://www.google.com/maps/embed?...`). La web la carga automaticamente en la
-seccion de Contacto. Tambien puedes poner un enlace "Como llegar" con
+`https://www.google.com/maps/embed?...`). La web la carga automáticamente en la
+sección de Contacto. También puedes poner un enlace "Como llegar" con
 `google_maps_url`. Si lo dejas vacio, se muestra la imagen `assets/img/mapa.svg`.
 
-## Panel de administracion
+## Panel de administración
 
-| Seccion | Que hace |
+El acceso al panel está enlazado desde la web pública: el enlace **Acceder** de
+la cabecera y del pie apunta a `admin/login.php`. El panel comparte la identidad
+visual del sitio (mismas tipografias, azul de marca y tarjetas).
+
+| Sección | Qué hace |
 |---|---|
 | Mensajes | Bandeja con los mensajes del formulario (estado, borrado) |
 | Contenido | CRUD de servicios, proyectos, testimonios, FAQ y proceso |
-| Ajustes | Datos de contacto, mapa, redes sociales |
+| Valoraciones | Modera las reseñas de servicios y proyectos (aprobar/rechazar/borrar) |
+| Ajustes | Datos de contacto, mapa, redes, correo de prueba, valoraciones y Google |
+| Usuarios | Cuentas: activar, desactivar, cambiar rol y borrar |
+
+**Acceso y contraseñas:**
+- Iniciar sesión: `/admin/login.php` · Crear cuenta: `/admin/register.php`
+- Recuperar contraseña: `/admin/forgot.php` (enlace válido 1 hora)
+- Restablecer: `/admin/reset.php?token=...` (lo envia el correo)
+- El primer usuario registrado se convierte automáticamente en administrador.
+
+**Validaciones** (cliente en `admin/assets/admin-auth.js` y servidor en
+`app/lib/validator.php` y `api/auth.php`, siempre las mismas reglas):
+- Correo con formato válido y longitud máxima.
+- Contraseña: mínimo `security.password_min` (8 por defecto) caracteres,
+  con letra y número; medidor de fortaleza en el registro.
+- Repetición de contraseña coincidente.
+- Nombre entre 2 y 120 caracteres.
+- Proteccion CSRF en todos los formularios y limite de intentos por IP
+  (login, registro y recuperación).
 
 ## Vista previa local
 
@@ -159,10 +242,11 @@ php -S localhost:8000 -t .
 
 - Sustituir los datos `[...]` por los reales (o hacerlo desde el panel).
 - Configurar MySQL y `security.app_key` en `app/config.local.php`.
-- Configurar el correo (SMTP) para verificacion y recuperacion.
+- Configurar el correo (SMTP) para verificación y recuperación.
 - Opcional: credenciales de Google OAuth y fotos reales en los proyectos.
 
 ## Notas de mantenimiento
 
-- **Versionado de recursos (cache):** `index.html` carga `css/styles.css?v=20261013` y `js/main.js?v=20261013`. Al editar el CSS o el JS, sube ese numero (p. ej. `?v=20261014`) para que los navegadores no usen la version guardada en cache.
+- **Versionado de recursos (cache):** `index.html` carga `css/styles.css?v=20261013f` y `js/main.js?v=20261013f`. Al editar el CSS o el JS, sube ese número (p. ej. `?v=20261014`) para que los navegadores no usen la versión guardada en cache.
+- **Panel:** `admin.css` y `admin-auth.js` usan la constante `APP_ASSET_VERSION` de `app/bootstrap.php`. Sube ese valor al editarlos para forzar la recarga.
 - **Animacion de aparicion:** el contenido es visible por defecto; solo se anima cuando `js/main.js` anade la clase `.has-reveal-anim` a `<html>`. Si el JS no se ejecuta (o el navegador sirve uno antiguo), las secciones se ven igualmente, y hay una red de seguridad que revela todo tras unos segundos.

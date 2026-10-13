@@ -2,53 +2,41 @@
 declare(strict_types=1);
 
 /**
- *  RECUPERAR CONTRASEÑA (solicitar enlace)  ->  /admin/forgot.php
+ * ============================================================================
+ *  OLVIDE MI CONTRASENA  ->  /admin/forgot.php
+ *  Solicita un enlace de recuperacion. Por seguridad, la respuesta es la
+ *  misma exista o no la cuenta (evita descubrir correos registrados).
+ * ============================================================================
  */
-require_once __DIR__ . '/../app/bootstrap.php';
+
+require_once __DIR__ . '/bootstrap.php';
 $csrf = csrf_token();
+
+admin_auth_page('Recuperar contraseña', '<li>Te enviamos un enlace seguro</li><li>Válido durante una hora</li><li>Al cambiarla, se cierran las sesiones abiertas</li>');
 ?>
-<!doctype html>
-<html lang="es">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Recuperar contraseña · <?= e(config('site_name')) ?></title>
-  <link rel="stylesheet" href="<?= e(url('admin/assets/admin.css')) ?>">
-</head>
-<body>
-<div class="auth">
-  <form id="forgotForm" method="post" action="<?= e(url('api/auth.php?action=forgot')) ?>">
+  <form id="forgotForm" class="js-auth-form" method="post" novalidate
+        action="<?= e(url('api/auth.php?action=forgot')) ?>">
     <h1>Recuperar contraseña</h1>
-    <div class="alert alert--ok" id="forgotOk" hidden></div>
-    <div class="alert alert--error" id="forgotError" hidden></div>
+    <p class="muted">Escribe tu correo y te enviaremos un enlace para crear una contraseña nueva.</p>
+
+    <div class="alert alert--ok" id="forgotOk" role="status" hidden></div>
+    <div class="alert alert--error" id="forgotError" role="alert" hidden></div>
     <input type="hidden" name="_csrf" value="<?= e($csrf) ?>">
+
     <div class="field">
       <label for="email">Tu correo electrónico</label>
-      <input type="email" id="email" name="email" autocomplete="email" required>
+      <input type="email" id="email" name="email" data-validate="email"
+             autocomplete="email" inputmode="email" required
+             placeholder="nombre@dominio.com">
+      <?= field_error_span('email') ?>
     </div>
-    <button class="btn" type="submit" style="width:100%">Enviar enlace</button>
-    <div class="links"><a href="<?= e(url('admin/login.php')) ?>">Volver al inicio de sesión</a></div>
-  </form>
-</div>
 
-<script>
-document.getElementById('forgotForm').addEventListener('submit', async function (ev) {
-  ev.preventDefault();
-  var form = ev.target;
-  var ok = document.getElementById('forgotOk');
-  var err = document.getElementById('forgotError');
-  ok.hidden = true; err.hidden = true;
-  try {
-    var res  = await fetch(form.action, { method: 'POST', body: new FormData(form) });
-    var data = await res.json();
-    if (data.ok) { ok.textContent = data.message; ok.hidden = false; form.reset(); return; }
-    err.textContent = data.error || 'No se pudo enviar el enlace.';
-    err.hidden = false;
-  } catch (e) {
-    err.textContent = 'Error de conexión. Inténtalo de nuevo.';
-    err.hidden = false;
-  }
-});
-</script>
-</body>
-</html>
+    <button class="btn btn--block" type="submit">Enviar enlace</button>
+
+    <div class="links">
+      <a href="<?= e(url('admin/login.php')) ?>">Volver al inicio de sesión</a>
+      <span aria-hidden="true">·</span>
+      <a href="<?= e(url('admin/register.php')) ?>">Crear una cuenta</a>
+    </div>
+  </form>
+<?php admin_auth_footer(); ?>

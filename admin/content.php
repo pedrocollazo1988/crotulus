@@ -41,6 +41,8 @@ if ($method === 'POST') {
                     'subtitle'   => limit_text((string) ($_POST['subtitle'] ?? ''), 255),
                     'body'       => clean_text((string) ($_POST['body'] ?? '')),
                     'sort_order' => (int) ($_POST['sort_order'] ?? 0),
+                    // Peso manual de importancia (0-5). Lo usa el algoritmo de FAQ.
+                    'score'      => max(0, min(5, (int) ($_POST['score'] ?? 0))),
                     'is_active'  => isset($_POST['is_active']) ? 1 : 0,
                     'updated_at' => date('Y-m-d H:i:s'),
                 ];
@@ -74,7 +76,7 @@ if (!empty($_GET['edit'])) {
     $edit = db_one('SELECT * FROM content_items WHERE id = ?', [(int) $_GET['edit']]);
 }
 
-admin_header('Contenido');
+admin_header('Contenido', true, 'Contenido');
 ?>
 <h1>Contenido editable</h1>
 
@@ -115,6 +117,12 @@ admin_header('Contenido');
       <input type="text" id="sort_order" name="sort_order" inputmode="numeric"
              value="<?= e((string) ($edit['sort_order'] ?? 0)) ?>">
     </div>
+    <div class="field">
+      <label for="score">Importancia de la FAQ (0-5)</label>
+      <input type="text" id="score" name="score" inputmode="numeric"
+             value="<?= e((string) ($edit['score'] ?? 0)) ?>">
+      <p class="muted">Peso manual para el algoritmo que elige las preguntas destacadas de la portada (solo se aplica a las preguntas frecuentes).</p>
+    </div>
   </div>
 
   <div class="field">
@@ -143,7 +151,7 @@ admin_header('Contenido');
 <?php else: ?>
 <div class="table-wrap">
   <table>
-    <thead><tr><th>ID</th><th>Tipo</th><th>Título</th><th>Orden</th><th>Activo</th><th>Acciones</th></tr></thead>
+    <thead><tr><th>ID</th><th>Tipo</th><th>Título</th><th>Orden</th><th>Importancia</th><th>Activo</th><th>Acciones</th></tr></thead>
     <tbody>
     <?php foreach ($items as $it): ?>
       <tr>
@@ -151,6 +159,7 @@ admin_header('Contenido');
         <td><?= e($types[$it['ctype']] ?? $it['ctype']) ?></td>
         <td><?= e($it['title']) ?><br><span class="muted"><?= e(mb_substr((string) $it['subtitle'], 0, 90)) ?></span></td>
         <td><?= (int) $it['sort_order'] ?></td>
+        <td><?= $it['ctype'] === 'faq' ? (int) $it['score'] . '/5' : '—' ?></td>
         <td><?= (int) $it['is_active'] === 1 ? 'Sí' : 'No' ?></td>
         <td>
           <div class="actions">

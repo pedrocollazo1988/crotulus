@@ -34,8 +34,13 @@ function security_start_session(): void
     ]);
     session_start();
 
-    // Vincula la sesion a la IP para dificultar el robo de cookie.
-    $fingerprint = hash('sha256', client_ip() . '|' . ($_SERVER['HTTP_USER_AGENT'] ?? ''));
+    // Vincula la sesion a la IP y al navegador para dificultar el robo de cookie.
+    // La IP solo se tiene en cuenta si 'security.session_bind_ip' esta activo
+    // (desactivado por defecto: con balanceadores o CDN la IP cambia entre
+    // peticiones y no queremos cerrar sesiones legitimas).
+    $bindIp = (bool) config('security.session_bind_ip', false);
+    $parts  = [$bindIp ? client_ip() : 'noip', $_SERVER['HTTP_USER_AGENT'] ?? ''];
+    $fingerprint = hash('sha256', implode('|', $parts));
     if (empty($_SESSION['_fp'])) {
         $_SESSION['_fp'] = $fingerprint;
     } elseif (!hash_equals($_SESSION['_fp'], $fingerprint)) {

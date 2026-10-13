@@ -3,90 +3,89 @@ declare(strict_types=1);
 
 /**
  * ============================================================================
- *  LOGIN DEL PANEL  ->  /admin/login.php
- *  Incluye inicio de sesion con correo, alta de cuenta y Google.
+ *  INICIAR SESION  ->  /admin/login.php
+ *  Acceso con correo y contrasena, alta de cuenta y acceso con Google.
  * ============================================================================
  */
 
-require_once __DIR__ . '/../app/bootstrap.php';
+require_once __DIR__ . '/bootstrap.php';
 
-// Si ya hay sesion, vamos al panel.
+// Si ya hay sesion, vamos directamente al panel.
 if (is_logged_in()) {
     header('Location: ' . url('admin/'));
     exit;
 }
 
-$csrf   = csrf_token();
-$notice = '';
+$csrf = csrf_token();
 
-// Mensajes de estado que llegan por la URL (tras registro/recuperacion).
+// Mensajes de estado que llegan por la URL (tras registro o verificacion).
+$notice = '';
 $status = $_GET['status'] ?? '';
 if ($status === 'registered') {
     $notice = ['ok', 'Cuenta creada. Revisa tu correo para verificarla.'];
 } elseif ($status === 'verified') {
     $notice = ['ok', 'Correo verificado. Ya puedes iniciar sesión.'];
+} elseif ($status === 'reset') {
+    $notice = ['ok', 'Contraseña actualizada. Inicia sesión con la nueva.'];
+} elseif ($status === 'google_off') {
+    $notice = ['info', 'El acceso con Google aún no está configurado. Un administrador debe añadir el Client ID y el Client secret en Ajustes.'];
 }
-?>
-<!doctype html>
-<html lang="es">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Iniciar sesión · Panel · <?= e(config('site_name')) ?></title>
-  <link rel="stylesheet" href="<?= e(url('admin/assets/admin.css')) ?>">
-</head>
-<body>
-<div class="auth">
-  <form id="loginForm" method="post" action="<?= e(url('api/auth.php?action=login')) ?>">
-    <h1>Iniciar sesión</h1>
-    <?php if ($notice): ?>
-      <div class="alert alert--<?= e($notice[0]) ?>"><?= e($notice[1]) ?></div>
-    <?php endif; ?>
-    <div class="alert alert--error" id="loginError" hidden></div>
 
+admin_auth_page('Iniciar sesión', '<li>Gestiona mensajes y contenido del sitio</li><li>Acceso protegido con doble validación</li><li>Disponible para el equipo de C-ROTULUS</li>');
+?>
+  <?php if ($notice): ?>
+    <div class="alert alert--<?= e($notice[0]) ?>"><?= e($notice[1]) ?></div>
+  <?php endif; ?>
+
+  <form id="loginForm" class="js-auth-form" method="post" novalidate
+        action="<?= e(url('api/auth.php?action=login')) ?>"
+        data-success-url="<?= e(url('admin/')) ?>">
+    <h1>Iniciar sesión</h1>
+    <div class="alert alert--error" id="loginError" role="alert" hidden></div>
     <input type="hidden" name="_csrf" value="<?= e($csrf) ?>">
+
     <div class="field">
       <label for="email">Correo electrónico</label>
-      <input type="email" id="email" name="email" autocomplete="email" required>
+      <input type="email" id="email" name="email" data-validate="email"
+             autocomplete="email" inputmode="email" required
+             placeholder="nombre@dominio.com">
+      <?= field_error_span('email') ?>
     </div>
+
     <div class="field">
       <label for="password">Contraseña</label>
-      <input type="password" id="password" name="password" autocomplete="current-password" required>
+      <input type="password" id="password" name="password" data-validate="password"
+             autocomplete="current-password" required
+             data-min="<?= (int) config('security.password_min', 8) ?>">
+      <?= field_error_span('password') ?>
     </div>
-    <button class="btn" type="submit" style="width:100%">Entrar</button>
+
+    <button class="btn btn--block" type="submit">Entrar</button>
 
     <?php if (google_enabled()): ?>
       <div class="sep">o</div>
-      <a class="btn-google" href="<?= e(url('api/auth.php?action=google_start')) ?>">
+      <a class="btn-google" href="<?= e(url('api/auth.php?action=google_start')) ?>"
+         data-google-start data-google-ok="1">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" width="18" height="18">
+        Continuar con Google
+      </a>
+    <?php else: ?>
+      <!-- Google OAuth pendiente de credenciales. El botón responde igualmente:
+           muestra un aviso inmediato con los pasos para configurarlo. -->
+      <div class="sep">o</div>
+      <a class="btn-google is-muted" href="<?= e(url('api/auth.php?action=google_start')) ?>"
+         data-google-start data-google-off="1"
+         title="Añade el Client ID y el Client secret de Google en Ajustes para activarlo">
         <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" width="18" height="18">
         Continuar con Google
       </a>
     <?php endif; ?>
+    <div class="alert alert--info" id="googleNotice" role="status" hidden></div>
 
     <div class="links">
-      <a href="<?= e(url('admin/register.php')) ?>">Crear una cuenta</a> ·
       <a href="<?= e(url('admin/forgot.php')) ?>">Olvidé mi contraseña</a>
+      <span aria-hidden="true">·</span>
+      <a href="<?= e(url('admin/register.php')) ?>">Crear una cuenta</a>
     </div>
   </form>
-</div>
-
-<script>
-document.getElementById('loginForm').addEventListener('submit', async function (ev) {
-  ev.preventDefault();
-  var form = ev.target;
-  var err  = document.getElementById('loginError');
-  err.hidden = true;
-  try {
-    var res  = await fetch(form.action, { method: 'POST', body: new FormData(form) });
-    var data = await res.json();
-    if (data.ok) { window.location.href = '<?= e(url('admin/')) ?>'; return; }
-    err.textContent = data.error || 'No se pudo iniciar sesión.';
-    err.hidden = false;
-  } catch (e) {
-    err.textContent = 'Error de conexión. Inténtalo de nuevo.';
-    err.hidden = false;
-  }
-});
-</script>
-</body>
-</html>
+<?php admin_auth_footer(); ?>

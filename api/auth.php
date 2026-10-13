@@ -37,7 +37,8 @@ switch ($action) {
 
         $errors = [];
         if ($email === null) $errors['email'] = 'Escribe un correo válido.';
-        if (mb_strlen($name) < 2) $errors['name'] = 'Escribe tu nombre.';
+        $nameErrors = validate_name($name);
+        if ($nameErrors) $errors['name'] = implode(' ', $nameErrors);
         $passErrors = validate_password($pass);
         if ($passErrors) $errors['password'] = implode(' ', $passErrors);
         if ($errors) json_error('Revisa los datos.', 422, ['fields' => $errors]);
@@ -65,7 +66,14 @@ switch ($action) {
 
         $email = normalize_email(input('email'));
         $pass  = (string) (request_input()['password'] ?? '');
-        $user  = $email ? auth_check_credentials($email, $pass) : null;
+
+        // Validacion de formato antes de comprobar credenciales.
+        $errors = [];
+        if ($email === null) $errors['email'] = 'Escribe un correo válido.';
+        if ($pass === '')    $errors['password'] = 'Escribe tu contraseña.';
+        if ($errors) json_error('Revisa los datos.', 422, ['fields' => $errors]);
+
+        $user  = auth_check_credentials($email, $pass);
 
         if (!$user) {
             audit('login_failed', ['email' => (string) $email, 'ip' => client_ip()]);
@@ -101,7 +109,10 @@ switch ($action) {
         }
 
         $email = normalize_email(input('email'));
-        $user  = $email ? auth_find_by_email($email) : null;
+        if ($email === null) {
+            json_error('Escribe un correo válido.', 422, ['fields' => ['email' => 'Escribe un correo válido.']]);
+        }
+        $user  = auth_find_by_email($email);
         if ($user) {
             auth_send_password_reset($user);
         }
@@ -118,7 +129,12 @@ switch ($action) {
 
     /* --------------------------------------------------------------------- */
     case 'google_start':
-        if (!google_enabled()) json_error('El acceso con Google no está configurado.', 503);
+        // Si aún no hay credenciales, volvemos al acceso con un aviso claro
+        // (el botón permanece visible y activo en la pantalla de login).
+        if (!google_enabled()) {
+            header('Location: ' . url('admin/login.php?status=google_off'));
+            exit;
+        }
         header('Location: ' . google_auth_url());
         exit;
         // no break

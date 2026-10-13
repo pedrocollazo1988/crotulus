@@ -31,7 +31,7 @@ function send_mail(string $to, string $subject, string $htmlBody, string $textBo
             str_repeat('-', 40),
             $textBody
         );
-        @file_put_contents(DATA_DIR . '/mail.log', $line, FILE_APPEND | LOCK_EX);
+        @file_put_contents(log_dir() . '/mail.log', $line, FILE_APPEND | LOCK_EX);
         return true;
     }
 
@@ -148,7 +148,10 @@ function smtp_send(string $to, string $subject, string $html, string $text, arra
         $write(base64_encode($pass));
         $authResp = $read();
         if (strpos($authResp, '235') === false) {
-            app_log('SMTP autenticacion fallida');
+            // Registramos la respuesta del servidor (sin credenciales) para poder
+            // diagnosticar: Gmail responde "535-5.7.8 Username and Password not accepted"
+            // cuando se usa la contrasena normal en vez de una de aplicacion.
+            app_log('SMTP autenticacion fallida: ' . trim(preg_replace('/\s+/', ' ', $authResp)));
             fclose($fp);
             return false;
         }

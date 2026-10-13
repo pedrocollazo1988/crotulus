@@ -40,7 +40,8 @@
   var CONTACTO = {
     teléfono: "+34000000000",     // [TELÉFONO]
     whatsapp: "34000000000",      // [WHATSAPP] (solo dígitos, con prefijo país)
-    correo: "info@c-rotulus.example", // [CORREO]
+    correo: "info@[DOMINIO]", // [CORREO]
+    googleReviews: "",            // [URL_GOOGLE_REVIEWS] (ficha de Google)
     empresa: "C-ROTULUS S.U.R.L."
   };
 
@@ -62,11 +63,14 @@
     setupActiveLink();
     setupReveal();
     setupCounters();
+    setupHeaderScroll();
     setupAccordion();
     setupCarousel();
     setupBackTop();
     setupForm();
+    setupGoogleReviewsLink();  // enlace «Ver todas en Google» (configurable)
     setupWhatsAppLinks();   // valores por defecto (por si la API no responde)
+    setupAuthGate();        // carga aportaciones abiertas y, si hay sesión, el enlace de cuenta
     loadSiteData();         // datos reales desde el backend (si está disponible)
     loadContent();          // contenido editable (servicios, proyectos, faq...)
     $("#year") && ($("#year").textContent = new Date().getFullYear());
@@ -116,6 +120,19 @@
       .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
   }
+  /* Devuelve un <picture> con AVIF y WebP a partir de una ruta .jpg/.png,
+     dejando el formato original como respaldo. */
+  function fotoResponsive(src, alt, w, h) {
+    if (!src) return "";
+    var base = String(src).replace(/\.(jpe?g|png)$/i, "");
+    return '<picture>'
+      + '<source type="image/avif" srcset="' + esc(base) + '.avif">'
+      + '<source type="image/webp" srcset="' + esc(base) + '.webp">'
+      + '<img class="testimonial__avatar" src="' + esc(src) + '" alt="' + esc(alt) + '"'
+      + ' width="' + w + '" height="' + h + '" loading="lazy" decoding="async">'
+      + '</picture>';
+  }
+
   function iniciales(nombre) {
     return esc(String(nombre || "?").trim().split(/\s+/).slice(0, 2).map(function (p) { return p[0]; }).join("").toUpperCase());
   }
@@ -138,8 +155,11 @@
   }
   function itemTestimonio(it) {
     var meta = it.meta || {};
+    var avatar = meta.photo
+      ? fotoResponsive(meta.photo, "Foto de " + it.title, 96, 96)
+      : '<span class="testimonial__avatar" aria-hidden="true">' + iniciales(it.title) + '</span>';
     return '<li class="testimonial"><blockquote class="testimonial__quote"><p>"' + esc(it.body) + '"</p></blockquote>'
-      + '<footer class="testimonial__author"><span class="testimonial__avatar" aria-hidden="true">' + iniciales(it.title) + '</span>'
+      + '<footer class="testimonial__author">' + avatar
       + '<cite><strong>' + esc(it.title) + '</strong><span>' + esc(it.subtitle || meta.cargo || "") + '</span></cite></footer></li>';
   }
   function itemFaq(it) {
@@ -219,7 +239,199 @@
     if (s.whatsapp) CONTACTO.whatsapp = String(s.whatsapp).replace(/\D/g, "");
     if (s.correo) CONTACTO.correo = s.correo;
     if (s.telefono) CONTACTO.teléfono = s.telefono;
+    if (s.google_reviews_url) CONTACTO.googleReviews = String(s.google_reviews_url);
     setupWhatsAppLinks();
+    setupGoogleReviewsLink();   // enlace «Ver todas en Google»
+
+
+    // Modo mantenimiento: aviso visible y formulario desactivado
+    if (String(s.maintenance_mode) === "1") {
+      mostrarMantenimiento(s.maintenance_message || "Estamos mejorando la web. Volvemos en unos minutos.");
+    }
+
+    // SEO editable: sobreescribe título, descripción y datos de compartir
+    aplicarSeo(s);
+
+  }
+
+  /* Aplica al <head> los textos de SEO guardados en el panel. */
+  function aplicarSeo(s) {
+    function setMeta(sel, attr, value) {
+      if (!value) return;
+      var el = document.querySelector(sel);
+      if (el) el.setAttribute(attr, value);
+    }
+    var name = s.site_name || "";
+    if (name) {
+      document.title = name + " | Servicios tecnológicos para empresas";
+      setMeta('meta[data-seo-name]', "content", name);
+    }
+    if (s.meta_description) {
+      setMeta('meta[data-seo-desc]', "content", s.meta_description);
+      setMeta('meta[data-seo-ogdesc]', "content", s.meta_description);
+    }
+    if (s.meta_keywords) {
+      setMeta('meta[data-seo-keywords]', "content", s.meta_keywords);
+    }
+    if (s.site_url) {
+      var base = String(s.site_url).replace(/\/+$/, "");
+      setMeta('meta[data-seo-url]', "content", base + "/");
+      var canonical = document.querySelector('link[rel="canonical"]');
+      if (canonical) canonical.setAttribute("href", base + "/");
+    }
+    if (s.og_image) {
+      var img = /^https?:\/\//.test(s.og_image)
+        ? s.og_image
+        : ((s.site_url || "").replace(/\/+$/, "") + "/" + String(s.og_image).replace(/^\/+/, ""));
+      document.querySelectorAll('meta[data-seo-image]').forEach(function (m) { m.setAttribute("content", img); });
+    }
+  }
+
+  /* Aviso de mantenimiento: se muestra sobre la página y bloquea el formulario. */
+  function mostrarMantenimiento(mensaje) {
+    if ($("#maintenanceBanner")) return;
+    var bar = document.createElement("div");
+    bar.id = "maintenanceBanner";
+    bar.className = "maintenance-banner";
+    bar.setAttribute("role", "status");
+    bar.innerHTML = '<strong>Modo mantenimiento:</strong> ' + mensaje;
+    document.body.insertBefore(bar, document.body.firstChild);
+    var form = $("#contactForm");
+    if (form) {
+      $$("input, textarea, select, button", form).forEach(function (el) { el.disabled = true; });
+    }
+  }
+
+  /* ==========================================================================
+     0.d APORTACIONES ABIERTAS (TESTIMONIOS Y PREGUNTAS) + RANKING DE FAQ
+     --------------------------------------------------------------------------
+     - Los formularios de testimonio, pregunta y valoración están abiertos: no
+       requieren iniciar sesión. Solo se carga contenido adicional de la API.
+     - La API ?resource=faqs devuelve las preguntas ordenadas por importancia;
+       la portada muestra primero las más relevantes.
+     ========================================================================== */
+  function setupAuthGate() {
+    // Aportaciones abiertas a cualquier visitante: solo cargamos contenido.
+    refrescarAportaciones();
+    cargarRankingFaq();
+    cargarTestimoniosUsuarios();
+    setupSubmitForm("#testimonialForm");
+    setupSubmitForm("#questionForm");
+
+    if (!window.fetch) return;
+    // Si hay sesión, el enlace de cabecera pasa a "Mi cuenta".
+    fetch(API_BASE + "index.php?resource=session", { headers: { "Accept": "application/json" }, credentials: "same-origin" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (data) {
+        var loggedIn = !!(data && data.ok && data.logged_in);
+        var navLink = document.getElementById("navAuthLink");
+        if (navLink) {
+          navLink.textContent = loggedIn ? "Mi cuenta" : "Acceder";
+          navLink.setAttribute("href", loggedIn ? "admin/" : "admin/login.php");
+        }
+        cargarTestimoniosUsuarios(true);
+      })
+      .catch(function () { /* sin sesión: la web funciona igual */ });
+  }
+
+  // Envía los formularios de aportación (testimonio / pregunta).
+  function setupSubmitForm(selector) {
+    var form = document.querySelector(selector);
+    if (!form) return;
+    var status = form.querySelector("[data-submit-status]");
+
+    function marcarError(el, msg) {
+      var box = form.querySelector('[data-error-for="' + el.name + '"]');
+      if (msg) { el.setAttribute("aria-invalid", "true"); if (box) box.textContent = msg; }
+      else { el.removeAttribute("aria-invalid"); if (box) box.textContent = ""; }
+      return !msg;
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var titulo = form.querySelector("[name='titulo']");
+      var texto  = form.querySelector("[name='texto']");
+      var ok = true;
+      ok = marcarError(titulo, titulo.value.trim().length < 2 ? "Escribe al menos 2 caracteres." : "") && ok;
+      if (texto && texto.value.trim().length > 0 && texto.value.trim().length < 10) {
+        ok = marcarError(texto, "Si añades detalle, escribe al menos 10 caracteres.") && ok;
+      }
+      if (!ok) { status.textContent = "Revisa los campos marcados."; status.className = "form-status is-error"; return; }
+
+      status.textContent = "Enviando...";
+      status.className = "form-status";
+
+      obtenerCsrf().then(function (token) {
+        var csrf = form.querySelector("input[name='_csrf']");
+        if (csrf) csrf.value = token || "";
+        return fetch(form.getAttribute("action"), {
+          method: "POST",
+          headers: { "Accept": "application/json", "X-CSRF-Token": token || "" },
+          credentials: "same-origin",
+          body: new FormData(form)
+        });
+      })
+        .then(function (r) { return r.json().catch(function () { return { ok: r.ok }; }); })
+        .then(function (data) {
+          if (data && data.ok) {
+            status.textContent = data.message || "¡Gracias por tu aportación!";
+            status.className = "form-status is-success";
+            form.reset();
+            // Un testimonio aprobado se refleja al momento.
+            if (data.status === "aprobada") cargarTestimoniosUsuarios(true);
+          } else {
+            status.textContent = (data && data.error) || "No se pudo enviar. Inténtalo más tarde.";
+            status.className = "form-status is-error";
+          }
+        })
+        .catch(function () {
+          status.textContent = "No se pudo enviar. Inténtalo más tarde.";
+          status.className = "form-status is-error";
+        });
+    });
+  }
+
+  // Carga el ranking de FAQ (algoritmo de importancia) en el acordeón.
+  function cargarRankingFaq() {
+    var caja = document.querySelector("[data-faq-ranked]");
+    if (!caja || !window.fetch) return;
+    fetch(API_BASE + "index.php?resource=faqs", { headers: { "Accept": "application/json" } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (data) {
+        if (!data || !data.ok || !data.items || !data.items.length) return;
+        caja.innerHTML = data.items.map(itemFaq).join("");
+        if (typeof setupAccordion === "function") setupAccordion();
+      })
+      .catch(function () { /* sin datos: se mantienen las FAQ del HTML */ });
+  }
+
+  // Añade los testimonios aprobados de usuarios registrados a la lista.
+  function cargarTestimoniosUsuarios(forzar) {
+    var track = document.querySelector(".testimonials__track");
+    if (!track || !window.fetch) return;
+    fetch(API_BASE + "index.php?resource=testimonials", { headers: { "Accept": "application/json" } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (data) {
+        if (!data || !data.ok || !data.items || !data.items.length) return;
+        $$("[data-user-testimonial]", track).forEach(function (li) { li.remove(); });
+        var html = data.items.map(function (t) {
+          var avatar = t.photo
+            ? fotoResponsive(t.photo, "Foto de " + t.author_name, 96, 96)
+            : '<span class="testimonial__avatar" aria-hidden="true">' + iniciales(t.author_name) + '</span>';
+          return '<li class="testimonial" data-user-testimonial><blockquote class="testimonial__quote"><p>"'
+            + esc(t.comment) + '"</p></blockquote><footer class="testimonial__author">' + avatar
+            + '<cite><strong>' + esc(t.author_name) + '</strong><span>Cliente</span></cite></footer></li>';
+        }).join("");
+        track.insertAdjacentHTML("beforeend", html);
+        if (typeof setupCarousel === "function") setupCarousel();
+      })
+      .catch(function () { /* sin testimonios de usuarios */ });
+  }
+
+  // Refresca el estado de los formularios de aportación (abiertos a todos).
+  function refrescarAportaciones() {
+    // Sin formulario de valoraciones: los testimonios y las preguntas ya se
+    // envían desde sus propios formularios, abiertos a cualquier visitante.
   }
 
   /* ==========================================================================
@@ -272,7 +484,8 @@
       link.addEventListener("click", function (e) {
         var id = link.getAttribute("href");
         if (!id || id === "#") return;
-        var target = document.querySelector(id);
+        var target = null;
+        try { target = document.querySelector(id); } catch (err) { return; }
         if (!target) return;
         e.preventDefault();
         target.scrollIntoView({
@@ -286,7 +499,12 @@
   }
 
   function setupActiveLink() {
-    var links = $$(".nav-link");
+    // Solo enlaces internos (ancla): evita que enlaces como "admin/login.php"
+    // se pasen a querySelector y lancen un SyntaxError que rompa el resto del JS.
+    var links = $$(".nav-link").filter(function (l) {
+      var href = l.getAttribute("href") || "";
+      return href.charAt(0) === "#" && href.length > 1;
+    });
     var sections = links
       .map(function (l) { return document.querySelector(l.getAttribute("href")); })
       .filter(Boolean);
@@ -359,6 +577,25 @@
     }, { passive: true });
     setTimeout(revealInView, 400);
     setTimeout(function () { items.forEach(reveal); }, 3000); // colchón final
+  }
+
+  /* ==========================================================================
+     3b. CABECERA CON SOMBRA AL HACER SCROLL
+     ========================================================================== */
+  function setupHeaderScroll() {
+    var header = $(".site-header");
+    if (!header) return;
+    var ticking = false;
+    function update() {
+      header.classList.toggle("is-scrolled", window.scrollY > 12);
+      ticking = false;
+    }
+    window.addEventListener("scroll", function () {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    }, { passive: true });
+    update();
   }
 
   /* ==========================================================================
@@ -647,6 +884,24 @@
   function setupWhatsAppLinks() {
     var url = "https://wa.me/" + CONTACTO.whatsapp + "?text=" + encodeURIComponent(WHATSAPP_MSG);
     $$("[data-whatsapp-link]").forEach(function (a) {
+      a.setAttribute("href", url);
+      a.setAttribute("target", "_blank");
+      a.setAttribute("rel", "noopener");
+    });
+  }
+
+  /* ==========================================================================
+     9.b ENLACE «VER TODAS EN GOOGLE»
+     --------------------------------------------------------------------------
+     El enlace de la sección de Opiniones apunta al marcador
+     [URL_GOOGLE_REVIEWS] del HTML. Aquí se sustituye por la URL real de la
+     ficha de Google configurada en el panel (Ajustes · Reseñas). Si aún no hay
+     URL válida, se mantiene el marcador para editarlo a mano en el HTML.
+     ========================================================================== */
+  function setupGoogleReviewsLink() {
+    var url = (typeof CONTACTO !== "undefined" && CONTACTO.googleReviews) || "";
+    if (!url || url.indexOf("[") !== -1) return;
+    $$("[data-google-reviews-link]").forEach(function (a) {
       a.setAttribute("href", url);
       a.setAttribute("target", "_blank");
       a.setAttribute("rel", "noopener");

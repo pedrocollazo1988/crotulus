@@ -5,7 +5,7 @@ declare(strict_types=1);
  * ============================================================================
  *  AUTENTICACION
  *  Registro, inicio de sesion, verificacion por correo, recuperacion de
- *  contrasena y acceso con Google (OAuth 2.0).
+ *  contraseña y acceso con Google (OAuth 2.0).
  * ============================================================================
  */
 
@@ -58,6 +58,15 @@ function require_login(): void
         header('Location: ' . url('admin/login.php'));
         exit;
     }
+}
+
+/** Exige sesión iniciada (para la API de solo usuarios). Devuelve el usuario. */
+function require_user(): array
+{
+    if (!is_logged_in()) {
+        json_error('Inicia sesión para continuar.', 401);
+    }
+    return current_user();
 }
 
 /** Exige rol de administrador para gestionar el panel. */
@@ -210,27 +219,27 @@ function auth_send_verification(array $user): void
     $html = mailer_template('Verifica tu correo', "
         <p>Hola $name,</p>
         <p>Gracias por crear tu cuenta en <strong>" . e(config('site_name')) . "</strong>.
-        Confirma tu correo pulsando el boton:</p>
+        Confirma tu correo pulsando el botón:</p>
         <p><a class='btn' href=\"$link\">Verificar mi correo</a></p>
         <p>El enlace caduca en 48 horas. Si no has sido tu, ignora este mensaje.</p>
     ");
     send_mail($user['email'], 'Verifica tu correo · ' . config('site_name'), $html);
 }
 
-/** Envia el correo para restablecer la contrasena. */
+/** Envia el correo para restablecer la contraseña. */
 function auth_send_password_reset(array $user): void
 {
     $token = auth_create_token((int) $user['id'], 'password_reset', 3600);
     $link  = url('admin/reset.php?token=' . urlencode($token));
     $name  = e($user['name'] ?: $user['email']);
 
-    $html = mailer_template('Restablece tu contrasena', "
+    $html = mailer_template('Restablece tu contraseña', "
         <p>Hola $name,</p>
-        <p>Has pedido cambiar tu contrasena. Pulsa el boton para elegir una nueva:</p>
-        <p><a class='btn' href=\"$link\">Cambiar mi contrasena</a></p>
+        <p>Has pedido cambiar tu contraseña. Pulsa el botón para elegir una nueva:</p>
+        <p><a class='btn' href=\"$link\">Cambiar mi contraseña</a></p>
         <p>El enlace caduca en 1 hora. Si no lo has pedido, ignora este mensaje.</p>
     ");
-    send_mail($user['email'], 'Restablece tu contrasena · ' . config('site_name'), $html);
+    send_mail($user['email'], 'Restablece tu contraseña · ' . config('site_name'), $html);
 }
 
 /* -------------------------------------------------------------------------
@@ -240,12 +249,29 @@ function auth_send_password_reset(array $user): void
 /** true si Google esta configurado. */
 function google_enabled(): bool
 {
-    return (string) config('google.client_id', '') !== '';
+    return google_client_id() !== '';
+}
+
+/** Client ID (primero el guardado en Ajustes, luego config.php). */
+function google_client_id(): string
+{
+    $fromSettings = (string) setting('google_client_id', '');
+    return $fromSettings !== '' ? $fromSettings : (string) config('google.client_id', '');
+}
+
+/** Client secret (primero el guardado en Ajustes, luego config.php). */
+function google_client_secret(): string
+{
+    $fromSettings = (string) setting('google_client_secret', '');
+    return $fromSettings !== '' ? $fromSettings : (string) config('google.client_secret', '');
 }
 
 function google_redirect_uri(): string
 {
-    $configured = (string) config('google.redirect_uri', '');
+    $configured = (string) setting('google_redirect_uri', '');
+    if ($configured === '') {
+        $configured = (string) config('google.redirect_uri', '');
+    }
     return $configured !== '' ? $configured : url('api/auth.php?action=google_callback');
 }
 
@@ -256,7 +282,7 @@ function google_auth_url(): string
     $_SESSION['google_state'] = $state;
 
     $params = http_build_query([
-        'client_id'     => config('google.client_id'),
+        'client_id'     => google_client_id(),
         'redirect_uri'  => google_redirect_uri(),
         'response_type' => 'code',
         'scope'         => 'openid email profile',
@@ -272,8 +298,8 @@ function google_exchange_code(string $code): ?string
 {
     $response = http_post('https://oauth2.googleapis.com/token', [
         'code'          => $code,
-        'client_id'     => config('google.client_id'),
-        'client_secret' => config('google.client_secret'),
+        'client_id'     => google_client_id(),
+        'client_secret' => google_client_secret(),
         'redirect_uri'  => google_redirect_uri(),
         'grant_type'    => 'authorization_code',
     ]);

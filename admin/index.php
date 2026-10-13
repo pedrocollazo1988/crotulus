@@ -37,7 +37,7 @@ $nuevos   = (int) (db_one("SELECT COUNT(*) AS c FROM contact_messages WHERE stat
 $usuarios = (int) (db_one('SELECT COUNT(*) AS c FROM users')['c'] ?? 0);
 $mensajes = db_all('SELECT * FROM contact_messages ORDER BY created_at DESC, id DESC LIMIT 200');
 
-admin_header('Mensajes');
+admin_header('Mensajes', true, 'Mensajes');
 ?>
 <h1>Mensajes de contacto</h1>
 

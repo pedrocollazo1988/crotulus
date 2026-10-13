@@ -17,6 +17,12 @@ if ($method !== 'POST') {
     json_error('Metodo no permitido.', 405);
 }
 
+/* --- 0. Abierto a cualquier visitante ------------------------------------ */
+// El formulario de solicitud está abierto: no requiere cuenta. Si hay sesión
+// iniciada, asociamos el mensaje a esa cuenta; si no, se guarda como anónimo.
+$user = current_user();
+$userId = $user ? (int) $user['id'] : 0;
+
 /* --- 1. Anti-CSRF --------------------------------------------------------- */
 csrf_require();
 
@@ -43,6 +49,7 @@ $data = $result['data'];
 
 /* --- 5. Guardado ---------------------------------------------------------- */
 $id = db_insert('contact_messages', [
+    'user_id'    => $userId,
     'name'       => $data['name'],
     'email'      => $data['email'],
     'phone'      => $data['phone'],

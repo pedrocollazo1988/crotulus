@@ -1,0 +1,9 @@
+# robots.txt · C-ROTULUS S.U.R.L.
+# EDITAR: sustituye el dominio por el tuyo real (busca [DOMINIO]).
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /app/
+
+Sitemap: [DOMINIO]/sitemap.xml

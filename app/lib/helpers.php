@@ -101,11 +101,29 @@ function client_ip(): string
     return filter_var($remote, FILTER_VALIDATE_IP) ? $remote : '0.0.0.0';
 }
 
-/** Registra un mensaje en app/data/app.log (sin datos sensibles). */
+/** Registra un mensaje en el registro de la aplicación (sin datos sensibles). */
 function app_log(string $message): void
 {
     $line = '[' . date('Y-m-d H:i:s') . '] ' . $message . PHP_EOL;
-    @file_put_contents(DATA_DIR . '/app.log', $line, FILE_APPEND | LOCK_EX);
+    @file_put_contents(log_dir() . '/app.log', $line, FILE_APPEND | LOCK_EX);
+}
+
+/**
+ * Carpeta donde se escriben los registros (app.log, mail.log).
+ * Por defecto es app/data; el administrador puede cambiarla desde Ajustes
+ * (clave "paths.log_dir") para separarlos de los datos de la base de datos.
+ */
+function log_dir(): string
+{
+    $dir = trim((string) config('paths.log_dir', ''));
+    if ($dir === '') {
+        return DATA_DIR;
+    }
+    $dir = rtrim($dir, '/\\');
+    if (!is_dir($dir)) {
+        @mkdir($dir, 0750, true);
+    }
+    return is_dir($dir) ? $dir : DATA_DIR;
 }
 
 /** Construye la URL publica del sitio (con soporte para subcarpetas). */
@@ -115,7 +133,12 @@ function site_base_url(): string
     if ($configured !== '') {
         return rtrim($configured, '/');
     }
-    $https  = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+    // Detecta HTTPS teniendo en cuenta proxies/CDN (X-Forwarded-*), igual que la sesion.
+    $proto = strtolower(trim(explode(',', (string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? ''))[0]));
+    $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+        || $proto === 'https'
+        || (($_SERVER['HTTP_X_FORWARDED_SSL'] ?? '') === 'on')
+        || (($_SERVER['SERVER_PORT'] ?? '') === '443');
     $scheme = $https ? 'https' : 'http';
     $host   = $_SERVER['HTTP_HOST'] ?? 'localhost';
     $dir    = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '')), '/');
