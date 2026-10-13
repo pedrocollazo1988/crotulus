@@ -404,8 +404,8 @@ p { margin: 0 0 1rem; }
   display: block;
   padding: .85rem .25rem;
   font-family: var(--font-alt);
-  font-size: 1.05rem;
-  letter-spacing: .05em;
+  font-size: .82rem;
+  letter-spacing: .04em;
   text-transform: uppercase;
   color: var(--color-ink);
   font-weight: 400;
@@ -416,7 +416,7 @@ p { margin: 0 0 1rem; }
 .nav-link.is-active { color: var(--color-primary); border-left-color: var(--color-primary); }
 .nav-link--cta {
   color: var(--color-primary);
-  font-size: 1.12rem;
+  font-size: .86rem;
 }
 
 /* Enlace al area privada (panel de administracion) */
@@ -575,53 +575,6 @@ p { margin: 0 0 1rem; }
   line-height: 1;
 }
 .stat__label { font-size: .86rem; color: #9FB4D0; margin-top: .3rem; }
-
-/* --- Banner marquesina de confianza (logos/tecnologías) ---------------- */
-.trustbar {
-  background: var(--color-navy);
-  color: #fff;
-  padding: 1.05rem 0;
-  overflow: hidden;
-  border-top: 1px solid rgba(255,255,255,.08);
-}
-.trustbar__label {
-  text-align: center;
-  font-size: .78rem;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: #7E93B2;
-  margin-bottom: .8rem;
-}
-.marquee { position: relative; overflow: hidden; -webkit-mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
-.marquee__track {
-  display: flex;
-  width: max-content;
-  gap: 3rem;
-  align-items: center;
-  animation: marquee 34s linear infinite;
-}
-.marquee:hover .marquee__track { animation-play-state: paused; }
-.marquee__item {
-  font-family: var(--font-alt);
-  font-weight: 400;
-  font-size: 1.15rem;
-  letter-spacing: .03em;
-  color: #A9BEDB;
-  white-space: nowrap;
-  display: inline-flex;
-  align-items: center;
-  gap: .55rem;
-}
-.marquee__item::before {
-  content: "";
-  width: 7px; height: 7px; border-radius: 50%;
-  background: var(--color-accent);
-  opacity: .85;
-}
-@keyframes marquee {
-  from { transform: translate3d(0,0,0); }
-  to   { transform: translate3d(-50%,0,0); }
-}
 
 /* ==========================================================================
    7. SECCIONES Y TARJETAS
@@ -1268,7 +1221,7 @@ html.has-reveal-anim .cards .reveal.is-visible:nth-child(6) { transition-delay: 
 /* Pantallas medianas (900-1080 px): menú algo más compacto para que quepa */
 @media (min-width: 900px) and (max-width: 1080px) {
   .primary-nav__list { gap: 0; }
-  .nav-link { padding: .5rem .5rem; font-size: .95rem; }
+  .nav-link { padding: .5rem .5rem; font-size: .76rem; }
   .brand__img { height: 44px; }
 }
 
@@ -1343,7 +1296,6 @@ html.has-reveal-anim .cards .reveal.is-visible:nth-child(6) { transition-delay: 
   }
   .reveal { opacity: 1; transform: none; }
   .bg-fx__blob, .bg-fx__grid { animation: none !important; }
-  .marquee__track { animation: none !important; }
   .hero::after { animation: none !important; }
   .hero__badge::before { animation: none !important; }
   .hero__title .text-accent { animation: none !important; }
