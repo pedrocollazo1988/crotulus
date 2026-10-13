@@ -1,0 +1,16 @@
+# ============================================================================
+#  Archivos que NO deben subirse al hosting ni a Git
+# ============================================================================
+
+# Configuracion local (contiene contrasenas) y datos generados
+app/config.local.php
+app/data/*
+!app/data/.gitignore
+!app/data/.htaccess
+!app/data/index.html
+
+# Sistema
+.DS_Store
+Thumbs.db
+*.swp
+.agent_tmp/

@@ -2,29 +2,29 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Ilustracion de una red de datos y servidores">
   <defs>
     <linearGradient id="hg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#0F1B33"/>
-      <stop offset="1" stop-color="#12325f"/>
+      <stop offset="0" stop-color="#071729"/>
+      <stop offset="1" stop-color="#0A1F38"/>
     </linearGradient>
   </defs>
   <rect width="640" height="480" rx="20" fill="url(#hg)"/>
-  <g stroke="#2E7BF0" stroke-width="1.4" opacity=".55" fill="none">
+  <g stroke="#1E88E5" stroke-width="1.4" opacity=".55" fill="none">
     <path d="M120 120 L240 200 L360 140 L470 220"/>
     <path d="M240 200 L300 320 L460 360"/>
     <path d="M120 120 L180 300 L300 320"/>
     <path d="M470 220 L460 360"/>
   </g>
-  <g fill="#00B8D9">
+  <g fill="#00C2B8">
     <circle cx="120" cy="120" r="6"/><circle cx="240" cy="200" r="8"/>
     <circle cx="360" cy="140" r="6"/><circle cx="470" cy="220" r="7"/>
     <circle cx="300" cy="320" r="9"/><circle cx="180" cy="300" r="6"/>
     <circle cx="460" cy="360" r="7"/>
   </g>
-  <g fill="#2E7BF0" opacity=".28">
+  <g fill="#1E88E5" opacity=".28">
     <rect x="60" y="360" width="120" height="70" rx="10"/>
     <rect x="200" y="380" width="120" height="50" rx="10"/>
     <rect x="340" y="370" width="150" height="60" rx="10"/>
   </g>
-  <g fill="#7fb2ff" opacity=".8">
+  <g fill="#A9D2F0" opacity=".8">
     <rect x="70" y="372" width="100" height="8" rx="4"/>
     <rect x="210" y="392" width="100" height="8" rx="4"/>
     <rect x="350" y="382" width="130" height="8" rx="4"/>

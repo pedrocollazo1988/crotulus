@@ -9,7 +9,7 @@
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#1E6BE6">
+  <meta name="theme-color" content="#005AA5">
   <meta name="author" content="C-ROTULUS S.U.R.L.">
 
   <!-- ============ SEO BASICO (EDITA AQUÍ TUS TEXTOS) ============ -->
@@ -29,7 +29,8 @@
   <meta name="twitter:card" content="summary_large_image">
 
   <!-- ============ FAVICON (basado en el logo) ============ -->
-  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+  <link rel="icon" type="image/png" href="assets/img/favicon.png">
+  <link rel="apple-touch-icon" href="assets/img/favicon.png">
 
   <!-- ============ TIPOGRAFÍA (Google Fonts, 2 familias) ============ -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,7 +38,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 
   <!-- ============ ESTILOS ============ -->
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css?v=20261013d">
 
   <!-- ============ DATOS ESTRUCTURADOS LocalBusiness (JSON-LD) ============
        EDITAR: teléfono, correo, dirección, coordenadas y redes sociales. -->
@@ -49,7 +50,7 @@
     "description": "Empresa de servicios tecnológicos: desarrollo web, automatización con IA, redes, ciberseguridad y soporte técnico.",
     "url": "https://www.c-rotulus.example/",
     "image": "https://www.c-rotulus.example/assets/img/hero-tech.svg",
-    "logo": "https://www.c-rotulus.example/assets/img/logo-c-rotulus.svg",
+    "logo": "https://www.c-rotulus.example/assets/img/logo-header.png",
     "telephone": "[TELÉFONO]",
     "email": "[CORREO]",
     "priceRange": "$$",
@@ -81,7 +82,7 @@
   <header class="site-header" id="top">
     <div class="container site-header__inner">
       <a class="brand" href="#inicio" aria-label="C-ROTULUS, ir al inicio">
-        <img class="brand__img" src="assets/img/logo-c-rotulus.svg" alt="Logotipo de C-ROTULUS S.U.R.L." width="168" height="42">
+        <img class="brand__img" src="assets/img/logo-header.png" alt="Logotipo de C-ROTULUS S.U.R.L." width="168" height="63">
       </a>
 
       <!-- Botón hamburguesa (solo móvil) -->
@@ -98,6 +99,7 @@
           <li><a class="nav-link" href="#servicios">Servicios</a></li>
           <li><a class="nav-link" href="#proceso">Cómo trabajamos</a></li>
           <li><a class="nav-link" href="#testimonios">Testimonios</a></li>
+          <li><a class="nav-link" href="#proyectos">Proyectos</a></li>
           <li><a class="nav-link" href="#faq">FAQ</a></li>
           <li><a class="nav-link nav-link--cta" href="#contacto">Contacto</a></li>
         </ul>
@@ -116,11 +118,11 @@
             Tecnología clara que <span class="text-accent">hace crecer</span> tu negocio
           </h1>
           <p class="hero__subtitle">
-            Ayudamos a pymes y autonomos a digitalizarse con desarrollo web, automatización e IA,
+            Ayudamos a pymes y autónomos a digitalizarse con desarrollo web, automatización e IA,
             redes seguras y soporte continuo. Menos problemas, más tiempo para lo que importa.
           </p>
           <div class="hero__actions">
-            <a class="btn btn--primary" href="#contacto">Solicitar presupuesto</a>
+            <a class="btn btn--primary" href="#contacto">Solicitar servicios</a>
             <!-- Botón WhatsApp: el mensaje prellenado se arma en js/main.js -->
             <a class="btn btn--whatsapp" href="#contacto" data-whatsapp-link>
               <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12.04 2a9.9 9.9 0 0 0-8.5 15l-1.3 4.7 4.82-1.26A9.9 9.9 0 1 0 12.04 2Zm5.77 14.06c-.24.68-1.4 1.3-1.93 1.34-.5.05-.98.24-3.3-.7-2.77-1.1-4.53-3.94-4.67-4.12-.14-.19-1.12-1.5-1.12-2.86 0-1.36.72-2.03.97-2.3.24-.28.53-.35.71-.35l.51.01c.16 0 .39-.06.6.46.24.57.8 1.98.87 2.13.07.14.12.31.02.5-.09.19-.14.3-.28.47l-.42.49c-.14.14-.29.29-.12.57.16.28.73 1.2 1.57 1.95 1.08.96 1.98 1.26 2.26 1.4.28.14.44.12.6-.07.17-.19.7-.82.89-1.1.19-.28.37-.23.63-.14.26.1 1.66.78 1.94.92.28.14.47.21.54.33.07.12.07.68-.17 1.36Z"/></svg>
@@ -128,7 +130,7 @@
             </a>
           </div>
 
-          <!-- FRANJA DE CONFIANZA: cifras de ejemplo, edita los numeros y textos -->
+          <!-- FRANJA DE CONFIANZA: cifras de ejemplo, edita los números y textos -->
           <ul class="stats" aria-label="Cifras de confianza">
             <li class="stat">
               <span class="stat__num" data-count="12">12</span>
@@ -171,7 +173,7 @@
           </div>
           <div class="about__body">
             <h3 class="about__subtitle">Nuestra historia</h3>
-            <p>C-ROTULUS nació con una idea sencilla: la tecnología no deberia ser un dolor de cabeza. Empezamos resolviendo pequenos problemas informaticos y hoy diseñamos, desplegamos y mantenemos la infraestructura digital completa de nuestros clientes.</p>
+            <p>C-ROTULUS nació con una idea sencilla: la tecnología no debería ser un dolor de cabeza. Empezamos resolviendo pequeños problemas informáticos y hoy diseñamos, desplegamos y mantenemos la infraestructura digital completa de nuestros clientes.</p>
 
             <div class="mv-grid">
               <article class="mv-card">
@@ -180,7 +182,7 @@
               </article>
               <article class="mv-card">
                 <h4 class="mv-card__title">Visión</h4>
-                <p>Ser el socio tecnológico de referencia de las pymes de nuestro entorno, reconocidos por la cercania y la calidad del servicio.</p>
+                <p>Ser el socio tecnológico de referencia de las pymes de nuestro entorno, reconocidos por la cercanía y la calidad del servicio.</p>
               </article>
             </div>
 
@@ -205,7 +207,7 @@
           <p class="section__lead">Servicios de ejemplo fáciles de editar. Cada tarjeta incluye icono, descripción, contenido y botón de consulta.</p>
         </header>
 
-        <div class="cards">
+        <div class="cards" data-content-list="servicio">
           <!-- SERVICIO 1 -->
           <article class="card">
             <div class="card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M8 9l-4 3 4 3M16 9l4 3-4 3M13 5l-2 14"/></svg></div>
@@ -296,7 +298,7 @@
           <p class="section__lead">Sin sorpresas: te acompañamos desde la primera conversación hasta el soporte del día a día.</p>
         </header>
 
-        <ol class="steps">
+        <ol class="steps" data-content-list="proceso">
           <li class="step">
             <span class="step__num" aria-hidden="true">1</span>
             <h3 class="step__title">Diagnóstico</h3>
@@ -315,7 +317,7 @@
           <li class="step">
             <span class="step__num" aria-hidden="true">4</span>
             <h3 class="step__title">Soporte</h3>
-            <p class="step__text">Te acompañamos despues: mantenimiento, mejoras y atención cuando lo necesites.</p>
+            <p class="step__text">Te acompañamos después: mantenimiento, mejoras y atención cuando lo necesites.</p>
           </li>
         </ol>
       </div>
@@ -332,7 +334,7 @@
 
         <div class="testimonials" id="testimonials" aria-roledescription="carrusel" aria-label="Testimonios de clientes">
           <div class="testimonials__viewport">
-            <ul class="testimonials__track">
+            <ul class="testimonials__track" data-content-list="testimonio">
               <li class="testimonial" aria-hidden="false">
                 <blockquote class="testimonial__quote">
                   <p>"Nos renovaron la web y automatizaron los presupuestos. Ahora ahorramos varias horas cada semana y todo es mucho más claro."</p>
@@ -344,7 +346,7 @@
               </li>
               <li class="testimonial" aria-hidden="true">
                 <blockquote class="testimonial__quote">
-                  <p>"En una semana teniamos la red y las copias de seguridad funcionando. El soporte responde siempre rápido."</p>
+                  <p>"En una semana teníamos la red y las copias de seguridad funcionando. El soporte responde siempre rápido."</p>
                 </blockquote>
                 <footer class="testimonial__author">
                   <span class="testimonial__avatar" aria-hidden="true">JR</span>
@@ -372,15 +374,68 @@
       </div>
     </section>
 
-    <!-- ==================== 6. PREGUNTAS FRECUENTES ==================== -->
-    <section class="section" id="faq">
+    <!-- ==================== 6. PROYECTOS ==================== -->
+    <section class="section" id="proyectos">
+      <div class="container">
+        <header class="section__head">
+          <p class="eyebrow">Proyectos</p>
+          <h2 class="section__title">Trabajos que ya están dando resultados</h2>
+          <p class="section__lead">Una muestra de proyectos de ejemplo. Sustituye las imágenes, los textos y las etiquetas por tus casos reales.</p>
+        </header>
+
+        <div class="projects" data-content-list="proyecto">
+          <!-- PROYECTO 1 -->
+          <article class="project reveal">
+            <div class="project__media">
+              <img src="assets/img/proyecto-web.svg" alt="Interfaz de una tienda online con varios productos a la venta" loading="lazy" decoding="async">
+            </div>
+            <div class="project__body">
+              <span class="project__tag">Desarrollo web</span>
+              <h3 class="project__title">Tienda online para distribuidora local</h3>
+              <p class="project__text">Catálogo de más de 2.000 referencias, pago integrado y panel de gestión para el equipo.</p>
+              <a class="project__link" href="#contacto">Ver caso &rarr;</a>
+            </div>
+          </article>
+
+          <!-- PROYECTO 2 -->
+          <article class="project reveal">
+            <div class="project__media">
+              <img src="assets/img/proyecto-ia.svg" alt="Conversación con un asistente virtual de inteligencia artificial" loading="lazy" decoding="async">
+            </div>
+            <div class="project__body">
+              <span class="project__tag">Automatización e IA</span>
+              <h3 class="project__title">Asistente que atiende consultas 24/7</h3>
+              <p class="project__text">Un agente de IA que responde dudas frecuentes y deriva las incidencias al equipo humano.</p>
+              <a class="project__link" href="#contacto">Ver caso &rarr;</a>
+            </div>
+          </article>
+
+          <!-- PROYECTO 3 -->
+          <article class="project reveal">
+            <div class="project__media">
+              <img src="assets/img/proyecto-redes.svg" alt="Red de nodos protegida con un símbolo de escudo de seguridad" loading="lazy" decoding="async">
+            </div>
+            <div class="project__body">
+              <span class="project__tag">Redes y seguridad</span>
+              <h3 class="project__title">Renovación de red en oficinas</h3>
+              <p class="project__text">Cableado, Wi-Fi profesional y firewall gestionado para 60 puestos de trabajo.</p>
+              <a class="project__link" href="#contacto">Ver caso &rarr;</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==================== 7. PREGUNTAS FRECUENTES ==================== -->
+    <section class="section section--alt" id="faq">
       <div class="container container--narrow">
         <header class="section__head">
           <p class="eyebrow">Preguntas frecuentes</p>
           <h2 class="section__title">Resolvemos tus dudas</h2>
         </header>
 
-        <div class="accordion" id="accordion">
+        <div class="accordion" id="accordion" data-content-list="faq">
           <div class="accordion__item">
             <h3 class="accordion__heading">
               <button class="accordion__trigger" type="button" aria-expanded="false" aria-controls="faq-1">
@@ -449,15 +504,15 @@
               </button>
             </h3>
             <div class="accordion__panel" id="faq-6" role="region">
-              <p>Escríbenos por el formulario o WhatsApp. Concertamos una llamada o reunion sin coste y te proponemos los siguientes pasos.</p>
+              <p>Escríbenos por el formulario o WhatsApp. Concertamos una llamada o reunión sin coste y te proponemos los siguientes pasos.</p>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ==================== 7. CONTACTO ==================== -->
-    <section class="section section--alt" id="contacto">
+    <!-- ==================== 8. CONTACTO ==================== -->
+    <section class="section" id="contacto">
       <div class="container">
         <header class="section__head">
           <p class="eyebrow">Contacto</p>
@@ -467,12 +522,12 @@
 
         <div class="contact__grid">
           <!-- FORMULARIO ----------------------------------------------------------
-               El sitio es estatico. El envío usa un servicio externo configurable.
-               >>> PARA QUE FUNCIONE: crea una cuenta gratis en https://formspree.io
-               >>> y sustituye TU_ID por el identificador de tu formulario.
-               El endpoint también se define en js/main.js (constante FORM_ENDPOINT).
+               El envío usa el backend propio incluido en este proyecto (PHP), que
+               guarda los mensajes en la base de datos y aplica validación, CSRF y
+               límite de envíos. Si prefieres un servicio externo tipo Formspree,
+               cambia el "action" de aquí y la constante FORM_ENDPOINT en js/main.js.
           --------------------------------------------------------------------- -->
-          <form class="contact-form" id="contactForm" action="https://formspree.io/f/TU_ID" method="POST" novalidate>
+          <form class="contact-form" id="contactForm" action="api/contact.php" method="POST" novalidate>
             <div class="field">
               <label for="nombre">Nombre y apellidos *</label>
               <input type="text" id="nombre" name="nombre" autocomplete="name" required>
@@ -480,7 +535,7 @@
             </div>
 
             <div class="field">
-              <label for="correo">Correo electronico *</label>
+              <label for="correo">Correo electrónico *</label>
               <input type="email" id="correo" name="correo" autocomplete="email" required>
               <small class="field__error" data-error-for="correo" aria-live="polite"></small>
             </div>
@@ -492,7 +547,7 @@
             </div>
 
             <div class="field">
-              <label for="servicio">Servicio de interes *</label>
+              <label for="servicio">Servicio de interés *</label>
               <select id="servicio" name="servicio" required>
                 <option value="" selected disabled>Selecciona un servicio</option>
                 <option>Desarrollo web y aplicaciones</option>
@@ -530,36 +585,39 @@
                 <span class="contact-info__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M4 5h4l2 5-2 1a12 12 0 0 0 5 5l1-2 5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 3 6a1 1 0 0 1 1-1Z"/></svg></span>
                 <div>
                   <strong>Teléfono</strong>
-                  <a href="tel:+34000000000">[TELÉFONO]</a>
+                  <a href="tel:+34000000000" data-site="telefono">[TELÉFONO]</a>
                 </div>
               </li>
               <li class="contact-info__item">
                 <span class="contact-info__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M3 6h18v12H3zM3 7l9 6 9-6"/></svg></span>
                 <div>
                   <strong>Correo</strong>
-                  <a href="mailto:info@c-rotulus.example">[CORREO]</a>
+                  <a href="mailto:info@c-rotulus.example" data-site="correo">[CORREO]</a>
                 </div>
               </li>
               <li class="contact-info__item">
                 <span class="contact-info__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M12 21s7-6.5 7-11a7 7 0 1 0-14 0c0 4.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg></span>
                 <div>
                   <strong>Dirección</strong>
-                  <span>[DIRECCIÓN], [CIUDAD]</span>
+                  <span data-site-direccion>[DIRECCIÓN], [CIUDAD]</span>
                 </div>
               </li>
               <li class="contact-info__item">
                 <span class="contact-info__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="9"/><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M12 7v5l3 2"/></svg></span>
                 <div>
                   <strong>Horario</strong>
-                  <span>Lunes a viernes, 9:00 - 18:00</span>
+                  <span data-site="horario">Lunes a viernes, 9:00 - 18:00</span>
                 </div>
               </li>
             </ul>
 
-            <!-- MAPA: sustituye el src por la URL de incrustación de Google Maps -->
-            <div class="contact-map">
+            <!-- MAPA: si configuras una URL de embed en el panel de administración
+                 (Ajustes), la web la carga aquí automáticamente. Si no, se muestra
+                 la imagen por defecto de assets/img/mapa.svg. -->
+            <div class="contact-map" id="contactMap">
               <img src="assets/img/mapa.svg" alt="Mapa con la ubicación de C-ROTULUS" width="640" height="360" loading="lazy" decoding="async">
             </div>
+            <p class="contact-map__link"><a href="https://www.google.com/maps" data-maps-link target="_blank" rel="noopener">Ver en Google Maps / Cómo llegar</a></p>
           </aside>
         </div>
       </div>
@@ -570,7 +628,7 @@
   <footer class="site-footer">
     <div class="container site-footer__grid">
       <div class="site-footer__brand">
-        <img src="assets/img/logo-c-rotulus.svg" alt="Logotipo de C-ROTULUS S.U.R.L." width="160" height="40" loading="lazy" decoding="async">
+        <img src="assets/img/logo-footer.png" alt="Logotipo de C-ROTULUS S.U.R.L." width="160" height="60" loading="lazy" decoding="async">
         <p>Servicios tecnológicos para empresas. Desarrollo, automatización, redes y soporte con trato cercano.</p>
       </div>
 
@@ -580,6 +638,7 @@
           <li><a href="#inicio">Inicio</a></li>
           <li><a href="#sobre-nosotros">Sobre nosotros</a></li>
           <li><a href="#servicios">Servicios</a></li>
+          <li><a href="#proyectos">Proyectos</a></li>
           <li><a href="#faq">Preguntas frecuentes</a></li>
           <li><a href="#contacto">Contacto</a></li>
         </ul>
@@ -588,20 +647,21 @@
       <div class="site-footer__col">
         <h3>Contacto</h3>
         <ul>
-          <li><a href="tel:+34000000000">[TELÉFONO]</a></li>
-          <li><a href="mailto:info@c-rotulus.example">[CORREO]</a></li>
-          <li><span>[DIRECCIÓN], [CIUDAD]</span></li>
+          <li><a href="tel:+34000000000" data-site="telefono">[TELÉFONO]</a></li>
+          <li><a href="mailto:info@c-rotulus.example" data-site="correo">[CORREO]</a></li>
+          <li><span data-site-direccion>[DIRECCIÓN], [CIUDAD]</span></li>
         </ul>
       </div>
 
       <div class="site-footer__col">
         <h3>Síguenos</h3>
-        <!-- Redes sociales: sustituye los # por tus URL reales -->
+        <!-- Redes sociales: los enlaces se toman del panel de administración.
+             Los valores entre corchetes son marcadores de ejemplo. -->
         <ul class="social" aria-label="Redes sociales de C-ROTULUS">
-          <li><a href="[URL_FACEBOOK]" aria-label="Facebook" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M13 22v-8h3l1-4h-4V8c0-1 .3-1.6 1.7-1.6H17V3.1C16.4 3 15.4 3 14.3 3 11.8 3 10 4.4 10 7.3V10H7v4h3v8h3Z"/></svg></a></li>
-          <li><a href="[URL_INSTAGRAM]" aria-label="Instagram" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 7.5A4.5 4.5 0 1 0 12 16.5 4.5 4.5 0 0 0 12 7.5Zm0 7.4a2.9 2.9 0 1 1 0-5.8 2.9 2.9 0 0 1 0 5.8Zm4.7-7.6a1.05 1.05 0 1 0 0 2.1 1.05 1.05 0 0 0 0-2.1ZM12 4.6c2.4 0 2.7 0 3.6.1.9 0 1.4.2 1.7.3.4.2.7.4 1 .7.3.3.5.6.7 1 .1.3.3.8.3 1.7 0 .9.1 1.2.1 3.6s0 2.7-.1 3.6c0 .9-.2 1.4-.3 1.7-.2.4-.4.7-.7 1-.3.3-.6.5-1 .7-.3.1-.8.3-1.7.3-.9 0-1.2.1-3.6.1s-2.7 0-3.6-.1c-.9 0-1.4-.2-1.7-.3-.4-.2-.7-.4-1-.7-.3-.3-.5-.6-.7-1-.1-.3-.3-.8-.3-1.7 0-.9-.1-1.2-.1-3.6s0-2.7.1-3.6c0-.9.2-1.4.3-1.7.2-.4.4-.7.7-1 .3-.3.6-.5 1-.7.3-.1.8-.3 1.7-.3.9 0 1.2-.1 3.6-.1Zm0-1.6c-2.5 0-2.8 0-3.7.1-1 0-1.6.2-2.2.4-.6.2-1.1.5-1.6 1-.5.5-.8 1-1 1.6-.2.6-.4 1.2-.4 2.2 0 .9-.1 1.2-.1 3.7s0 2.8.1 3.7c0 1 .2 1.6.4 2.2.2.6.5 1.1 1 1.6.5.5 1 .8 1.6 1 .6.2 1.2.4 2.2.4.9 0 1.2.1 3.7.1s2.8 0 3.7-.1c1 0 1.6-.2 2.2-.4.6-.2 1.1-.5 1.6-1 .5-.5.8-1 1-1.6.2-.6.4-1.2.4-2.2 0-.9.1-1.2.1-3.7s0-2.8-.1-3.7c0-1-.2-1.6-.4-2.2-.2-.6-.5-1.1-1-1.6-.5-.5-1-.8-1.6-1-.6-.2-1.2-.4-2.2-.4-.9 0-1.2-.1-3.7-.1Z"/></svg></a></li>
-          <li><a href="[URL_LINKEDIN]" aria-label="LinkedIn" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0 0-5ZM3 9h4v12H3zM10 9h3.8v1.7h.1c.5-.9 1.8-1.9 3.6-1.9 3.9 0 4.6 2.4 4.6 5.6V21h-4v-5.3c0-1.3 0-2.9-1.8-2.9s-2 1.4-2 2.8V21h-4z"/></svg></a></li>
-          <li><a href="[URL_GITHUB]" aria-label="GitHub" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.6.4-1.1.6-1.3-2.2-.2-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.6 0 0 .8-.3 2.8 1a9.6 9.6 0 0 1 5 0c2-1.3 2.8-1 2.8-1 .5 1.3.2 2.3.1 2.6.6.7 1 1.6 1 2.7 0 3.9-2.4 4.8-4.6 5 .4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10 10 0 0 0 12 2Z"/></svg></a></li>
+          <li><a href="[URL_FACEBOOK]" data-social="facebook" aria-label="Facebook" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M13 22v-8h3l1-4h-4V8c0-1 .3-1.6 1.7-1.6H17V3.1C16.4 3 15.4 3 14.3 3 11.8 3 10 4.4 10 7.3V10H7v4h3v8h3Z"/></svg></a></li>
+          <li><a href="[URL_INSTAGRAM]" data-social="instagram" aria-label="Instagram" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 7.5A4.5 4.5 0 1 0 12 16.5 4.5 4.5 0 0 0 12 7.5Zm0 7.4a2.9 2.9 0 1 1 0-5.8 2.9 2.9 0 0 1 0 5.8Zm4.7-7.6a1.05 1.05 0 1 0 0 2.1 1.05 1.05 0 0 0 0-2.1ZM12 4.6c2.4 0 2.7 0 3.6.1.9 0 1.4.2 1.7.3.4.2.7.4 1 .7.3.3.5.6.7 1 .1.3.3.8.3 1.7 0 .9.1 1.2.1 3.6s0 2.7-.1 3.6c0 .9-.2 1.4-.3 1.7-.2.4-.4.7-.7 1-.3.3-.6.5-1 .7-.3.1-.8.3-1.7.3-.9 0-1.2.1-3.6.1s-2.7 0-3.6-.1c-.9 0-1.4-.2-1.7-.3-.4-.2-.7-.4-1-.7-.3-.3-.5-.6-.7-1-.1-.3-.3-.8-.3-1.7 0-.9-.1-1.2-.1-3.6s0-2.7.1-3.6c0-.9.2-1.4.3-1.7.2-.4.4-.7.7-1 .3-.3.6-.5 1-.7.3-.1.8-.3 1.7-.3.9 0 1.2-.1 3.6-.1Zm0-1.6c-2.5 0-2.8 0-3.7.1-1 0-1.6.2-2.2.4-.6.2-1.1.5-1.6 1-.5.5-.8 1-1 1.6-.2.6-.4 1.2-.4 2.2 0 .9-.1 1.2-.1 3.7s0 2.8.1 3.7c0 1 .2 1.6.4 2.2.2.6.5 1.1 1 1.6.5.5 1 .8 1.6 1 .6.2 1.2.4 2.2.4.9 0 1.2.1 3.7.1s2.8 0 3.7-.1c1 0 1.6-.2 2.2-.4.6-.2 1.1-.5 1.6-1 .5-.5.8-1 1-1.6.2-.6.4-1.2.4-2.2 0-.9.1-1.2.1-3.7s0-2.8-.1-3.7c0-1-.2-1.6-.4-2.2-.2-.6-.5-1.1-1-1.6-.5-.5-1-.8-1.6-1-.6-.2-1.2-.4-2.2-.4-.9 0-1.2-.1-3.7-.1Z"/></svg></a></li>
+          <li><a href="[URL_LINKEDIN]" data-social="linkedin" aria-label="LinkedIn" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0 0-5ZM3 9h4v12H3zM10 9h3.8v1.7h.1c.5-.9 1.8-1.9 3.6-1.9 3.9 0 4.6 2.4 4.6 5.6V21h-4v-5.3c0-1.3 0-2.9-1.8-2.9s-2 1.4-2 2.8V21h-4z"/></svg></a></li>
+          <li><a href="[URL_GITHUB]" data-social="github" aria-label="GitHub" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.6.4-1.1.6-1.3-2.2-.2-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.6 0 0 .8-.3 2.8 1a9.6 9.6 0 0 1 5 0c2-1.3 2.8-1 2.8-1 .5 1.3.2 2.3.1 2.6.6.7 1 1.6 1 2.7 0 3.9-2.4 4.8-4.6 5 .4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10 10 0 0 0 12 2Z"/></svg></a></li>
         </ul>
       </div>
     </div>
@@ -624,6 +684,6 @@
   </button>
 
   <!-- ==================== SCRIPTS ==================== -->
-  <script src="js/main.js" defer></script>
+  <script src="js/main.js?v=20261013d" defer></script>
 </body>
 </html>

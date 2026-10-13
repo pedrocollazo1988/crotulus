@@ -22,13 +22,15 @@
    1. VARIABLES DE DISEÑO  (EDITA AQUÍ LOS COLORES DE MARCA)
    ========================================================================== */
 :root {
-  /* --- Paleta extraida del logo --- */
-  --color-primary:      #1E6BE6;   /* Azul principal (C-) */
-  --color-primary-dark: #0B3FA6;   /* Azul profundo */
-  --color-primary-soft: #EEF4FF;   /* Azul muy claro para fondos */
-  --color-accent:       #00B8D9;   /* Acento cian (nodos del circuito) */
-  --color-ink:          #2B3445;   /* Gris oscuro para textos */
-  --color-ink-soft:     #5B6B82;   /* Gris medio para textos secundarios */
+  /* --- Paleta de marca: anclada al AZUL real del logo (#005AA5) + turquesa ---
+     Cambia solo estos valores para recolorear todo el sitio de golpe. --- */
+  --color-primary:      #005AA5;   /* Azul del logo (color principal / C-) */
+  --color-primary-dark: #003F7D;   /* Azul profundo (degradados y hovers) */
+  --color-primary-soft: #EAF2FB;   /* Azul muy claro para fondos suaves */
+  --color-accent:       #00C2B8;   /* Turquesa (acentos y nodos del circuito) */
+  --color-ink:          #1F2A37;   /* Textos de cuerpo (contraste alto) */
+  --color-heading:      #7A7A7A;   /* Gris oscuro del logo: titulos grandes */
+  --color-ink-soft:     #6F6F6F;   /* Gris medio para textos secundarios */
   --color-line:         #DFE6F0;   /* Lineas y bordes suaves */
   --color-bg:           #FFFFFF;   /* Fondo base */
   --color-bg-alt:       #F4F7FC;   /* Fondo de secciones alternas */
@@ -47,8 +49,8 @@
   --radius: 16px;
   --radius-sm: 10px;
   --radius-pill: 999px;
-  --shadow-sm: 0 4px 14px rgba(20, 45, 90, .07);
-  --shadow-md: 0 12px 32px rgba(20, 45, 90, .10);
+  --shadow-sm: 0 4px 14px rgba(6, 40, 70, .07);
+  --shadow-md: 0 12px 32px rgba(6, 40, 70, .10);
   --header-h: 72px;
   --transition: .28s cubic-bezier(.2, .7, .3, 1);
 }
@@ -83,7 +85,7 @@ button { font: inherit; cursor: pointer; }
 h1, h2, h3, h4 {
   font-family: var(--font-head);
   line-height: 1.2;
-  color: var(--color-ink);
+  color: var(--color-heading);
   margin: 0 0 .5em;
 }
 
@@ -131,9 +133,9 @@ p { margin: 0 0 1rem; }
   pointer-events: none;
   opacity: .5;
   background-image:
-    radial-gradient(circle at 20% 30%, rgba(30,107,230,.06) 0 2px, transparent 3px),
-    radial-gradient(circle at 70% 60%, rgba(0,184,217,.08) 0 2px, transparent 3px),
-    radial-gradient(circle at 45% 85%, rgba(30,107,230,.05) 0 2px, transparent 3px);
+    radial-gradient(circle at 20% 30%, rgba(0,90,165,.06) 0 2px, transparent 3px),
+    radial-gradient(circle at 70% 60%, rgba(0,194,184,.08) 0 2px, transparent 3px),
+    radial-gradient(circle at 45% 85%, rgba(0,90,165,.05) 0 2px, transparent 3px);
   background-size: 260px 260px, 320px 320px, 400px 400px;
 }
 .section--alt { position: relative; }
@@ -211,7 +213,7 @@ p { margin: 0 0 1rem; }
   gap: 1rem;
 }
 .brand { display: inline-flex; align-items: center; }
-.brand__img { width: 150px; height: auto; }
+.brand__img { width: auto; height: 46px; }
 
 /* Botón hamburguesa */
 .nav-toggle {
@@ -277,8 +279,8 @@ p { margin: 0 0 1rem; }
   position: relative;
   padding: 3rem 0 3.5rem;
   background:
-    radial-gradient(900px 420px at 85% -10%, rgba(0,184,217,.12), transparent 60%),
-    radial-gradient(700px 380px at -10% 20%, rgba(30,107,230,.10), transparent 60%),
+    radial-gradient(900px 420px at 85% -10%, rgba(0,194,184,.12), transparent 60%),
+    radial-gradient(700px 380px at -10% 20%, rgba(0,90,165,.10), transparent 60%),
     var(--color-bg);
   overflow: hidden;
 }
@@ -355,7 +357,7 @@ p { margin: 0 0 1rem; }
   flex-direction: column;
   transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
 }
-.card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: rgba(30,107,230,.35); }
+.card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: rgba(0,90,165,.35); }
 .card__icon {
   width: 52px; height: 52px;
   display: grid; place-items: center;
@@ -553,7 +555,7 @@ p { margin: 0 0 1rem; }
 .field textarea:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(30,107,230,.18);
+  box-shadow: 0 0 0 3px rgba(0,90,165,.18);
 }
 .field input[aria-invalid="true"],
 .field select[aria-invalid="true"],
@@ -595,18 +597,20 @@ p { margin: 0 0 1rem; }
 .contact-map { margin-top: 1rem; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); }
 .contact-map iframe,
 .contact-map img { width: 100%; display: block; }
+.contact-map__link { margin: .6rem 0 0; font-size: .9rem; }
+.contact-map__link a { color: var(--azul, #005AA5); font-weight: 600; }
 
 /* ==========================================================================
    11. PIE DE PÁGINA
    ========================================================================== */
 .site-footer {
-  background: #0E1A2E;
+  background: #08243D;
   color: #C7D3E5;
   padding: 3rem 0 1.5rem;
   margin-top: 2rem;
 }
 .site-footer__grid { display: grid; gap: 2rem; }
-.site-footer__brand img { width: 160px; height: auto; filter: brightness(0) invert(1); margin-bottom: .8rem; }
+.site-footer__brand img { width: 160px; height: auto; margin-bottom: .8rem; }
 .site-footer__brand p { font-size: .92rem; max-width: 34ch; }
 .site-footer__col h3 {
   color: #fff;
@@ -682,20 +686,63 @@ p { margin: 0 0 1rem; }
 
 /* ==========================================================================
    13. ANIMACIONES DE APARICION AL HACER SCROLL
+   Por defecto el contenido es VISIBLE. Solo se oculta (para animarlo) cuando
+   el JS activa la clase .has-reveal-anim en <html>. Asi, si el JS falla o el
+   navegador sirve una version antigua en cache, las secciones se ven igual.
    ========================================================================== */
-.reveal {
+.reveal { opacity: 1; transform: none; }
+html.has-reveal-anim .reveal {
   opacity: 0;
   transform: translateY(22px);
   transition: opacity .6s ease, transform .6s ease;
   will-change: opacity, transform;
 }
-.reveal.is-visible { opacity: 1; transform: none; }
+html.has-reveal-anim .reveal.is-visible { opacity: 1; transform: none; }
 /* Retardo escalonado para grupos */
-.cards .reveal.is-visible:nth-child(2) { transition-delay: .06s; }
-.cards .reveal.is-visible:nth-child(3) { transition-delay: .12s; }
-.cards .reveal.is-visible:nth-child(4) { transition-delay: .18s; }
-.cards .reveal.is-visible:nth-child(5) { transition-delay: .24s; }
-.cards .reveal.is-visible:nth-child(6) { transition-delay: .30s; }
+html.has-reveal-anim .cards .reveal.is-visible:nth-child(2) { transition-delay: .06s; }
+html.has-reveal-anim .cards .reveal.is-visible:nth-child(3) { transition-delay: .12s; }
+html.has-reveal-anim .cards .reveal.is-visible:nth-child(4) { transition-delay: .18s; }
+html.has-reveal-anim .cards .reveal.is-visible:nth-child(5) { transition-delay: .24s; }
+html.has-reveal-anim .cards .reveal.is-visible:nth-child(6) { transition-delay: .30s; }
+
+/* ==========================================================================
+   13b. PROYECTOS (tarjetas con imagen y etiqueta)
+   ========================================================================== */
+.projects { display: grid; gap: 1.25rem; }
+.project {
+  background: var(--color-white);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+.project:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: rgba(0,90,165,.35); }
+.project__media { aspect-ratio: 16 / 10; background: var(--color-primary-soft); overflow: hidden; }
+.project__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.project__body { padding: 1.25rem; display: flex; flex-direction: column; flex: 1; }
+.project__tag {
+  align-self: flex-start;
+  font-family: var(--font-head);
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+  border-radius: 999px;
+  padding: .25rem .7rem;
+  margin-bottom: .6rem;
+}
+.project__title { font-size: 1.12rem; margin-bottom: .35rem; }
+.project__text { color: var(--color-ink-soft); font-size: .95rem; margin-bottom: 1rem; }
+.project__link { margin-top: auto; font-weight: 600; color: var(--color-primary); }
+.project__link:hover { text-decoration: underline; }
+.projects .reveal.is-visible:nth-child(2) { transition-delay: .06s; }
+.projects .reveal.is-visible:nth-child(3) { transition-delay: .12s; }
+
 
 /* ==========================================================================
    14. RESPONSIVE (mobile-first: mejoras a partir de tablet y escritorio)
@@ -703,6 +750,7 @@ p { margin: 0 0 1rem; }
 @media (min-width: 600px) {
   .stats { grid-template-columns: repeat(4, 1fr); }
   .cards { grid-template-columns: repeat(2, 1fr); }
+  .projects { grid-template-columns: repeat(2, 1fr); }
   .steps { grid-template-columns: repeat(2, 1fr); }
   .mv-grid { grid-template-columns: repeat(2, 1fr); }
 }
@@ -713,10 +761,11 @@ p { margin: 0 0 1rem; }
   .hero__grid { grid-template-columns: 1.05fr .95fr; align-items: center; gap: 3rem; }
   .about__grid { grid-template-columns: .9fr 1.1fr; align-items: start; gap: 3rem; }
   .cards { grid-template-columns: repeat(3, 1fr); }
+  .projects { grid-template-columns: repeat(3, 1fr); }
   .steps { grid-template-columns: repeat(4, 1fr); }
   .contact__grid { grid-template-columns: 1.15fr .85fr; gap: 2.5rem; }
   .site-footer__grid { grid-template-columns: 1.4fr 1fr 1fr 1fr; }
-  .brand__img { width: 168px; }
+  .brand__img { height: 40px; }
 
   /* Navegación horizontal en escritorio */
   .nav-toggle { display: none; }

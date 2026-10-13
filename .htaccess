@@ -1,0 +1,55 @@
+# ============================================================================
+#  C-ROTULUS · Configuración de Apache (hosting compartido)
+#  Sube todo el contenido de este proyecto a public_html.
+# ============================================================================
+
+# --- Página de inicio ---
+DirectoryIndex index.html
+
+# --- Compresión para una carga más rápida ---
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml application/json application/javascript image/svg+xml
+</IfModule>
+
+# --- Caché del navegador ---
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType application/javascript "access plus 1 month"
+  ExpiresByType image/svg+xml "access plus 1 month"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType image/webp "access plus 1 month"
+  ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
+# --- Cabeceras de seguridad ---
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+  # Descomenta cuando tengas HTTPS activo:
+  # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
+
+# --- Proteje archivos sensibles ---
+<FilesMatch "(^\.|\.(sqlite|sqlite-journal|sqlite-wal|log|md)$|^config\.local\.php$)">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# --- Bloquea el acceso directo a las carpetas de backend ---
+RedirectMatch 404 ^/app(/|$)
+
+# --- HTTPS obligatorio (descomenta al activar el certificado SSL) ---
+# <IfModule mod_rewrite.c>
+#   RewriteEngine On
+#   RewriteCond %{HTTPS} !=on
+#   RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+# </IfModule>

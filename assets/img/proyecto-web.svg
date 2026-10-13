@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Ilustración: desarrollo web y tienda online">
+  <defs>
+    <linearGradient id="bgW" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#EAF2FB"/>
+      <stop offset="1" stop-color="#F4F9FE"/>
+    </linearGradient>
+    <linearGradient id="barW" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#005AA5"/>
+      <stop offset="1" stop-color="#00C2B8"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="500" fill="url(#bgW)"/>
+  <!-- nodos de fondo -->
+  <g stroke="#CFE4F7" stroke-width="2" fill="none" opacity=".7">
+    <path d="M60 440 L140 400 L240 430 L340 390"/>
+    <path d="M620 60 L700 100 L760 70"/>
+  </g>
+  <g fill="#A9D2F0" opacity=".8">
+    <circle cx="60" cy="440" r="5"/><circle cx="140" cy="400" r="5"/><circle cx="240" cy="430" r="5"/>
+    <circle cx="340" cy="390" r="5"/><circle cx="620" cy="60" r="5"/><circle cx="700" cy="100" r="5"/>
+  </g>
+
+  <!-- ventana de navegador -->
+  <rect x="130" y="90" width="540" height="330" rx="18" fill="#FFFFFF" stroke="#DFE6F0" stroke-width="2"/>
+  <rect x="130" y="90" width="540" height="52" rx="18" fill="url(#barW)"/>
+  <rect x="130" y="124" width="540" height="18" fill="url(#barW)"/>
+  <circle cx="164" cy="116" r="6" fill="#FFFFFF" opacity=".85"/>
+  <circle cx="186" cy="116" r="6" fill="#FFFFFF" opacity=".6"/>
+  <circle cx="208" cy="116" r="6" fill="#FFFFFF" opacity=".4"/>
+  <rect x="250" y="106" width="300" height="20" rx="10" fill="#FFFFFF" opacity=".35"/>
+
+  <!-- tarjetas de producto -->
+  <g>
+    <rect x="165" y="175" width="150" height="150" rx="14" fill="#EAF2FB" stroke="#CFE4F7" stroke-width="2"/>
+    <rect x="185" y="195" width="110" height="80" rx="10" fill="#A9D2F0"/>
+    <path d="M215 255 L230 235 L245 250 L258 230 L275 255 Z" fill="#005AA5" opacity=".55"/>
+    <circle cx="212" cy="212" r="9" fill="#00C2B8"/>
+    <rect x="185" y="288" width="80" height="10" rx="5" fill="#7A7A7A" opacity=".6"/>
+    <rect x="185" y="304" width="50" height="10" rx="5" fill="#00C2B8"/>
+
+    <rect x="330" y="175" width="150" height="150" rx="14" fill="#EAF2FB" stroke="#CFE4F7" stroke-width="2"/>
+    <rect x="350" y="195" width="110" height="80" rx="10" fill="#A9D2F0"/>
+    <path d="M380 255 L395 235 L410 250 L423 230 L440 255 Z" fill="#005AA5" opacity=".55"/>
+    <circle cx="377" cy="212" r="9" fill="#00C2B8"/>
+    <rect x="350" y="288" width="80" height="10" rx="5" fill="#7A7A7A" opacity=".6"/>
+    <rect x="350" y="304" width="50" height="10" rx="5" fill="#00C2B8"/>
+
+    <rect x="495" y="175" width="150" height="150" rx="14" fill="#EAF2FB" stroke="#CFE4F7" stroke-width="2"/>
+    <rect x="515" y="195" width="110" height="80" rx="10" fill="#A9D2F0"/>
+    <path d="M545 255 L560 235 L575 250 L588 230 L605 255 Z" fill="#005AA5" opacity=".55"/>
+    <circle cx="542" cy="212" r="9" fill="#00C2B8"/>
+    <rect x="515" y="288" width="80" height="10" rx="5" fill="#7A7A7A" opacity=".6"/>
+    <rect x="515" y="304" width="50" height="10" rx="5" fill="#00C2B8"/>
+  </g>
+
+  <!-- boton / carrito -->
+  <rect x="165" y="345" width="120" height="34" rx="17" fill="#005AA5"/>
+  <rect x="185" y="358" width="80" height="8" rx="4" fill="#FFFFFF" opacity=".9"/>
+
+  <!-- carrito flotante -->
+  <g transform="translate(560 330)">
+    <circle cx="60" cy="60" r="58" fill="#00C2B8"/>
+    <circle cx="60" cy="60" r="58" fill="none" stroke="#FFFFFF" stroke-width="3" opacity=".4"/>
+    <path d="M32 40 h14 l8 40 h34 l8 -28 h-46" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="58" cy="92" r="6" fill="#FFFFFF"/>
+    <circle cx="84" cy="92" r="6" fill="#FFFFFF"/>
+  </g>
+</svg>

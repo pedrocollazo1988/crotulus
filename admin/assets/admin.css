@@ -1,0 +1,118 @@
+/* ==========================================================================
+   PANEL DE ADMINISTRACION · C-ROTULUS
+   ========================================================================== */
+
+:root {
+  --azul: #005AA5;
+  --azul-oscuro: #003F7D;
+  --tinta: #1F2A37;
+  --gris: #5B6B82;
+  --linea: #DFE6F0;
+  --fondo: #F4F7FC;
+  --ok: #067647;
+  --error: #B42318;
+  --aviso: #B54708;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  background: var(--fondo);
+  color: var(--tinta);
+  line-height: 1.55;
+}
+
+a { color: var(--azul); }
+
+/* --- Barra superior ------------------------------------------------------ */
+.topbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--azul-oscuro);
+  color: #fff;
+  padding: 0.85rem 1.25rem;
+}
+.brand { color: #fff; font-weight: 700; text-decoration: none; }
+.topnav { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+.topnav a { color: #dbe9f7; text-decoration: none; font-weight: 500; }
+.topnav a:hover { color: #fff; text-decoration: underline; }
+.who { color: #9cc3e6; font-size: 0.9rem; }
+.inline { display: inline; margin: 0; }
+.btn-link {
+  background: none; border: 0; color: #dbe9f7; cursor: pointer;
+  font: inherit; padding: 0; text-decoration: underline;
+}
+.btn-link:hover { color: #fff; }
+
+/* --- Contenedor ---------------------------------------------------------- */
+.wrap { max-width: 1080px; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
+.foot { text-align: center; color: var(--gris); font-size: 0.85rem; padding: 1.5rem; }
+
+h1 { font-size: 1.5rem; margin: 0 0 1rem; }
+h2 { font-size: 1.2rem; margin: 1.75rem 0 0.75rem; }
+
+/* --- Tarjetas ------------------------------------------------------------ */
+.cards { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.stat { background: #fff; border: 1px solid var(--linea); border-radius: 14px; padding: 1.1rem 1.25rem; }
+.stat__num { font-size: 1.9rem; font-weight: 700; color: var(--azul); }
+.stat__label { color: var(--gris); font-size: 0.9rem; }
+
+/* --- Tablas -------------------------------------------------------------- */
+.table-wrap { overflow-x: auto; background: #fff; border: 1px solid var(--linea); border-radius: 14px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--linea); font-size: 0.94rem; vertical-align: top; }
+th { background: #f8fbff; color: var(--gris); font-weight: 600; }
+tr:last-child td { border-bottom: 0; }
+
+/* --- Formularios --------------------------------------------------------- */
+form { background: #fff; border: 1px solid var(--linea); border-radius: 14px; padding: 1.25rem; }
+.field { margin-bottom: 1rem; }
+label { display: block; font-weight: 600; margin-bottom: 0.35rem; font-size: 0.92rem; }
+input[type="text"], input[type="email"], input[type="password"], select, textarea {
+  width: 100%; padding: 0.65rem 0.75rem; border: 1px solid var(--linea);
+  border-radius: 10px; font: inherit; background: #fff;
+}
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--azul); border-color: var(--azul); }
+.grid-2 { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+
+.btn {
+  display: inline-block; background: var(--azul); color: #fff; border: 0;
+  padding: 0.7rem 1.2rem; border-radius: 10px; font: inherit; font-weight: 600;
+  cursor: pointer; text-decoration: none;
+}
+.btn:hover { background: var(--azul-oscuro); }
+.btn--ghost { background: #fff; color: var(--azul); border: 1px solid var(--azul); }
+.btn--danger { background: var(--error); }
+.btn--sm { padding: 0.35rem 0.7rem; font-size: 0.85rem; }
+
+/* --- Mensajes ------------------------------------------------------------ */
+.alert { border-radius: 10px; padding: 0.8rem 1rem; margin: 0 0 1rem; font-size: 0.94rem; }
+.alert--ok { background: #ecfdf3; color: var(--ok); border: 1px solid #abefc6; }
+.alert--error { background: #fef3f2; color: var(--error); border: 1px solid #fecdca; }
+.alert--info { background: #eff8ff; color: var(--azul-oscuro); border: 1px solid #b2ddff; }
+
+.badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 999px; font-size: 0.78rem; font-weight: 600; }
+.badge--nuevo { background: #eff8ff; color: var(--azul-oscuro); }
+.badge--leido { background: #f2f4f7; color: var(--gris); }
+.badge--archivado { background: #ecfdf3; color: var(--ok); }
+
+.muted { color: var(--gris); font-size: 0.9rem; }
+.actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+/* --- Login --------------------------------------------------------------- */
+.auth { max-width: 420px; margin: 4rem auto; }
+.auth form { box-shadow: 0 10px 40px rgba(8,36,61,.08); }
+.auth h1 { text-align: center; }
+.auth .links { text-align: center; margin-top: 1rem; font-size: 0.9rem; }
+.sep { text-align: center; color: var(--gris); margin: 1rem 0; font-size: 0.85rem; }
+.btn-google {
+  display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+  width: 100%; border: 1px solid var(--linea); background: #fff; color: var(--tinta);
+  padding: 0.7rem; border-radius: 10px; font-weight: 600; text-decoration: none;
+}
+.btn-google:hover { background: #f8fbff; }

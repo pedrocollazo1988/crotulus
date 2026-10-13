@@ -26,14 +26,20 @@
      ========================================================================== */
 
   // >>> ENDPOINT DEL FORMULARIO <<<
-  // Crea una cuenta gratis en https://formspree.io, obtiene tu ID y sustituye
-  // "TU_ID" por el que te den. Debe coincidir con el atributo action del <form>.
-  var FORM_ENDPOINT = "https://formspree.io/f/TU_ID";
+  // Por defecto usamos el backend propio incluido en este proyecto (PHP), que
+  // guarda los mensajes en la base de datos y aplica validación y seguridad.
+  // Si prefieres un servicio externo, pon aquí su URL, por ejemplo:
+  //     var FORM_ENDPOINT = "https://formspree.io/f/TU_ID";
+  // (en ese caso recuerda cambiar también el "action" del <form> en index.html)
+  var FORM_ENDPOINT = "api/contact.php";
 
-  // Datos de contacto (formato internacional, sin espacios ni simbolos):
+  // Base de la API del sitio (datos editables: teléfono, correo, mapa, redes).
+  var API_BASE = "api/";
+
+  // Datos de contacto de reserva (se usan si la API no responde).
   var CONTACTO = {
     teléfono: "+34000000000",     // [TELÉFONO]
-    whatsapp: "34000000000",      // [WHATSAPP] (solo digitos, con prefijo pais)
+    whatsapp: "34000000000",      // [WHATSAPP] (solo dígitos, con prefijo país)
     correo: "info@c-rotulus.example", // [CORREO]
     empresa: "C-ROTULUS S.U.R.L."
   };
@@ -60,8 +66,160 @@
     setupCarousel();
     setupBackTop();
     setupForm();
-    setupWhatsAppLinks();
+    setupWhatsAppLinks();   // valores por defecto (por si la API no responde)
+    loadSiteData();         // datos reales desde el backend (si está disponible)
+    loadContent();          // contenido editable (servicios, proyectos, faq...)
     $("#year") && ($("#year").textContent = new Date().getFullYear());
+  }
+
+  /* ==========================================================================
+     0.c CONTENIDO EDITABLE DESDE LA BASE DE DATOS
+     --------------------------------------------------------------------------
+     Si en la base de datos hay elementos de un tipo (servicio, proyecto,
+     testimonio, faq, proceso), se renderizan aquí. Si no hay ninguno, se
+     mantiene el contenido escrito en el HTML (así la web nunca queda vacía).
+     ========================================================================== */
+  function loadContent() {
+    var contenedores = $$("[data-content-list]");
+    if (!window.fetch || !contenedores.length) return;
+
+    contenedores.forEach(function (caja) {
+      var tipo = caja.getAttribute("data-content-list");
+      fetch(API_BASE + "index.php?resource=content&type=" + encodeURIComponent(tipo), { headers: { "Accept": "application/json" } })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (data) {
+          if (!data || !data.ok || !data.items || !data.items.length) return; // usamos el HTML
+          renderizarTipo(tipo, caja, data.items);
+        })
+        .catch(function () { /* sin datos: se queda el HTML */ });
+    });
+  }
+
+  function renderizarTipo(tipo, caja, items) {
+    if (tipo === "servicio")  caja.innerHTML = items.map(itemServicio).join("");
+    if (tipo === "proyecto")  caja.innerHTML = items.map(itemProyecto).join("");
+    if (tipo === "faq")       caja.innerHTML = items.map(itemFaq).join("");
+    if (tipo === "proceso")   caja.innerHTML = items.map(itemProceso).join("");
+    if (tipo === "testimonio") {
+      caja.innerHTML = items.map(itemTestimonio).join("");
+      var dots = document.querySelector("#testimonials .carousel-dots");
+      if (dots) dots.innerHTML = "";      // evita puntos duplicados
+      if (typeof setupCarousel === "function") setupCarousel(); // reinicia el carrusel
+    }
+    if (tipo === "faq" && typeof setupAccordion === "function") setupAccordion();
+    if (tipo === "servicio" || tipo === "proyecto") setupReveal(); // reobserva animaciones
+  }
+
+  // Escapa texto antes de insertarlo (defensa contra XSS).
+  function esc(v) {
+    return String(v == null ? "" : v)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+  function iniciales(nombre) {
+    return esc(String(nombre || "?").trim().split(/\s+/).slice(0, 2).map(function (p) { return p[0]; }).join("").toUpperCase());
+  }
+  var ICONO_SVG = '<svg viewBox="0 0 24 24" width="26" height="26"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M12 3l7 3v5c0 4.4-3 8-7 10-4-2-7-5.6-7-10V6l7-3Z"/></svg>';
+
+  function itemServicio(it) {
+    return '<article class="card"><div class="card__icon" aria-hidden="true">' + ICONO_SVG + '</div>'
+      + '<h3 class="card__title">' + esc(it.title) + '</h3>'
+      + '<p class="card__text">' + esc(it.body || it.subtitle) + '</p>'
+      + '<a class="btn btn--ghost" href="#contacto" data-service="' + esc(it.title) + '">Consultar</a></article>';
+  }
+  function itemProyecto(it) {
+    var meta = it.meta || {};
+    var img  = meta.image ? esc(meta.image) : "assets/img/proyecto-web.svg";
+    return '<article class="project"><div class="project__media"><img src="' + img + '" alt="' + esc(it.title) + '" loading="lazy" decoding="async"></div>'
+      + '<div class="project__body"><span class="project__tag">' + esc(it.subtitle) + '</span>'
+      + '<h3 class="project__title">' + esc(it.title) + '</h3>'
+      + '<p class="project__text">' + esc(it.body) + '</p>'
+      + '<a class="project__link" href="#contacto">Ver caso &rarr;</a></div></article>';
+  }
+  function itemTestimonio(it) {
+    var meta = it.meta || {};
+    return '<li class="testimonial"><blockquote class="testimonial__quote"><p>"' + esc(it.body) + '"</p></blockquote>'
+      + '<footer class="testimonial__author"><span class="testimonial__avatar" aria-hidden="true">' + iniciales(it.title) + '</span>'
+      + '<cite><strong>' + esc(it.title) + '</strong><span>' + esc(it.subtitle || meta.cargo || "") + '</span></cite></footer></li>';
+  }
+  function itemFaq(it) {
+    var id = "faq-" + esc(it.id);
+    return '<div class="accordion__item"><h3 class="accordion__heading">'
+      + '<button class="accordion__trigger" type="button" aria-expanded="false" aria-controls="' + id + '">' + esc(it.title)
+      + '<span class="accordion__icon" aria-hidden="true"></span></button></h3>'
+      + '<div class="accordion__panel" id="' + id + '" role="region"><p>' + esc(it.body) + '</p></div></div>';
+  }
+  function itemProceso(it, idx) {
+    return '<li class="step"><span class="step__num" aria-hidden="true">' + (idx + 1) + '</span>'
+      + '<h3 class="step__title">' + esc(it.title) + '</h3>'
+      + '<p class="step__text">' + esc(it.body || it.subtitle) + '</p></li>';
+  }
+
+  /* ==========================================================================
+     0.b DATOS DEL SITIO DESDE LA API (PHP + BASE DE DATOS)
+     --------------------------------------------------------------------------
+     Si el backend responde, sustituye teléfono, correo, dirección, redes y el
+     mapa por los valores guardados en el panel. Si falla, no pasa nada: la web
+     se queda con los valores escritos en index.html.
+     ========================================================================== */
+  function loadSiteData() {
+    if (!window.fetch) return;
+    fetch(API_BASE + "index.php?resource=settings", { headers: { "Accept": "application/json" } })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (data) {
+        if (!data || !data.ok || !data.settings) return;
+        aplicarAjustes(data.settings);
+      })
+      .catch(function () { /* sin backend: seguimos con los valores por defecto */ });
+  }
+
+  function aplicarAjustes(s) {
+    var tel = s.telefono || "", correo = s.correo || "";
+    var direccion = ((s.direccion || "") + (s.ciudad ? ", " + s.ciudad : "")).trim();
+
+    // Enlaces tel:/mailto: de toda la página
+    $$('a[href^="tel:"]').forEach(function (a) {
+      if (tel && tel.indexOf("[") === -1) a.setAttribute("href", "tel:" + tel.replace(/[^\d+]/g, ""));
+    });
+    $$('a[href^="mailto:"]').forEach(function (a) {
+      if (correo && correo.indexOf("[") === -1) a.setAttribute("href", "mailto:" + correo);
+    });
+
+    // Textos marcados con data-site="clave"
+    $$("[data-site]").forEach(function (el) {
+      var key = el.getAttribute("data-site");
+      if (s[key] !== undefined && String(s[key]).trim() !== "") el.textContent = s[key];
+    });
+    if (direccion) {
+      $$("[data-site-direccion]").forEach(function (el) { el.textContent = direccion; });
+    }
+
+    // Redes sociales
+    ["facebook", "instagram", "linkedin", "github"].forEach(function (red) {
+      var valor = s[red] || "";
+      if (!valor || valor.indexOf("[") !== -1) return;
+      $$('[data-social="' + red + '"]').forEach(function (a) { a.setAttribute("href", valor); });
+    });
+
+    // Mapa: si hay URL de embed configurada, sustituye la imagen por el iframe
+    if (s.mapa_embed && /^https:\/\//.test(s.mapa_embed)) {
+      var cont = $("#contactMap");
+      if (cont) {
+        cont.innerHTML = '<iframe src="' + s.mapa_embed + '" width="100%" height="360" style="border:0" '
+          + 'loading="lazy" title="Mapa de ubicación de C-ROTULUS" '
+          + 'referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>';
+      }
+    }
+    // Enlace «Cómo llegar»
+    if (s.google_maps_url && /^https:\/\//.test(s.google_maps_url)) {
+      $$("[data-maps-link]").forEach(function (a) { a.setAttribute("href", s.google_maps_url); });
+    }
+
+    // Actualiza WhatsApp con el número real y vuelve a aplicar los enlaces
+    if (s.whatsapp) CONTACTO.whatsapp = String(s.whatsapp).replace(/\D/g, "");
+    if (s.correo) CONTACTO.correo = s.correo;
+    if (s.telefono) CONTACTO.teléfono = s.telefono;
+    setupWhatsAppLinks();
   }
 
   /* ==========================================================================
@@ -154,26 +312,53 @@
      3. ANIMACIONES DE APARICION AL HACER SCROLL
      ========================================================================== */
   function setupReveal() {
-    var items = $$(".section__head, .card, .step, .mv-card, .stat, .about__media, .about__body, .testimonial, .accordion, .contact-form, .contact-info");
+    var items = $$(".section__head, .card, .project, .step, .mv-card, .stat, .about__media, .about__body, .testimonial, .accordion, .contact-form, .contact-info");
     if (!items.length) return;
 
     items.forEach(function (el) { el.classList.add("reveal"); });
 
+    function reveal(el) { el.classList.add("is-visible"); }
+
     if (!("IntersectionObserver" in window) || prefersReduced) {
-      items.forEach(function (el) { el.classList.add("is-visible"); });
+      items.forEach(reveal);
       return;
     }
+
+    /* Activamos la animacion SOLO aqui: si este JS no se ejecuta (o es una
+       version antigua en cache), el CSS deja el contenido visible por defecto. */
+    document.documentElement.classList.add("has-reveal-anim");
 
     var observer = new IntersectionObserver(function (entries, obs) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
-          entry.target.classList.add("is-visible");
+          reveal(entry.target);
           obs.unobserve(entry.target);
         }
       });
     }, { rootMargin: "0px 0px -10% 0px", threshold: .12 });
 
     items.forEach(function (el) { observer.observe(el); });
+
+    /* Red de seguridad: nunca dejamos contenido oculto. Si el observer no
+       revela un elemento (al abrir la web directamente en un ancla, al usar
+       el teclado, o por cualquier fallo), lo mostramos igualmente. */
+    function revealInView() {
+      items.forEach(function (el) {
+        if (el.classList.contains("is-visible")) return;
+        var r = el.getBoundingClientRect();
+        if (r.top < (window.innerHeight || 0) + 100 && r.bottom > -100) reveal(el);
+      });
+    }
+    window.addEventListener("load", revealInView);
+    window.addEventListener("hashchange", function () { setTimeout(revealInView, 400); });
+    var ticking = false;
+    window.addEventListener("scroll", function () {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () { revealInView(); ticking = false; });
+    }, { passive: true });
+    setTimeout(revealInView, 400);
+    setTimeout(function () { items.forEach(reveal); }, 3000); // colchón final
   }
 
   /* ==========================================================================
@@ -322,9 +507,9 @@
     var reglas = {
       nombre:   { req: true, msg: "Escribe tu nombre." },
       correo:   { req: true, email: true, msg: "Escribe un correo válido." },
-      teléfono: { req: true, tel: true, msg: "Escribe un teléfono válido (min. 9 digitos)." },
+      teléfono: { req: true, tel: true, msg: "Escribe un teléfono válido (mín. 9 dígitos)." },
       servicio: { req: true, msg: "Selecciona un servicio." },
-      mensaje:  { req: true, min: 10, msg: "Cuentanos un poco mas (min. 10 caracteres)." }
+      mensaje:  { req: true, min: 10, msg: "Cuéntanos un poco más (mín. 10 caracteres)." }
     };
 
     function setError(input, msg) {
@@ -384,33 +569,76 @@
         return;
       }
 
-      // Envío al servicio externo (Formspree u otro con el mismo formato)
+      // Envío al endpoint (backend propio o servicio externo compatible)
       status.textContent = "Enviando...";
       status.className = "form-status";
 
-      // Si no se ha configurado el endpoint, avisamos en vez de fallar en silencio.
+      // Si es un servicio externo sin configurar, avisamos en vez de fallar en silencio.
       if (FORM_ENDPOINT.indexOf("TU_ID") !== -1) {
         status.textContent = "Formulario no configurado: sustituye TU_ID en js/main.js y en el action del formulario.";
         status.className = "form-status is-error";
         return;
       }
 
-      fetch(FORM_ENDPOINT, {
-        method: "POST",
-        headers: { "Accept": "application/json" },
-        body: new FormData(form)
+      enviarFormulario(form, status);
+    });
+  }
+
+  /* Envía el formulario al backend. Obtiene un token CSRF antes de enviar
+     (protección contra falsificación de peticiones) y muestra éxito o error. */
+  function enviarFormulario(form, status) {
+    var datos = new FormData(form);
+
+    obtenerCsrf()
+      .then(function (token) {
+        return fetch(FORM_ENDPOINT, {
+          method: "POST",
+          headers: {
+            "Accept": "application/json",
+            "X-CSRF-Token": token || ""
+          },
+          body: datos
+        });
       })
-        .then(function (res) {
-          if (!res.ok) throw new Error("Error de red");
+      .then(function (res) { return res.json().catch(function () { return { ok: res.ok }; }); })
+      .then(function (data) {
+        if (data && data.ok) {
           status.textContent = "Gracias, hemos recibido tu mensaje. Te responderemos en menos de 24 horas laborables.";
           status.className = "form-status is-success";
           form.reset();
-        })
-        .catch(function () {
-          status.textContent = "No se pudo enviar. Intentalo de nuevo o escribenos por WhatsApp.";
-          status.className = "form-status is-error";
-        });
-    });
+          return;
+        }
+        // Errores por campo devueltos por el backend
+        if (data && data.fields) {
+          Object.keys(data.fields).forEach(function (name) {
+            var el = form.querySelector('[name="' + name + '"]');
+            if (el) setFieldError(form, el, data.fields[name]);
+          });
+        }
+        status.textContent = (data && data.error) || "No se pudo enviar. Inténtalo de nuevo o escríbenos por WhatsApp.";
+        status.className = "form-status is-error";
+      })
+      .catch(function () {
+        status.textContent = "No se pudo enviar. Inténtalo de nuevo o escríbenos por WhatsApp.";
+        status.className = "form-status is-error";
+      });
+  }
+
+  /* Pide un token CSRF a la API (lo guarda en la sesión del servidor). */
+  function obtenerCsrf() {
+    return fetch(API_BASE + "index.php?action=csrf", { headers: { "Accept": "application/json" } })
+      .then(function (r) { return r.json(); })
+      .then(function (d) { return (d && d.csrf_token) || ""; })
+      .catch(function () { return ""; });
+  }
+
+  /* Marca el error de un campo concreto. */
+  function setFieldError(form, input, msg) {
+    var box = form.querySelector('[data-error-for="' + input.id + '"]');
+    if (msg) {
+      input.setAttribute("aria-invalid", "true");
+      if (box) box.textContent = msg;
+    }
   }
 
   /* ==========================================================================
