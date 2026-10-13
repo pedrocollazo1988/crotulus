@@ -283,3 +283,5 @@ para que la opcion se vea desde el principio; se activa al rellenar las credenci
 - Se elimino el banner marquesina (trustbar/marquee) bajo el hero.
 - Microanimaciones: barrido de brillo en .btn--primary::after, orbs flotantes (@keyframes orb-float[-b|-c|-d]), glow section-glow y pulso del hero. Todo se desactiva con prefers-reduced-motion.
 - Cache: version actual 20261015f.
+
+- Fondo azul con bolas tambien en la seccion de presentacion (#sobre-nosotros, clase .section--blue) y en el pie (.site-footer). setupSectionOrbs() ahora selecciona .section--alt, .section--blue y .site-footer. Textos de "Sobre nosotros" en claro sobre azul; las tarjetas mv-card siguen blancas. Cache: 20261015h.

@@ -608,7 +608,7 @@
      Además aplica un parallax muy suave al hacer scroll (solo transform).
      ========================================================================== */
   function setupSectionOrbs() {
-    var secciones = $$(".section--alt");
+    var secciones = $$(".section--alt, .section--blue, .site-footer");
     if (!secciones.length) return;
 
     /* Cada bola: color, tamaño (px), posición (%) y ritmo de la animación. */
@@ -676,8 +676,9 @@
     }, { passive: true });
     window.addEventListener("resize", function () { medir(); update(); }, { passive: true });
     window.addEventListener("load", function () { medir(); update(); });
-    medir();
-    update();
+    /* Medimos en el siguiente frame (tras el layout inicial) para no forzar
+       un reflow dentro del mismo tick en que insertamos las capas. */
+    requestAnimationFrame(function () { medir(); update(); });
   }
 
   /* ==========================================================================
