@@ -841,16 +841,25 @@ img.testimonial__avatar {
   transition: background var(--transition), color var(--transition), transform var(--transition), box-shadow var(--transition);
 }
 .carousel-btn:hover { background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); color: #fff; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,80,160,.28); }
-.carousel-dots { display: flex; gap: .5rem; }
+.carousel-dots { display: flex; gap: .25rem; }
+/* Botón de 44x44 (área táctil accesible) con el punto visual centrado. */
 .carousel-dots button {
-  width: 10px; height: 10px;
+  width: 44px; height: 44px;
   padding: 0;
-  border-radius: 50%;
   border: none;
+  background: none;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.carousel-dots button::before {
+  content: "";
+  width: 10px; height: 10px;
+  border-radius: 50%;
   background: var(--color-line);
   transition: background var(--transition), transform var(--transition);
 }
-.carousel-dots button[aria-selected="true"] { background: var(--color-primary); transform: scale(1.25); }
+.carousel-dots button[aria-selected="true"]::before { background: var(--color-primary); transform: scale(1.25); }
 
 /* ==========================================================================
    9. PREGUNTAS FRECUENTES (ACORDEÓN)

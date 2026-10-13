@@ -40,7 +40,7 @@
   var CONTACTO = {
     teléfono: "+34000000000",     // [TELÉFONO]
     whatsapp: "34000000000",      // [WHATSAPP] (solo dígitos, con prefijo país)
-    correo: "info@[DOMINIO]", // [CORREO]
+    correo: "info@c-rotulus.example", // [CORREO]
     googleReviews: "",            // [URL_GOOGLE_REVIEWS] (ficha de Google)
     empresa: "C-ROTULUS S.U.R.L."
   };

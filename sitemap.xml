@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- sitemap.xml · C-ROTULUS S.U.R.L.
-     EDITAR: sustituye [DOMINIO] por tu dominio real (p. ej. https://www.c-rotulus.com).
+     EDITAR: sustituye https://www.c-rotulus.example por tu dominio real (p. ej. https://www.c-rotulus.com).
      Es una web de una sola página, por eso solo se declara la raíz; las anclas
      (#servicios, #contacto...) no son URLs independientes para los buscadores. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>[DOMINIO]/</loc>
+    <loc>https://www.c-rotulus.example/</loc>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>

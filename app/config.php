@@ -98,7 +98,7 @@ return [
         // --- Contacto y redes ---------------------------------------------
         'telefono'    => '[TELÉFONO]',
         'whatsapp'    => '34000000000',
-        'correo'      => 'info@[DOMINIO]',
+        'correo'      => 'info@c-rotulus.example',
         'direccion'   => '[DIRECCIÓN]',
         'ciudad'      => '[CIUDAD]',
         'horario'     => 'Lunes a viernes, 9:00 - 18:00',
