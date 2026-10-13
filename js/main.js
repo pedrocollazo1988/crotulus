@@ -64,6 +64,7 @@
     setupReveal();
     setupCounters();
     setupHeaderScroll();
+    setupSectionOrbs();
     setupAccordion();
     setupCarousel();
     setupBackTop();
@@ -595,6 +596,87 @@
       ticking = true;
       requestAnimationFrame(update);
     }, { passive: true });
+    update();
+  }
+
+  /* ==========================================================================
+     3c. FONDO AZUL CON BOLAS EN LAS SECCIONES ALTERNAS
+     --------------------------------------------------------------------------
+     Inserta una capa .section-orbs dentro de cada .section--alt con varias
+     "bolas" difuminadas que flotan (mismo lenguaje visual que el login del
+     panel). Los colores y tamaños se definen aquí; edítalos a tu gusto.
+     Además aplica un parallax muy suave al hacer scroll (solo transform).
+     ========================================================================== */
+  function setupSectionOrbs() {
+    var secciones = $$(".section--alt");
+    if (!secciones.length) return;
+
+    /* Cada bola: color, tamaño (px), posición (%) y ritmo de la animación. */
+    var orbs = [
+      { c: "rgba(255,255,255,.55)", s: 260, x: 8,  y: 18, dur: 22, delay: 0 },
+      { c: "rgba(143,180,222,.65)", s: 320, x: 82, y: 12, dur: 28, delay: 1.2 },
+      { c: "rgba(30,111,191,.55)",  s: 180, x: 68, y: 72, dur: 24, delay: .6 },
+      { c: "rgba(255,255,255,.35)", s: 140, x: 28, y: 82, dur: 19, delay: 1.8 },
+      { c: "rgba(143,180,222,.5)",  s: 220, x: 46, y: 40, dur: 31, delay: .9 }
+    ];
+
+    secciones.forEach(function (seccion) {
+      if (seccion.querySelector(".section-orbs")) return;
+      var capa = document.createElement("div");
+      capa.className = "section-orbs";
+      capa.setAttribute("aria-hidden", "true");
+      orbs.forEach(function (o, i) {
+        var bola = document.createElement("span");
+        bola.className = "orb orb--" + (i + 1);
+        bola.style.left = o.x + "%";
+        bola.style.top = o.y + "%";
+        bola.style.width = o.s + "px";
+        bola.style.height = o.s + "px";
+        bola.style.marginLeft = (-o.s / 2) + "px";
+        bola.style.marginTop = (-o.s / 2) + "px";
+        bola.style.background = "radial-gradient(circle at 35% 30%, " + o.c + ", transparent 70%)";
+        bola.style.setProperty("--orb-dur", o.dur + "s");
+        bola.style.setProperty("--orb-delay", o.delay + "s");
+        capa.appendChild(bola);
+      });
+      seccion.insertBefore(capa, seccion.firstChild);
+    });
+
+    if (prefersReduced) return;
+
+    /* Parallax suave: cada capa se desplaza un poco según el scroll.
+       Cacheamos la geometría (offsetTop/altura) para no leer el layout en
+       cada frame y evitar "forced reflow". */
+    var capas = $$(".section-orbs").map(function (capa) {
+      return { el: capa, top: 0, alto: 0 };
+    });
+    function medir() {
+      capas.forEach(function (c) {
+        c.top = c.el.parentElement.offsetTop;
+        c.alto = c.el.parentElement.offsetHeight;
+      });
+    }
+    var ticking = false;
+    function update() {
+      var vh = window.innerHeight || 0;
+      var y0 = window.scrollY || window.pageYOffset || 0;
+      capas.forEach(function (c) {
+        var arriba = c.top - y0;               // posicion de la seccion en pantalla
+        if (arriba + c.alto < -100 || arriba > vh + 100) return;
+        var centro = arriba + c.alto / 2 - vh / 2;
+        var y = Math.max(-60, Math.min(60, -centro * 0.06));
+        c.el.style.transform = "translate3d(0," + y.toFixed(1) + "px,0)";
+      });
+      ticking = false;
+    }
+    window.addEventListener("scroll", function () {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    }, { passive: true });
+    window.addEventListener("resize", function () { medir(); update(); }, { passive: true });
+    window.addEventListener("load", function () { medir(); update(); });
+    medir();
     update();
   }
 

@@ -276,3 +276,10 @@ para que la opcion se vea desde el principio; se activa al rellenar las credenci
   `.section__head .section__title::after`.
 - Cache: APP_ASSET_VERSION en app/bootstrap.php; el HTML publico usa ?v=...
   (version actual 20261014e).
+
+## Secciones azules con "bolas" y microanimaciones (2026-10-13)
+- Las secciones alternas (.section--alt: #servicios, #proceso, #valoraciones, #faq) llevan fondo azul degradado tipo login (linear-gradient 155deg primary -> primary-dark -> navy). La cabecera de seccion se fuerza a blanco; las tarjetas blancas conservan su texto oscuro (.section--alt .card { color: var(--color-ink) }).
+- Las "bolas" son capas .section-orbs > .orb que inserta setupSectionOrbs() en js/main.js (NO estan en el HTML). Colores/tamanos/posiciones se editan en el array orbs de esa funcion. La capa lleva parallax suave por scroll.
+- Se elimino el banner marquesina (trustbar/marquee) bajo el hero.
+- Microanimaciones: barrido de brillo en .btn--primary::after, orbs flotantes (@keyframes orb-float[-b|-c|-d]), glow section-glow y pulso del hero. Todo se desactiva con prefers-reduced-motion.
+- Cache: version actual 20261015f.
