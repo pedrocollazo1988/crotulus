@@ -4,7 +4,7 @@ declare(strict_types=1);
 /**
  * ============================================================================
  *  CAPA DE BASE DE DATOS (PDO)
- *  Soporta MySQL/MariaDB (recomendado en hosting) y SQLite (pruebas locales).
+ *  Soporta PostgreSQL (Neon y similares), MySQL/MariaDB y SQLite (local).
  *  Crea el esquema automaticamente la primera vez que se ejecuta.
  * ============================================================================
  */
@@ -18,10 +18,25 @@ function db(): PDO
     }
 
     $cfg    = config('db');
-    $driver = $cfg['driver'] ?? 'sqlite';
+    $driver = db_driver();
 
     try {
-        if ($driver === 'mysql') {
+        if ($driver === 'pgsql') {
+            // Neon y casi todo Postgres gestionado exigen conexion cifrada;
+            // el sslmode se indica en el propio DSN.
+            $dsn = sprintf(
+                'pgsql:host=%s;port=%d;dbname=%s;sslmode=%s',
+                $cfg['host'],
+                (int) ($cfg['port'] ?: 5432),
+                $cfg['name'],
+                $cfg['sslmode'] ?? 'require'
+            );
+            $pdo = new PDO($dsn, $cfg['user'], $cfg['password'], [
+                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES   => false,
+            ]);
+        } elseif ($driver === 'mysql') {
             $dsn = sprintf(
                 'mysql:host=%s;port=%d;dbname=%s;charset=%s',
                 $cfg['host'],
@@ -53,10 +68,11 @@ function db(): PDO
     return $pdo;
 }
 
-/** Motor actual ("mysql" o "sqlite"). */
+/** Motor actual: "pgsql", "mysql" o "sqlite". */
 function db_driver(): string
 {
-    return config('db.driver', 'sqlite') === 'mysql' ? 'mysql' : 'sqlite';
+    $d = (string) config('db.driver', 'sqlite');
+    return in_array($d, ['pgsql', 'mysql', 'sqlite'], true) ? $d : 'sqlite';
 }
 
 /** Ejecuta una consulta preparada y devuelve el statement. */
@@ -88,7 +104,13 @@ function db_add_column(string $table, string $column, string $definition): void
 {
     try {
         $pdo = db();
-        if (db_driver() === 'mysql') {
+        if (db_driver() === 'pgsql') {
+            $exists = db_one(
+                'SELECT COUNT(*) AS c FROM information_schema.columns
+                  WHERE table_schema = current_schema() AND table_name = ? AND column_name = ?',
+                [$table, $column]
+            );
+        } elseif (db_driver() === 'mysql') {
             $exists = db_one(
                 'SELECT COUNT(*) AS c FROM information_schema.columns
                   WHERE table_schema = DATABASE() AND table_name = ? AND column_name = ?',
@@ -122,6 +144,16 @@ function db_insert(string $table, array $data): int
         implode(', ', $cols),
         implode(', ', array_map(fn($c) => ':' . $c, $cols))
     );
+    // PostgreSQL: recuperamos el id con RETURNING (lastInsertId no es fiable
+    // en tablas sin secuencia, como "settings", donde además falla).
+    if (db_driver() === 'pgsql') {
+        if ($table === 'settings') {
+            db_query($sql, $data);
+            return 0;
+        }
+        $row = db_one($sql . ' RETURNING id', $data);
+        return (int) ($row['id'] ?? 0);
+    }
     db_query($sql, $data);
     return (int) db()->lastInsertId();
 }
@@ -147,12 +179,16 @@ function db_init(): void
     $done = true;
 
     $pdo    = db();
-    $mysql  = db_driver() === 'mysql';
-    $serial = $mysql ? 'INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY' : 'INTEGER PRIMARY KEY AUTOINCREMENT';
+    $driver = db_driver();
+    $pg     = $driver === 'pgsql';
+    $mysql  = $driver === 'mysql';
+    $serial = $pg
+        ? 'SERIAL PRIMARY KEY'
+        : ($mysql ? 'INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY' : 'INTEGER PRIMARY KEY AUTOINCREMENT');
     $str    = $mysql ? 'VARCHAR(255)' : 'TEXT';
     $text   = 'TEXT';
     $ltext  = $mysql ? 'MEDIUMTEXT' : 'TEXT';  // para datos de sesion (mas grandes)
-    $dt     = 'DATETIME';
+    $dt     = $pg ? 'TIMESTAMP' : 'DATETIME';
     $engine = $mysql ? ' ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci' : '';
 
     $tables = [
@@ -343,7 +379,7 @@ function db_init(): void
         try {
             $pdo->exec($sql);
         } catch (Throwable $e) {
-            // Indice ya existente: continuamos.
+            // Indice ya existente (o no soportado por el motor): continuamos.
         }
     }
 
@@ -356,7 +392,13 @@ function db_init(): void
 function db_table_exists(string $table): bool
 {
     try {
-        if (db_driver() === 'mysql') {
+        if (db_driver() === 'pgsql') {
+            $row = db_one(
+                'SELECT COUNT(*) AS c FROM information_schema.tables
+                  WHERE table_schema = current_schema() AND table_name = ?',
+                [$table]
+            );
+        } elseif (db_driver() === 'mysql') {
             $row = db_one(
                 'SELECT COUNT(*) AS c FROM information_schema.tables
                   WHERE table_schema = DATABASE() AND table_name = ?',

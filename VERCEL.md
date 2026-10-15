@@ -58,24 +58,38 @@ función**, así que respeta el límite. El *Container Runtime* de Vercel está 
 El contenedor de Vercel **no conserva archivos** (se apaga al no haber tráfico).
 Por tanto la base de datos **debe ser externa**:
 
-- **MySQL/Postgres gestionado** (Raiola, PlanetScale, Neon, supabase, Railway…).
-- Configura las credenciales con **variables de entorno** en Vercel
-  (Project -> Settings -> Environment Variables). `app/config.php` ya las lee:
+- **Neon (PostgreSQL)** — recomendado para Vercel, plan gratuito, certificado SSL.
+- **MySQL/MariaDB gestionado** (Raiola, Aiven, Clever Cloud, Railway…).
+- **SQLite** solo para pruebas locales.
 
-| Variable | Ejemplo | Notas |
+Configura las credenciales con **variables de entorno** en Vercel
+(Project -> Settings -> Environment Variables). `app/config.php` ya las lee:
+
+| Variable | Ejemplo (Neon) | Notas |
 |---|---|---|
-| `DB_DRIVER` | `mysql` | `mysql` o `sqlite` |
-| `DB_HOST` | `tu-host.mysql.db` | Host de la BD |
-| `DB_PORT` | `3306` | |
-| `DB_NAME` | `crotulus` | |
-| `DB_USER` | `usuario` | |
+| `DB_DRIVER` | `pgsql` | `pgsql`, `mysql` o `sqlite` |
+| `DB_HOST` | `ep-xxx-pooler.eu-central-1.aws.neon.tech` | host de Neon |
+| `DB_PORT` | `5432` | 5432 en Postgres |
+| `DB_NAME` | `neondb` | |
+| `DB_USER` | `neondb_owner` | |
 | `DB_PASSWORD` | (secreto) | |
+| `DB_SSLMODE` | `require` | **Neon exige SSL** |
 | `APP_SITE_URL` | `https://www.c-rotulus.com` | Sin barra final |
 | `APP_KEY` | (clave larga) | Firma de sesiones/CSRF |
+| `SESSION_HANDLER` | `database` | Sesiones en la BD (recomendado en Vercel) |
 | `MAIL_SMTP_USER`, `MAIL_SMTP_PASS`, `MAIL_TO` | … | Correo |
 
 > Sin `DB_*` la web carga (contenido por defecto) pero el panel y el formulario
-> devuelven error de conexión.
+> devuelven error de conexión. El esquema se crea **solo** en la primera conexión.
+
+### Pasos con Neon (PostgreSQL)
+
+1. Crea un proyecto en **neon.tech** y copia la cadena de conexión
+   (*Connection string*). Usa el host **pooler** (`...-pooler...`) para Vercel.
+2. En Vercel añade las variables de la tabla con los valores de Neon
+   (`DB_DRIVER=pgsql`, `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_SSLMODE=require`).
+3. **Redeploy** y abre `/admin/login`: se crean las tablas y podrás **crear tu
+   cuenta de administrador**.
 
 ---
 

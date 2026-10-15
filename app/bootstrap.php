@@ -44,6 +44,7 @@ if (is_array($env)) {
     if ($env['db_password'] !== null && $env['db_password'] !== '') {
         $config['db']['password'] = $env['db_password'];
     }
+    if (!empty($env['db_sslmode'])) { $config['db']['sslmode'] = $env['db_sslmode']; }
     if (!empty($env['site_url']))   { $config['site_url']       = rtrim($env['site_url'], '/'); }
     if (!empty($env['mail_user']))  { $config['mail']['smtp_user'] = $env['mail_user']; }
     if ($env['mail_pass'] !== null && $env['mail_pass'] !== '') {

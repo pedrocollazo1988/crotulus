@@ -27,6 +27,7 @@ return [
         'db_name'     => getenv('DB_NAME')     ?: null,
         'db_user'     => getenv('DB_USER')     ?: null,
         'db_password' => getenv('DB_PASSWORD') ?: null,
+        'db_sslmode'  => getenv('DB_SSLMODE')  ?: null,
         'site_url'    => getenv('APP_SITE_URL')?: null,
         'mail_user'   => getenv('MAIL_SMTP_USER') ?: null,
         'mail_pass'   => getenv('MAIL_SMTP_PASS') ?: null,
@@ -41,16 +42,22 @@ return [
     'timezone'  => 'Europe/Madrid',
 
     /* --- Base de datos ------------------------------------------------------
-       Elige 'mysql' en el hosting (recomendado) y rellena los datos que te
-       da tu proveedor. Usa 'sqlite' para pruebas locales (no necesita nada). */
+       Motor segun el proveedor:
+         'pgsql'  PostgreSQL (Neon y similares; recomendado en Vercel).
+         'mysql'  MySQL/MariaDB (hosting clasico tipo Raiola).
+         'sqlite' pruebas locales (no necesita nada).
+       En produccion lo normal es no tocar esto y usar variables de entorno
+       (DB_DRIVER, DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD, DB_SSLMODE). */
     'db' => [
-        'driver'      => 'mysql',                 // mysql | sqlite
+        'driver'      => 'mysql',                 // pgsql | mysql | sqlite
         'host'        => 'localhost',
         'port'        => 3306,
         'name'        => 'crotulus',
         'user'        => 'crotulus_user',
         'password'    => '[CONTRASENA_BD]',
         'charset'     => 'utf8mb4',
+        // PostgreSQL: modo SSL exigido por Neon y otros (require | prefer | disable).
+        'sslmode'     => 'require',
         'sqlite_path' => __DIR__ . '/data/c-rotulus.sqlite',
     ],
 

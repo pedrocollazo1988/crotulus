@@ -91,7 +91,9 @@ foreach ($extensiones as $ext => $para) {
 
 // La extension de base de datos depende del motor elegido.
 $driver = db_driver();
-if ($driver === 'mysql') {
+if ($driver === 'pgsql') {
+    check('Extension pdo_pgsql', extension_loaded('pdo_pgsql'), 'Necesaria para PostgreSQL (Neon)');
+} elseif ($driver === 'mysql') {
     check('Extension pdo_mysql', extension_loaded('pdo_mysql'), 'Necesaria para MySQL/MariaDB');
 } else {
     check('Extension pdo_sqlite', extension_loaded('pdo_sqlite'), 'Necesaria para SQLite');

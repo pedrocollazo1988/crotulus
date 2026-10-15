@@ -31,13 +31,14 @@ return [
        MySQL/MariaDB es lo recomendado en hosting compartido. Los datos te los
        da el proveedor (cPanel > Bases de datos MySQL). */
     'db' => [
-        'driver'   => 'mysql',                    // mysql | sqlite
+        'driver'   => 'mysql',                    // pgsql | mysql | sqlite
         'host'     => 'localhost',                // a veces 'mysql.tuproveedor.com'
-        'port'     => 3306,
+        'port'     => 3306,                       // 5432 si usas PostgreSQL
         'name'     => 'tu_usuario_crotulus',      // nombre de la base de datos
         'user'     => 'tu_usuario_crotulus',      // usuario de la base de datos
         'password' => 'CONTRASENA_DE_LA_BD',      // contrasena de la base de datos
         'charset'  => 'utf8mb4',
+        'sslmode'  => 'require',                  // solo PostgreSQL (Neon exige SSL)
     ],
 
     /* --- Correo (verificacion de cuenta y avisos) --------------------------

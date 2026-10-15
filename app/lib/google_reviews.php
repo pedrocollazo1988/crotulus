@@ -54,10 +54,15 @@ function google_reviews_table_init(): void
     if ($done) {
         return;
     }
-    $done  = true;
-    $mysql = db_driver() === 'mysql';
-    $serial = $mysql ? 'INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY' : 'INTEGER PRIMARY KEY AUTOINCREMENT';
+    $done   = true;
+    $driver = db_driver();
+    $pg     = $driver === 'pgsql';
+    $mysql  = $driver === 'mysql';
+    $serial = $pg
+        ? 'SERIAL PRIMARY KEY'
+        : ($mysql ? 'INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY' : 'INTEGER PRIMARY KEY AUTOINCREMENT');
     $str    = $mysql ? 'VARCHAR(255)' : 'TEXT';
+    $dt     = $pg ? 'TIMESTAMP' : 'DATETIME';
     $engine = $mysql ? ' ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci' : '';
 
     db()->exec("CREATE TABLE IF NOT EXISTS google_reviews (
@@ -70,7 +75,7 @@ function google_reviews_table_init(): void
         profile_url VARCHAR(500) DEFAULT '',
         relative_time $str DEFAULT '',
         sort_ts INT NOT NULL DEFAULT 0,
-        fetched_at DATETIME DEFAULT NULL
+        fetched_at $dt DEFAULT NULL
     ) $engine");
 
     try {
