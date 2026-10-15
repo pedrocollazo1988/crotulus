@@ -647,3 +647,32 @@ BD y las sesiones deben vivir **fuera** del contenedor.
 - Mailer ya soporta `smtp` (funciona en Vercel); `app_log()` falla en silencio si
   el disco es de solo lectura.
 
+
+## Vercel: por qué el 403 del login y por qué NO se despliega el PHP (2026-10-15)
+Evidencia real sobre `crotulus.vercel.app` y los deployments de GitHub:
+- **El 403 «Forbidden» con `x-vercel-mitigated: deny` en `/admin/*` lo genera el
+  firewall (WAF) de Vercel, NO el PHP.** Pistas: cabecera `x-vercel-mitigated:
+  deny` (bloqueo) o `challenge` (verificación) y `server: Vercel`. El resto de
+  rutas daba `challenge` (Attack Challenge Mode / Bot Protection).
+- **Causa raíz del build fallido**: el plan Hobby de Vercel **solo admite 12
+  funciones serverless por despliegue**, y el backend tiene **21 archivos `.php`**
+  (15 en `admin/` + 6 en `api/`) → cada `.php` es 1 función → `Error: No more than
+  12 Serverless Functions can be added to a Deployment on the Hobby plan`.
+  - Los deployments `c0a2061` (sin `vercel.json`, todo estático) desplegaban OK;
+    el commit `ca50738` (con `functions` vercel-php) sale `failure`. Al fallar,
+    Vercel sigue sirviendo la versión estática antigua → el `.php` se descarga y
+    el WAF bloquea `/admin`.
+- **Decisión aplicada (Opción B)**: Vercel publica **solo la web estática**.
+  - `.vercelignore`: vuelve a excluir `api/`, `admin/`, `app/`.
+  - `vercel.json`: sin `functions` (solo `cleanUrls`, `trailingSlash`, `headers`).
+  - El panel/API se sirve en **Raiola**; `js/main.js` → `BACKEND_URL` apunta allí.
+- El runtime `vercel-php` (última versión **0.9.0**, PHP 8.5) **sí funciona** como
+  front-controller: su launcher arranca `php -S` con docroot = carpeta de usuario
+  y router = entrypoint; con 1 sola función serviría todos los `.php`. Pero exigiría
+  **reducir a ≤12 endpoints** o plan Pro, y desactivar el WAF de `/admin`.
+- `app/lib/session_db.php` (sesiones en BD) sigue siendo correcto y **también sirve
+  en Raiola** si se pone `SESSION_HANDLER=database`; por defecto en hosting clásico
+  se usan sesiones en archivos.
+- `VERCEL.md` reescrito con la sección 0 (diagnóstico del 403) y la Opción B como
+  recomendada.
+

@@ -1,14 +1,22 @@
 # ============================================================================
 #  .vercelignore  —  Qué NO se sube a Vercel
 # ----------------------------------------------------------------------------
-#  Dejamos FUERA solo lo que no debe publicarse: datos con credenciales, la
-#  base de datos local, las herramientas y la documentacion interna.
-#  El backend PHP (api/, admin/, app/) SI se sube: lo ejecuta el runtime
-#  vercel-php declarado en vercel.json (ver VERCEL.md).
+#  En Vercel publicamos SOLO la web estática (HTML/CSS/JS/imágenes). El backend
+#  PHP (api/, admin/, app/) se sirve desde tu hosting con PHP (Raiola): ver
+#  VERCEL.md, sección 0 y Opción B.
+#
+#  ¿Por qué? El plan Hobby de Vercel limita a 12 funciones serverless por
+#  despliegue y tu panel tiene 21 archivos .php -> el build falla. Además su
+#  firewall bloquea /admin. Por eso el panel vive en Raiola.
 # ============================================================================
 
+# --- Backend PHP: NO se sube a Vercel (se sirve en Raiola) ------------------
+api/
+admin/
+app/
+
 # --- NUNCA subir credenciales ni datos locales -----------------------------
-app/config.local.php
+config.local.php
 app/data/*.sqlite
 app/data/*.sqlite-*
 app/data/*.log
