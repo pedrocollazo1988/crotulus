@@ -11,7 +11,9 @@
 # ============================================================================
 
 # --- Backend PHP: NO se sube a Vercel (se sirve en Raiola) ------------------
-api/
+# [PoC opción C] Subimos SOLO api/poc.php para probar el runtime; el resto no.
+api/*
+!api/poc.php
 admin/
 app/
 

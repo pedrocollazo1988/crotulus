@@ -1,9 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-
   "cleanUrls": true,
   "trailingSlash": false,
-
+  "functions": {
+    "api/poc.php": { "runtime": "vercel-php@0.9.0", "memory": 1024, "maxDuration": 30 }
+  },
+  "rewrites": [
+    { "source": "/prueba", "destination": "/api/poc.php" }
+  ],
   "headers": [
     { "source": "/assets/(.*)", "headers": [ { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" } ] },
     { "source": "/css/(.*)",    "headers": [ { "key": "Cache-Control", "value": "public, max-age=604800" } ] },
