@@ -30,6 +30,29 @@ no se alcanza. La base de datos es externa (Neon).
 
 ## 1. Crear la base de datos en Neon
 
+> **Vercel ya no tiene Postgres propio.** Retiro su producto "Vercel Postgres"
+> (paso todo a Neon entre finales de 2024 y mediados de 2025) y ahora ofrece las
+> bases como **integraciones del Marketplace**. La de **Neon** es la equivalente
+> "de Vercel": se instala en un clic, se ve en la pestana *Storage* del proyecto,
+> la factura es unica (a traves de Vercel) y **es gratis en el plan Hobby**
+> (Neon Free: 512 MB de almacenamiento, ~190 h de computo y hasta 10 bases).
+
+### Opcion recomendada · Integracion Neon desde el Marketplace (la mas facil)
+
+1. En Vercel: proyecto -> **Storage** -> **Create Database** -> **Neon**.
+2. Elige region cercana a `iad1` (p. ej. `us-east-1`) y acepta. Neon crea el
+   proyecto y **Vercel inyecta las variables de entorno solo** en Preview y
+   Production:
+   - `DATABASE_URL` — conexion con **pooler** (la usa la app).
+   - `DATABASE_URL_UNPOOLED` — conexion **directa** (la usan las migraciones).
+   - Ademas `POSTGRES_*`, `PG*` (heredadas) y `NEON_*`.
+
+   > No hace falta crear `DIRECT_URL`: el envoltorio `scripts/prisma.mjs` la
+   > rellena desde `DATABASE_URL_UNPOOLED` (o `DATABASE_URL`). Detalle en el
+   > apartado 4.
+
+### Opcion manual · Cuenta propia en Neon
+
 1. Entra en <https://neon.tech>, crea un proyecto (region `us-east-1` / `aws`,
    para que quede cerca de la region `iad1` de Vercel).
 2. Copia **dos** cadenas de conexion:
@@ -37,6 +60,7 @@ no se alcanza. La base de datos es externa (Neon).
      serverless, que abre muchas conexiones cortas.
    - **`DIRECT_URL`** — la directa, **sin** pooler. La usan las migraciones.
 3. Anade `?sslmode=require` si Neon no lo incluye ya.
+4. Pega ambas en Vercel -> *Settings* -> *Environment Variables*.
 
 ---
 
@@ -105,7 +129,7 @@ para no bloquear el despliegue):
 # 1. Crea las tablas
 DATABASE_URL="postgresql://...-pooler.../neondb?sslmode=require" \
 DIRECT_URL="postgresql://.../neondb?sslmode=require" \
-npx prisma migrate deploy
+npm run db:deploy
 
 # 2. Siembra contenido de ejemplo (solo en tablas vacias)
 DATABASE_URL="..." DIRECT_URL="..." npm run db:seed
@@ -114,8 +138,19 @@ DATABASE_URL="..." DIRECT_URL="..." npm run db:seed
 DATABASE_URL="..." DIRECT_URL="..." npm run db:migrate-sqlite -- legacy/app/data/c-rotulus.sqlite
 ```
 
+> **Con la integracion Neon del Marketplace no hace falta `DIRECT_URL`.** Vercel
+> solo inyecta `DATABASE_URL` (pooler) y `DATABASE_URL_UNPOOLED` (directa). Los
+> scripts `npm run db:*` pasan por `scripts/prisma.mjs`, que rellena `DIRECT_URL`
+> desde `DATABASE_URL_UNPOOLED` (o `DATABASE_URL`) si falta. Puedes traerte las
+> variables con `vercel env pull .env.local` y ejecutar los comandos tal cual.
+
 > Si no tienes el SQLite original, salta el paso 3: el paso 2 crea contenido de
 > ejemplo y el panel permite editarlo.
+
+> **Primer administrador:** en una base recien creada no hay usuarios. Abre
+> `/admin/register` en el dominio desplegado: **el primer usuario registrado se
+> convierte en admin**. (Para cambiar su contrasena despues:
+> `NEW_PASSWORD='...' npm run user:password -- correo@dominio.com`.)
 
 ---
 
