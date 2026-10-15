@@ -25,16 +25,37 @@
      index.html con marcadores [TELÉFONO], [CORREO], etc. Sustituyelos también.
      ========================================================================== */
 
+  // >>> URL DEL PANEL / BACKEND PHP  (importante si publicas en Vercel) <<<
+  // El panel de administración (admin/) y la API (api/) necesitan PHP y una
+  // base de datos, que un hosting 100% estático como Vercel NO ofrece.
+  //   - Si publicas en un hosting CON PHP (p. ej. Raiola): deja "" (rutas
+  //     relativas, todo funciona dentro del mismo dominio).
+  //   - Si publicas la web estática en Vercel pero mantienes el panel en otro
+  //     hosting con PHP: pon aquí su URL completa, SIN barra final, por ejemplo
+  //     var BACKEND_URL = "https://www.c-rotulus.com";
+  //     Así los enlaces "Acceder"/"Mi cuenta" y las llamadas a la API apuntarán
+  //     a tu backend real en lugar de a rutas que en Vercel no existen.
+  var BACKEND_URL = "";
+
+  // Aplica BACKEND_URL a una ruta relativa (api/..., admin/...).
+  var withBackend = function (path) {
+    return BACKEND_URL ? BACKEND_URL.replace(/\/$/, "") + "/" + path : path;
+  };
+
   // >>> ENDPOINT DEL FORMULARIO <<<
   // Por defecto usamos el backend propio incluido en este proyecto (PHP), que
   // guarda los mensajes en la base de datos y aplica validación y seguridad.
   // Si prefieres un servicio externo, pon aquí su URL, por ejemplo:
   //     var FORM_ENDPOINT = "https://formspree.io/f/TU_ID";
   // (en ese caso recuerda cambiar también el "action" del <form> en index.html)
-  var FORM_ENDPOINT = "api/contact.php";
+  var FORM_ENDPOINT = withBackend("api/contact.php");
 
   // Base de la API del sitio (datos editables: teléfono, correo, mapa, redes).
-  var API_BASE = "api/";
+  var API_BASE = withBackend("api/");
+
+  // URL del área privada (login / mi cuenta). Se usa para el enlace "Acceder".
+  var LOGIN_URL  = withBackend("admin/login.php");
+  var ACCOUNT_URL = withBackend("admin/account.php");
 
   // Datos de contacto de reserva (se usan si la API no responde).
   var CONTACTO = {
@@ -479,6 +500,13 @@
     cargarRankingFaq();
     cargarTestimoniosUsuarios();
 
+    // El enlace "Acceder" de la cabecera apunta al backend real (BACKEND_URL).
+    // Así, si el sitio está en un hosting estático (Vercel) y el panel en otro
+    // con PHP, el enlace sigue funcionando.
+    var navAuth = document.getElementById("navAuthLink");
+    if (navAuth) navAuth.setAttribute("href", LOGIN_URL);
+    reescribirEnlacesAdmin();
+
     if (!window.fetch) return;
     // Si hay sesión, el enlace de cabecera pasa a "Mi cuenta".
     fetch(API_BASE + "index.php?resource=session", { headers: { "Accept": "application/json" }, credentials: "same-origin" })
@@ -488,11 +516,21 @@
         var navLink = document.getElementById("navAuthLink");
         if (navLink) {
           navLink.textContent = loggedIn ? "Mi cuenta" : "Acceder";
-          navLink.setAttribute("href", loggedIn ? "admin/account.php" : "admin/login.php");
+          navLink.setAttribute("href", loggedIn ? ACCOUNT_URL : LOGIN_URL);
         }
         cargarTestimoniosUsuarios(true);
       })
       .catch(function () { /* sin sesión: la web funciona igual */ });
+  }
+
+  // Reescribe en el HTML todos los enlaces que apuntan al área privada
+  // (admin/login.php, admin/account.php) para que usen BACKEND_URL. Así el
+  // sitio estático en Vercel enlaza con el panel PHP real, sin enlaces rotos.
+  function reescribirEnlacesAdmin() {
+    if (!BACKEND_URL) return;
+    $$('a[href^="admin/"]').forEach(function (a) {
+      a.setAttribute("href", withBackend(a.getAttribute("href")));
+    });
   }
 
   // Carga el ranking de FAQ (algoritmo de importancia) en el acordeón.

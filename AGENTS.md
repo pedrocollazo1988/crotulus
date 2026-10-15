@@ -600,3 +600,20 @@ Se sacó el contenido corporativo de la portada a una página nueva:
 - **`sitemap.xml`**: añadida `empresa.html`; JSON-LD `AboutPage` + `BreadcrumbList` en la página.
 - Cache actual: `20261017a`. ZIP: 113 archivos.
 
+## Vercel: caso de uso y enlaces del panel (2026-10-12)
+Vercel es estático + funciones serverless (Node/Python/Go/Ruby): **no ejecuta PHP**
+y su FS es de solo lectura (no puede crear la SQLite del panel). Por eso el panel
+(`admin/`) y la API (`api/`) no funcionan allí y los enlaces `admin/login.php`
+fallaban (descarga del `.php` o 404).
+- **`VERCEL.md`**: caso de uso completo (diagnóstico, dos opciones A/B, pasos CLI y
+  panel, Formspree, checklist y problemas frecuentes).
+- **`vercel.json`**: `cleanUrls`, cabeceras de caché para `assets/`, `css/`, `js/` y
+  cabeceras de seguridad. Framework "Other", sin build command.
+- **`.vercelignore`**: excluye `api/`, `admin/`, `app/`, `deploy/`, datos, `tools/`,
+  `preview/`, docs internas y ZIP → en Vercel solo se publica lo estático.
+- **`js/main.js`**: nueva constante editable `BACKEND_URL` ("" por defecto). Si se
+  pone la URL del hosting con PHP, `API_BASE`, `FORM_ENDPOINT`, `LOGIN_URL` y
+  `ACCOUNT_URL` se derivan con `withBackend()`, y `reescribirEnlacesAdmin()` cambia
+  todos los `a[href^="admin/"]` del HTML (cabecera, CTA de testimonios/FAQ y pie).
+  Con `BACKEND_URL=""` todo queda igual que antes (rutas relativas, válido en Raiola).
+
