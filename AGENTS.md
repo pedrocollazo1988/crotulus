@@ -2,6 +2,14 @@
 
 Sitio corporativo estatico (HTML/CSS/JS vanilla) + panel PHP de administracion.
 
+## ⚠️ Commits: pedir aprobacion SIEMPRE (LEER PRIMERO)
+
+**No hacer `git commit` ni `git push` sin la aprobacion explicita del usuario.**
+Regla del propietario del repositorio: antes de confirmar cambios en git, mostrar
+el resumen/`git diff` y **esperar a que el usuario diga que sí**. Se pueden hacer
+ediciones y pruebas libremente; lo que requiere permiso es **consolidar en git**.
+
+
 ## ⚠️ Arranque automatico del servidor de vista previa (LEER PRIMERO)
 
 Este entorno se **recrea entre sesiones**: desaparecen PHP (`/usr`), `.bashrc`
