@@ -1,24 +1,14 @@
 # ============================================================================
-#  .vercelignore  —  Qué NO se sube a Vercel
+#  .vercelignore  —  Qué NO se sube a Vercel (opción B: contenedor)
 # ----------------------------------------------------------------------------
-#  En Vercel publicamos SOLO la web estática (HTML/CSS/JS/imágenes). El backend
-#  PHP (api/, admin/, app/) se sirve desde tu hosting con PHP (Raiola): ver
-#  VERCEL.md, sección 0 y Opción B.
-#
-#  ¿Por qué? El plan Hobby de Vercel limita a 12 funciones serverless por
-#  despliegue y tu panel tiene 21 archivos .php -> el build falla. Además su
-#  firewall bloquea /admin. Por eso el panel vive en Raiola.
+#  Con el contenedor (Dockerfile.vercel + Caddyfile) SÍ subimos el backend PHP
+#  completo (api/, admin/, app/): lo ejecuta FrankenPHP dentro de la imagen.
+#  Solo excluimos datos sensibles, herramientas y documentación interna.
 # ============================================================================
-
-# --- Backend PHP: NO se sube a Vercel (se sirve en Raiola) ------------------
-# [PoC opción C] Subimos SOLO api/poc.php para probar el runtime; el resto no.
-api/*
-!api/poc.php
-admin/
-app/
 
 # --- NUNCA subir credenciales ni datos locales -----------------------------
 config.local.php
+app/config.local.php
 app/data/*.sqlite
 app/data/*.sqlite-*
 app/data/*.log
@@ -39,4 +29,3 @@ VERCEL.md
 # --- Metadatos de repositorio ----------------------------------------------
 .git/
 .gitignore
-.htaccess

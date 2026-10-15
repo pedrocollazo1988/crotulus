@@ -1,0 +1,36 @@
+# ============================================================================
+#  Dockerfile.vercel  ·  C-ROTULUS como contenedor (FrankenPHP + Caddy)
+# ----------------------------------------------------------------------------
+#  Opción B del despliegue en Vercel: en lugar de 21 funciones serverless
+#  (que superan el límite de 12 del plan Hobby), se empaqueta TODO el backend
+#  en UN solo contenedor con un servidor web real (FrankenPHP/Caddy) que
+#  ejecuta PHP.
+#
+#  Notas:
+#   - Se copia el proyecto completo en /app (raíz del documento).
+#   - Caddy escucha en $PORT (Vercel inyecta PORT; por defecto 80).
+#   - auto_https off: Vercel ya termina el TLS en el borde.
+#   - El firewall de Vercel bloquea las URLs terminadas en .php, por eso la
+#     app usa URLs "limpias" (sin extensión): ver app/lib/helpers.php (url()).
+# ============================================================================
+
+FROM dunglas/frankenphp:1-php8.4
+
+# Extensiones PHP que necesita la app (sesiones, base de datos, correo).
+RUN install-php-extensions pdo_sqlite pdo_mysql mbstring intl
+
+WORKDIR /app
+
+# Todo el proyecto (api/, admin/, app/, assets/, html...). El .vercelignore
+# decide qué se sube realmente a Vercel antes del build.
+COPY . /app
+
+# Caddyfile de FrankenPHP (rutas limpias sin .php).
+COPY Caddyfile /etc/frankenphp/Caddyfile
+COPY Caddyfile /etc/caddy/Caddyfile
+
+# Caddy/FrankenPHP escucha en el puerto que indique Vercel.
+ENV PORT=80
+ENV SERVER_NAME=:80
+
+CMD ["frankenphp", "run", "--config", "/etc/frankenphp/Caddyfile"]

@@ -149,5 +149,20 @@ function site_base_url(): string
 /** Enlace absoluto a un recurso del sitio. */
 function url(string $path = ''): string
 {
-    return site_base_url() . '/' . ltrim($path, '/');
+    $path = ltrim($path, '/');
+
+    // URLs "limpias" (sin .php): imprescindible en Vercel, donde el firewall
+    // bloquea cualquier URL terminada en .php. Tanto el Caddyfile (contenedor
+    // en Vercel) como el .htaccess (hosting con Apache) resuelven /admin/login
+    // hacia /admin/login.php. La cadena de consulta (?...) no se modifica.
+    $query = '';
+    if (($q = strpos($path, '?')) !== false) {
+        $query = substr($path, $q);
+        $path  = substr($path, 0, $q);
+    }
+    if (substr($path, -4) === '.php') {
+        $path = substr($path, 0, -4);
+    }
+
+    return site_base_url() . '/' . $path . $query;
 }

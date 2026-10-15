@@ -272,7 +272,7 @@ function google_redirect_uri(): string
     if ($configured === '') {
         $configured = (string) config('google.redirect_uri', '');
     }
-    return $configured !== '' ? $configured : url('api/auth.php?action=google_callback');
+    return $configured !== '' ? $configured : url('api/auth?action=google_callback');
 }
 
 /** URL a la que redirigir para iniciar sesion con Google. */

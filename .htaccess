@@ -12,6 +12,17 @@ Options -Indexes
 # --- Página de error propia (404.html en la raíz) ---
 ErrorDocument 404 /404.html
 
+# --- URLs "limpias" (sin .php) ----------------------------------------------
+# La web enlaza a /admin/login, /api/contact... (necesario en Vercel, donde
+# el firewall bloquea URLs .php). Aquí se traducen al archivo real.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # No reescribir ficheros ni carpetas que existen de verdad.
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^([A-Za-z0-9_/-]+)/?$ $1.php [L,QSA]
+</IfModule>
+
 # --- Compresión para una carga más rápida ---
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml application/json application/javascript application/ld+json image/svg+xml

@@ -1,0 +1,17 @@
+# No copiar al contenedor (build de Vercel ni pruebas locales)
+.git/
+.gitignore
+.agent_tmp/
+tools/
+preview/
+deploy/
+c-rotulus-sitio.zip
+config.local.php
+app/config.local.php
+app/data/*.sqlite
+app/data/*.sqlite-*
+app/data/*.log
+AGENTS.md
+DEPLOY.md
+DEPLOY-RAIOLA.md
+VERCEL.md

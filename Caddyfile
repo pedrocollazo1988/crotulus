@@ -1,0 +1,27 @@
+# ============================================================================
+#  Caddyfile  ·  C-ROTULUS (opcion B: contenedor en Vercel)
+# ----------------------------------------------------------------------------
+#  FrankenPHP usa este Caddyfile. Escucha en $PORT (Vercel) y sirve la raiz /app.
+#  El firewall de Vercel bloquea cualquier URL terminada en .php, asi que la web
+#  enlaza a URLs "limpias" (sin extension). Aqui se resuelven:
+#     /admin/login   ->  /admin/login.php
+#     /api/contact   ->  /api/contact.php
+#     /admin/        ->  /admin/index.php
+#     /empresa       ->  /empresa.html
+# ============================================================================
+
+{
+# Vercel termina el TLS en el borde; no gestionamos certificados aqui.
+auto_https off
+}
+
+:{$PORT:80} {
+root * /app
+encode zstd gzip
+
+php_server {
+# Prueba, en orden: el archivo tal cual, "<ruta>.php", "<ruta>.html",
+# el index de la carpeta y, si nada existe, devuelve 404.
+try_files {path} {path}.php {path}.html {path}/index.php {path}/index.html
+}
+}

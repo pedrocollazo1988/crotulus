@@ -78,7 +78,7 @@ return [
     /* --- Inicio de sesion con Google (OAuth 2.0) ---------------------------
        Crea las credenciales en https://console.cloud.google.com/apis/credentials
        URI de redireccion autorizada:
-           {site_url}/api/auth.php?action=google_callback
+           {site_url}/api/auth?action=google_callback
        Deja client_id vacio para desactivar el boton de Google. */
     'google' => [
         'client_id'     => '',

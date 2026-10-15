@@ -37,9 +37,16 @@
   //     a tu backend real en lugar de a rutas que en Vercel no existen.
   var BACKEND_URL = "";
 
-  // Aplica BACKEND_URL a una ruta relativa (api/..., admin/...).
+  // Aplica BACKEND_URL a una ruta relativa (api/..., admin/...) y la deja en
+  // formato "URL limpia" (sin .php). En Vercel el firewall bloquea las URLs
+  // terminadas en .php; el Caddyfile (contenedor) y el .htaccess (hosting con
+  // PHP) resuelven /api/contact -> /api/contact.php.
   var withBackend = function (path) {
-    return BACKEND_URL ? BACKEND_URL.replace(/\/$/, "") + "/" + path : path;
+    var q = path.indexOf("?");
+    var base = q === -1 ? path : path.slice(0, q);
+    var query = q === -1 ? "" : path.slice(q);
+    base = base.replace(/\.php$/, "");
+    return (BACKEND_URL ? BACKEND_URL.replace(/\/$/, "") + "/" + base : base) + query;
   };
 
   // >>> ENDPOINT DEL FORMULARIO <<<
@@ -120,7 +127,7 @@
 
     contenedores.forEach(function (caja) {
       var tipo = caja.getAttribute("data-content-list");
-      fetch(API_BASE + "index.php?resource=content&type=" + encodeURIComponent(tipo), { headers: { "Accept": "application/json" } })
+      fetch(API_BASE + "index?resource=content&type=" + encodeURIComponent(tipo), { headers: { "Accept": "application/json" } })
         .then(function (r) { return r.ok ? r.json() : null; })
         .then(function (data) {
           if (!data || !data.ok || !data.items || !data.items.length) return; // usamos el HTML
@@ -154,7 +161,7 @@
   function loadBlog() {
     var caja = $("[data-blog-list]");
     if (!caja || !window.fetch) return;
-    fetch(API_BASE + "index.php?resource=blog&limit=9", { headers: { "Accept": "application/json" } })
+    fetch(API_BASE + "index?resource=blog&limit=9", { headers: { "Accept": "application/json" } })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (data) {
         if (!data || !data.ok || !data.items || !data.items.length) return;
@@ -167,7 +174,7 @@
   function loadTeam() {
     var caja = $("[data-team-list]");
     if (!caja || !window.fetch) return;
-    fetch(API_BASE + "index.php?resource=team", { headers: { "Accept": "application/json" } })
+    fetch(API_BASE + "index?resource=team", { headers: { "Accept": "application/json" } })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (data) {
         if (!data || !data.ok || !data.items || !data.items.length) return;
@@ -301,7 +308,7 @@
      ========================================================================== */
   function loadSiteData() {
     if (!window.fetch) return;
-    fetch(API_BASE + "index.php?resource=settings", { headers: { "Accept": "application/json" } })
+    fetch(API_BASE + "index?resource=settings", { headers: { "Accept": "application/json" } })
       .then(function (res) { return res.ok ? res.json() : null; })
       .then(function (data) {
         if (!data || !data.ok || !data.settings) return;
@@ -509,7 +516,7 @@
 
     if (!window.fetch) return;
     // Si hay sesión, el enlace de cabecera pasa a "Mi cuenta".
-    fetch(API_BASE + "index.php?resource=session", { headers: { "Accept": "application/json" }, credentials: "same-origin" })
+    fetch(API_BASE + "index?resource=session", { headers: { "Accept": "application/json" }, credentials: "same-origin" })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (data) {
         var loggedIn = !!(data && data.ok && data.logged_in);
@@ -537,7 +544,7 @@
   function cargarRankingFaq() {
     var caja = document.querySelector("[data-faq-ranked]");
     if (!caja || !window.fetch) return;
-    fetch(API_BASE + "index.php?resource=faqs", { headers: { "Accept": "application/json" } })
+    fetch(API_BASE + "index?resource=faqs", { headers: { "Accept": "application/json" } })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (data) {
         if (!data || !data.ok || !data.items || !data.items.length) return;
@@ -551,7 +558,7 @@
   function cargarTestimoniosUsuarios(forzar) {
     var track = document.querySelector(".testimonials__track");
     if (!track || !window.fetch) return;
-    fetch(API_BASE + "index.php?resource=testimonials", { headers: { "Accept": "application/json" } })
+    fetch(API_BASE + "index?resource=testimonials", { headers: { "Accept": "application/json" } })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (data) {
         if (!data || !data.ok || !data.items || !data.items.length) return;
@@ -1024,7 +1031,7 @@
     if (!q || !token) return;
 
     q.textContent = "Cargando reto…";
-    fetch(API_BASE + "index.php?action=captcha", { headers: { "Accept": "application/json" } })
+    fetch(API_BASE + "index?action=captcha", { headers: { "Accept": "application/json" } })
       .then(function (r) { return r.json(); })
       .then(function (d) {
         if (d && d.ok && d.challenge) {
@@ -1083,7 +1090,7 @@
 
   /* Pide un token CSRF a la API (lo guarda en la sesión del servidor). */
   function obtenerCsrf() {
-    return fetch(API_BASE + "index.php?action=csrf", { headers: { "Accept": "application/json" } })
+    return fetch(API_BASE + "index?action=csrf", { headers: { "Accept": "application/json" } })
       .then(function (r) { return r.json(); })
       .then(function (d) { return (d && d.csrf_token) || ""; })
       .catch(function () { return ""; });
@@ -1154,7 +1161,7 @@
     var lista = document.querySelector("[data-gr-list]");
     if (!lista || !window.fetch) return;
 
-    fetch(API_BASE + "index.php?resource=google_reviews", { headers: { "Accept": "application/json" } })
+    fetch(API_BASE + "index?resource=google_reviews", { headers: { "Accept": "application/json" } })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (data) {
         if (!data || !data.ok) return;
@@ -1228,7 +1235,7 @@
     var lista = document.querySelector("[data-tp-list]");
     if (!lista || !window.fetch) return;
 
-    fetch(API_BASE + "index.php?resource=trustpilot", { headers: { "Accept": "application/json" } })
+    fetch(API_BASE + "index?resource=trustpilot", { headers: { "Accept": "application/json" } })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (data) {
         if (!data || !data.ok || !data.items || !data.items.length) return;

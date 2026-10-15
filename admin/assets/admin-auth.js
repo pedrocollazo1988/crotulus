@@ -219,7 +219,7 @@
           var role = data && data.user && data.user.role;
           window.location.href = (role === "admin")
             ? (login.getAttribute("data-admin-url") || "admin/")
-            : (login.getAttribute("data-success-url") || "admin/account.php");
+            : (login.getAttribute("data-success-url") || "admin/account");
         });
       });
     }
@@ -232,7 +232,7 @@
         ev.preventDefault();
         if (!validateAll(reg)) return;
         submitForm(reg, null, "regError", function () {
-          window.location.href = reg.getAttribute("data-success-url") || "/admin/login.php?status=registered";
+          window.location.href = reg.getAttribute("data-success-url") || "/admin/login?status=registered";
         });
       });
     }
