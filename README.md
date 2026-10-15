@@ -1,339 +1,315 @@
 # C-ROTULUS S.U.R.L. — Sitio web corporativo
 
-Sitio web 100 % estático (HTML5, CSS3 y JavaScript vanilla) para C-ROTULUS S.U.R.L.,
-empresa de servicios tecnológicos. Consta de una **portada** (`index.html`, navegación
-por anclas) y una página **Empresa** (`empresa.html`). El frontend no usa frameworks,
-ni Node, ni paso de compilación: se sube tal cual a `public_html` de cualquier hosting
-compartido. Además incluye un **backend opcional en PHP** (sin dependencias externas)
-para el panel de administración, el formulario y la edición de contenido. Si no se usa
-PHP, la web estática funciona igual.
+Sitio web de C-ROTULUS S.U.R.L., empresa de servicios tecnológicos, con un
+**panel de administración** y una **API pública**. El sitio público sigue siendo
+HTML/CSS/JS estático; el backend es **Next.js 15 (App Router) + Prisma +
+PostgreSQL**, que se despliega de forma **nativa en Vercel** (sin PHP, sin
+contenedores y sin plan Pro).
 
-> **¿Vas a publicarlo?** Sigue la **[Guía de despliegue (DEPLOY.md)](DEPLOY.md)**:
-> desde subir los archivos por FTP hasta un VPS con Nginx, copias automáticas y CDN.
-> Incluye un diagnóstico (`php app/preflight.php`) que comprueba el hosting.
-> Si tu hosting es **Raiola Networks**, hay una guía propia paso a paso:
-> **[DEPLOY-RAIOLA.md](DEPLOY-RAIOLA.md)** (cPanel + LiteSpeed + Cloudflare).
+> **¿Vas a publicarlo en Vercel?** Sigue **[VERCEL.md](VERCEL.md)** (Neon +
+> variables de entorno + migraciones). Para un hosting clásico con SSH/cPanel,
+> **[DEPLOY.md](DEPLOY.md)**.
+
+---
 
 ## Estructura
 
 ```
-index.html               Portada (landing) con navegación por anclas
-empresa.html             Página "Empresa": Sobre nosotros (historia, misión, visión, valores) y Equipo
-css/styles.css           Estilos mobile-first (paleta de marca en :root)
-js/main.js               Interactividad en JS vanilla
-.htaccess                Reglas de Apache (caché, seguridad, protección de carpetas)
-robots.txt / sitemap.xml SEO
-DEPLOY.md                Guía de despliegue (básico → avanzado)
-DEPLOY-RAIOLA.md         Guía específica para Raiola Networks (cPanel + LiteSpeed)
-404.html                 Página de error personalizada (activa en .htaccess)
-app/preflight.php        Diagnóstico previo al despliegue (CLI o web con clave)
-deploy/
-  config.local.example.php  Plantilla de config de producción (cópiala a app/config.local.php)
-  deploy.sh                 Despliegue por SSH/rsync (nivel avanzado)
-  cron/backup.php           Copia de seguridad de la BD (MySQL/SQLite)
-  nginx/nginx.conf.example  Config de Nginx para VPS
-  raiola/                   Kit específico de Raiola (.htaccess, config de ejemplo)
-tools/build_zip.py       Regenera el paquete limpio para subir al hosting
-assets/img/
-  logo.png               Logo original (referencia)
-  logo-header.png        Logo para cabecera (fondo transparente)
-  logo-footer.png        Logo para el pie (sobre fondo oscuro)
-  favicon.png            Favicon basado en el logo
-  og-image.png           Imagen de vista previa para redes (1200x630)
-  hero-tech.svg          Ilustración de portada: transformación digital (marcador reemplazable)
-  equipo.svg             Ilustración "Sobre nosotros" (marcador reemplazable)
-  mapa.svg               Marcador de mapa          (reemplazable por iframe)
-  proyecto-web.svg       Proyecto: desarrollo web  (reemplazable por foto)
-  proyecto-ia.svg        Proyecto: automatización/IA (reemplazable por foto)
-  proyecto-redes.svg     Proyecto: redes y seguridad (reemplazable por foto)
+public/                     Sitio público estático (lo sirve Next tal cual)
+  index.html                Portada (navegación por anclas)
+  empresa.html              Página "Empresa" (historia, misión, visión, valores, equipo)
+  css/styles.css            Estilos mobile-first (paleta de marca en :root)
+  js/main.js                Interactividad en JS vanilla
+  assets/img/               Logo, favicon, ilustraciones SVG, fotos
+  assets/fonts/             Fuentes autoalojadas (Inter + Plus Jakarta Sans, woff2)
+  admin/assets/             CSS y JS del panel (login/registro)
+  robots.txt / sitemap.xml  SEO
+  404.html                  Página de error
+
+src/app/                    App Router de Next.js
+  layout.tsx                Layout raíz
+  api/                      API pública (route handlers)
+    index/route.ts          ?resource=settings|content|blog|team|faqs|reviews|
+                            google_reviews|trustpilot|testimonials|session
+                            ?action=csrf|captcha  y  ?resource=health
+    contact/route.ts        Formulario de contacto (CSRF + captcha + rate limit)
+    auth/route.ts           Login, registro, Google OAuth, verificación, reset
+    reviews/route.ts        Valoraciones de servicios/proyectos
+    submissions/route.ts    Aportaciones de usuarios (testimonios y preguntas)
+    verify/route.ts         Verificación de correo
+    logout/route.ts         Cierre de sesión
+  admin/                    Panel React (Server Actions)
+    login/ register/ forgot/ reset/ account/
+    page.tsx (mensajes)  content/ blog/ team/ reviews/ submissions/ settings/ users/
+
+src/lib/                    Lógica del backend (una lib por módulo del PHP antiguo)
+  db.ts                     Cliente Prisma (singleton)
+  config.ts defaults.ts     Configuración y valores por defecto
+  auth.ts session.ts        Usuarios y sesiones (cookie HttpOnly, token hasheado)
+  csrf.ts captcha.ts        Anti-CSRF y captcha aritmético firmado (HMAC)
+  rate-limit.ts             Límite por IP (upsert atómico en Postgres)
+  settings.ts content.ts    Ajustes y contenido editable
+  blog.ts team.ts faq.ts    Blog, equipo y FAQ ordenada por importancia
+  reviews.ts submissions.ts Valoraciones y aportaciones de usuarios
+  google-reviews.ts         Reseñas de Google Places (con caché)
+  trustpilot.ts             Trustpilot (widget oficial)
+  mailer.ts                 Correo (log / mail() / SMTP con Nodemailer)
+  validator.ts http.ts      Validación y respuestas JSON
+
+prisma/schema.prisma        Esquema PostgreSQL (13 modelos)
+prisma/migrations/          Migraciones versionadas
+scripts/seed.ts             Semilla (settings, contenido, blog, equipo, FAQ)
+scripts/migrate-sqlite-to-pg.ts  Importa los datos del SQLite antiguo
+tools/pgdev.sh              PostgreSQL portátil de desarrollo
+tools/serve-next.sh         Vista previa local (Next + PG + vigilante)
+legacy/                     Backend PHP + SQLite original (referencia, NO se despliega)
+vercel.json                 Config de Vercel (framework, build, región, cabeceras)
 ```
 
-## Paleta de marca
-
-Extraída del logo real: azul `#005AA5` (el "C-") y gris `#7A7A7A` (ROTULUS).
-Se edita toda en un solo sitio, las variables `:root` al inicio de `css/styles.css`:
-
-| Variable | Valor | Uso |
-|---|---|---|
-| `--color-primary` | `#005AA5` | Azul del logo (principal) |
-| `--color-primary-dark` | `#003F7D` | Degradados y hovers |
-| `--color-primary-soft` | `#EAF2FB` | Fondos suaves |
-| `--color-accent` | `#00C2B8` | Acento turquesa (nodos del circuito) |
-| `--color-heading` | `#7A7A7A` | Gris del logo: títulos grandes |
-| `--color-ink` | `#1F2A37` | Textos de cuerpo |
-| `--color-ink-soft` | `#6F6F6F` | Textos secundarios |
-| pie de página | `#08243D` | Fondo del pie (azul oscuro) |
-
-## Datos editables
-
-Los datos reales están marcados con corchetes y hay que sustituirlos antes de publicar:
-`[TELÉFONO]`, `[CORREO]`, `[DIRECCIÓN]`, `[CIUDAD]`, `[URL_...]`, `[AÑO DE FUNDACIÓN]`
-(también en el JSON-LD `LocalBusiness` de la cabecera).
-
-Aun así, **casi todo el texto del sitio se puede cambiar sin tocar el código**
-desde el panel (`admin/settings.php`, pestaña **Textos**): portada, cifras de
-confianza, cuerpo de «Sobre nosotros», cabeceras de cada sección y pie. La web
-lee esos valores de la base de datos al cargar (vía `api/index.php?resource=settings`)
-y, si el backend no responde, se queda con lo escrito en `index.html`.
-Los valores por defecto viven en `app/config.php` (bloque `defaults`).
-
-## Formulario
-
-Envía al **backend propio incluido** (`api/contact.php`), que valida los datos en
-el servidor, aplica protección CSRF, límite de envíos por IP y guarda cada mensaje
-en la base de datos (visible en el panel de administración).
-
-Si prefieres un servicio externo (Formspree, etc.), cambia el endpoint en los dos
-sitios: el atributo `action` del `<form>` en `index.html` y la constante
-`FORM_ENDPOINT` en `js/main.js`.
+---
 
 ## Arranque local
 
 ```bash
-# PHP 8 + extensión pdo_sqlite (o pdo_mysql). No hace falta instalar nada más:
-php -S localhost:8000 -t .
-# abre http://localhost:8000
+# 1. PostgreSQL portátil (se instala solo si hace falta)
+bash tools/pgdev.sh --ensure        # escucha en 127.0.0.1:5432
+
+# 2. Variables de entorno
+cp .env.example .env.local          # rellena DATABASE_URL, DIRECT_URL, APP_KEY...
+
+# 3. Dependencias y esquema
+npm install
+npx prisma migrate deploy           # crea las tablas
+npm run db:seed                     # contenido de ejemplo (solo tablas vacías)
+
+# 4. Servidor de desarrollo
+npm run dev                         # http://localhost:12000
 ```
 
-### Servidor de vista previa en este entorno (solo desarrollo)
+Atajos útiles:
 
-Este sandbox se **recrea entre sesiones** y solo persiste `/workspace`, así que PHP
-puede desaparecer. Para que la web no deje de mostrarse hay un **PHP portátil** en
-`/workspace/.php-runtime` y un script que lo sirve y lo vigila:
+| Comando | Qué hace |
+|---|---|
+| `npm run dev` | Next.js en modo desarrollo (puerto 12000) |
+| `npm run build` | `prisma generate && next build` (producción) |
+| `npm start` | Sirve el build de producción (puerto 12000) |
+| `npm run typecheck` | Comprueba tipos TypeScript |
+| `npm run db:push` | Sincroniza el esquema sin crear migración |
+| `npm run db:seed` | Siembra datos (no pisa lo que ya exista) |
+| `npm run db:migrate-sqlite -- <ruta.sqlite>` | Importa el SQLite antiguo |
+
+### Vista previa en este entorno (solo desarrollo)
+
+El sandbox se **recrea entre sesiones** y solo persiste `/workspace`, donde viven
+el PostgreSQL portátil (`/workspace/.pg-runtime`) y `node_modules`. Para dejarlo
+todo arrancado (con un vigilante que lo revive cada 15 s):
 
 ```bash
-bash tools/serve.sh --ensure   # arranca en :12000 + vigilante en segundo plano
-bash tools/serve.sh --watch    # vigilante en primer plano (revive cada 15 s)
+bash tools/serve-next.sh --ensure   # Postgres + Next en :12000 + vigilante
+bash tools/serve-next.sh --watch    # vigilante en primer plano
+bash tools/serve-next.sh --prod     # compila y arranca "next start"
 ```
 
-Es idempotente y no crea servidores duplicados. `tools/` queda excluido del ZIP de
-despliegue. En un hosting real **no hace falta**: PHP está siempre activo.
+Es idempotente (no crea servidores duplicados). `tools/` queda excluido de
+Vercel. En producción **no hace falta**: Vercel arranca la app por su cuenta.
 
-Sin configurar nada, el proyecto arranca con **SQLite** (archivo en `app/data/`)
-y el correo en modo **log** (`app/data/mail.log`), ideal para probar.
+---
 
-# ============================================================================
-#  BACKEND (PHP + base de datos) — deployment en hosting con dominio
-# ============================================================================
+## Base de datos (PostgreSQL)
 
-## Qué incluye
+El esquema Prisma (`prisma/schema.prisma`) es una migración 1:1 de las tablas del
+backend PHP, con mejoras que aprovecha Postgres:
 
+| PHP (SQLite/MySQL) | PostgreSQL (Prisma) |
+|---|---|
+| `meta` TEXT (`json_encode`) | `Json` (JSONB) |
+| `is_active` INT (0/1) | `Boolean` |
+| `php_sessions` | se elimina (sesiones nativas de Next) |
+| `rate_limits` (leer + escribir) | upsert atómico (`ON CONFLICT`) |
+
+Tablas: `users`, `sessions`, `tokens`, `contact_messages`, `rate_limits`,
+`settings`, `content_items`, `user_submissions`, `reviews`, `blog_posts`,
+`team_members`, `google_reviews`, `audit_log`.
+
+- **Neon (producción):** usa la cadena del **pooler** en `DATABASE_URL` y la
+  directa en `DIRECT_URL` (ver [VERCEL.md](VERCEL.md)).
+- **Local:** `tools/pgdev.sh` crea el clúster con usuario `crotulus`, base
+  `crotulus`, en `/workspace/.pg-runtime`.
+
+### Importar los datos del SQLite antiguo
+
+```bash
+npm run db:migrate-sqlite -- legacy/app/data/c-rotulus.sqlite
 ```
-api/          Endpoints JSON (contacto, autenticación, ajustes, contenido, salud)
-admin/        Panel de administración (mensajes, contenido, ajustes, usuarios)
-app/          Núcleo: config, bootstrap, lib/ (db, auth, security, mailer, ...)
-app/schema.sql  Esquema de la base de datos para crear las tablas a mano
-.htaccess     Reglas de Apache (protege app/ y fuerza HTTPS)
-```
 
-## Base de datos
+Conserva los IDs originales, convierte `meta` a JSONB y reajusta las secuencias
+(`setval`) para que los `INSERT` nuevos no choquen. Es idempotente: omite las
+tablas que ya tienen filas (`--force` para reimportar). No migra `sessions` ni
+`tokens` (son efímeros).
 
-El backend soporta **MySQL/MariaDB** (recomendado en hosting) y **SQLite** (sin
-configuración, ideal para pruebas o hostings muy básicos). Se elige con
-`db.driver` en `app/config.php`.
+---
 
-Las tablas se crean **solas** la primera vez que se abre el sitio:
-`users`, `sessions`, `tokens`, `contact_messages`, `rate_limits`, `settings`,
-`content_items`. Si tu proveedor no permite crear tablas en ejecucion, importa
-`app/schema.sql` desde phpMyAdmin.
+## Datos editables (sin tocar código)
+
+Casi todo el texto del sitio se cambia desde el panel
+(`/admin/settings`, pestaña **Textos**): portada, cifras de confianza, cuerpo de
+«Sobre nosotros», cabeceras de cada sección y pie. La web lee esos valores de la
+base de datos al cargar (`/api/index?resource=settings`) y, si el backend no
+responde, se queda con lo escrito en `index.html`.
+
+Los valores por defecto viven en `src/lib/defaults.ts`. Los datos reales de
+contacto (teléfono, correo, dirección, redes) están en la tabla `settings` y se
+editan en **Ajustes · Contacto**.
+
+---
+
+## Formulario de contacto
+
+`POST /api/contact` valida en el servidor, aplica **CSRF**, **captcha** propio,
+campo trampa (`_gotcha`) y **límite por IP**, y guarda cada mensaje en
+`contact_messages` (visible en el panel). El aviso por correo sale según la
+configuración `MAIL_*`.
+
+---
 
 ## Seguridad aplicada
 
-- **Contraseñas**: hash con `password_hash()` (bcrypt) y política de longitud.
-- **Sesiones**: cookie `HttpOnly`, `SameSite=Lax`, `Secure` bajo HTTPS; el token
-  se guarda hasheado en la base de datos y se rota al iniciar sesión.
-- **CSRF**: cada formulario (web y panel) lleva un token; el JS lo pide a
-  `api/index.php?action=csrf`. Las peticiones sin token se rechazan.
-- **Fuerza bruta**: limite de intentos de login y de envios del formulario por IP.
-- **Entradas**: validación y saneado en servidor; el contenido dinámico se escapa
-  en el navegador (defensa XSS). El campo del mapa solo admite URLs `https://`.
-- **Anti-spam**: campo trampa (`_gotcha`) y limite por IP.
-- **Acceso al panel**: solo usuarios con `role = admin`. El **primer usuario**
+- **Contraseñas:** hash con bcrypt (`bcryptjs`) y política de longitud.
+- **Sesiones:** cookie `HttpOnly`, `SameSite=Lax`, `Secure` bajo HTTPS; el token
+  se guarda **hasheado** en la base de datos y se rota al iniciar sesión.
+- **CSRF:** cada formulario lleva un token (`/api/index?action=csrf`); las
+  peticiones sin token se rechazan.
+- **Fuerza bruta:** límite de intentos de login y de envíos por IP
+  (`rate_limits`, upsert atómico).
+- **Captcha:** reto aritmético firmado con HMAC (`APP_KEY`) y caducidad.
+- **Entradas:** validación y saneado en servidor; el contenido dinámico se escapa
+  (defensa XSS). El campo del mapa solo admite URLs `https://`.
+- **Acceso al panel:** solo usuarios con `role = admin`. El **primer usuario**
   registrado se convierte en administrador automáticamente.
+- **Cabeceras:** `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`,
+  `Permissions-Policy` y `Cross-Origin-Opener-Policy` (en `next.config.mjs`).
+
+---
 
 ## Autenticación
 
 - **Correo + contraseña** con verificación por enlace y recuperación de contraseña.
-- **Google OAuth 2.0** (boton "Continuar con Google").
-- Para activar Google: crea credenciales en Google Cloud Console y rellena
-  `google.client_id` y `google.client_secret` en `app/config.php`.
-  URI de redireccion autorizada:
-  `https://TU-DOMINIO/api/auth.php?action=google_callback`
+- **Google OAuth 2.0** (botón «Continuar con Google»).
+- Para activar Google: crea credenciales en Google Cloud Console y define
+  `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`. URI de redirección:
+  `https://TU-DOMINIO/api/auth?action=google_callback`.
+  Si Google no está configurado, **Ajustes · Google** muestra la URI exacta para
+  copiar y el botón aparece desactivado hasta rellenar las credenciales.
 
-  *Ruta rápida:* entra en **Ajustes** del panel. Si Google aún no está configurado,
-  verás la URI de redirección exacta lista para copiar en Google Cloud. Al pegar
-  `client_id` y `client_secret` en `app/config.php` (o en `app/config.local.php`),
-  el botón «Continuar con Google» aparece solo en la pantalla de acceso.
+---
 
-## Correo real (envío de verificación y avisos)
+## Correo
 
-El formulario de contacto **envía el aviso a `crotulus.mipyme@gmail.com`**
-(ajuste «Correo que recibe los avisos»). Ese destino ya viene puesto por
-defecto. Para que el envío salga de verdad solo falta la **contraseña de
-aplicación de Gmail**: el resto (SMTP de Gmail, puerto 587, usuario y destino)
-ya está configurado.
+El formulario de contacto envía el aviso a `MAIL_TO` (por defecto
+`crotulus.mipyme@gmail.com`). El modo de envío se elige con `MAIL_TRANSPORT`:
 
-El modo de envío se elige en `app/config.php`, apartado `mail`:
-
-| `transport` | Qué hace | Cuándo usarlo |
+| `MAIL_TRANSPORT` | Qué hace | Cuándo usarlo |
 |---|---|---|
-| `log` | No envía; escribe en `app/data/mail.log` | Pruebas locales |
-| `mail` | Usa la función `mail()` del hosting | Hosting sencillo |
-| `smtp` | Conecta a tu servidor SMTP (con TLS/SSL y autenticación) | **Recomendado** |
+| `log` | No envía; escribe en `app-data/mail.log` | Pruebas locales |
+| `mail` | Usa la función `mail()` del sistema | Hosting sencillo |
+| `smtp` | Conecta a tu servidor SMTP (TLS/SSL + auth) | **Recomendado** |
 
-Para correo real, pon `transport` a `smtp` y rellena `smtp_host`, `smtp_port`,
-`smtp_user`, `smtp_pass` y `smtp_secure` (`tls` en el 587, `ssl` en el 465).
-Después, en **Ajustes**, pulsa **«Enviar correo de prueba»** para comprobar que
-funciona sin esperar a un registro real. Ejemplo con Gmail:
-
-```php
-'mail' => [
-    'transport'   => 'smtp',
-    'from_email'  => 'crotulus.mipyme@gmail.com', // o vacío = usa smtp_user
-    'from_name'   => 'C-ROTULUS',
-    'to_email'    => 'crotulus.mipyme@gmail.com', // quién recibe los avisos
-    'smtp_host'   => 'smtp.gmail.com',
-    'smtp_port'   => 587,
-    'smtp_user'   => 'crotulus.mipyme@gmail.com',
-    'smtp_pass'   => 'contrasena-de-aplicacion', // Contraseña de aplicación de Google
-    'smtp_secure' => 'tls',
-],
-```
+Para correo real, pon `MAIL_TRANSPORT=smtp` y rellena `MAIL_SMTP_HOST`,
+`MAIL_SMTP_PORT`, `MAIL_SMTP_USER`, `MAIL_SMTP_PASS` y `MAIL_SMTP_SECURE`
+(`tls` en 587, `ssl` en 465). Luego pulsa **«Enviar correo de prueba»** en
+**Ajustes · Correo** para comprobar el envío sin esperar a un registro real.
 
 > En Gmail/Google Workspace necesitas una **contraseña de aplicación** (no la de
-> tu cuenta). Otros proveedores (IONOS, Hostinger, Outlook...) dan datos SMTP
-> equivalentes en su panel.
+> tu cuenta). Otros proveedores dan datos SMTP equivalentes en su panel.
 
-> Nota técnica: el aviso se envía como HTML con el `<style>` en una sola línea.
-> El mailer pliega las líneas largas al límite de 1000 bytes de SMTP
-> (`mailer_fold_lines()`), porque servidores estrictos rechazan el mensaje con
-> `500 Line too long` y el formulario diría «ok» sin que llegue el correo.
-
-### Poner el correo a punto con Gmail (paso a paso)
-
-1. En la cuenta de Gmail, activa la **verificación en dos pasos**:
-   `myaccount.google.com/security`.
-2. Crea una **contraseña de aplicación** en `myaccount.google.com/apppasswords`
-   (16 caracteres). Cópiala; solo se muestra una vez.
-3. Entra en el panel (`/admin/`), pestaña **Ajustes · Correo** y rellena:
-   - Método de envío: **SMTP (recomendado)**
-   - Servidor: `smtp.gmail.com` · Puerto `587` · Seguridad `STARTTLS`
-   - Usuario SMTP: tu dirección completa de Gmail
-   - Contraseña SMTP: la **contraseña de aplicación**
-   - Correo que recibe los avisos: la dirección donde quieres los mensajes
-     (por ejemplo, la misma de Gmail)
-   - Correo del remitente (From): déjalo **vacío** o pon el mismo Gmail
-     (Gmail exige que el remitente coincida con la cuenta autenticada)
-4. Pulsa **«Guardar correo»** y luego **«Enviar correo de prueba»**. Verás
-   *«Correo de prueba enviado…»* o el **motivo exacto** del fallo.
-5. Haz una prueba real: envía el formulario de contacto de la web y comprueba
-   que el aviso llega a la bandeja (revisa también *Spam* la primera vez).
-
-**Errores frecuentes y qué significan**
+**Errores frecuentes**
 
 | Mensaje | Causa | Solución |
 |---|---|---|
-| `535-5.7.8 Username and Password not accepted` | Se usó la contraseña normal, no la de aplicación | Genera una contraseña de aplicación |
-| `550`/`553 From address not allowed` | El remitente no coincide con la cuenta Gmail | Deja «From» vacío o pon tu Gmail |
-| `No se pudo conectar a smtp.gmail.com:587` | El hosting bloquea la salida SMTP | Usa el correo del propio hosting (`mail()`) o pide que abran el puerto |
-| El aviso no llega aunque diga «enviado» | Fue a *Spam* o el destinatario está mal | Revisa Spam y el «Correo que recibe los avisos» |
+| `535-5.7.8 Username and Password not accepted` | Se usó la contraseña normal | Genera una contraseña de aplicación |
+| `550`/`553 From address not allowed` | El remitente no coincide con la cuenta | Deja `MAIL_FROM_NAME`/from vacío o pon tu Gmail |
+| No se pudo conectar a `smtp...:587` | El hosting bloquea la salida SMTP | Usa el correo del propio hosting o abre el puerto |
+| El aviso no llega aunque diga «enviado» | Fue a *Spam* o el destino está mal | Revisa Spam y `MAIL_TO` |
 
-## Valoraciones y reseñas de servicios y proyectos
+---
 
-Los clientes pueden puntuar con estrellas cada servicio y proyecto (1-5) y dejar
-un comentario. Se guardan en tu base de datos y se moderan en el panel.
+## Valoraciones, reseñas y aportaciones
 
-- **En la web** (sección *Valoraciones*): selector de qué valorar (empresa,
-  servicio o proyecto), estrellas, nombre, correo opcional y opinión. Se muestra la
-  media y el listado de reseñas aprobadas.
-- **En el panel** (`/admin/reviews.php`): aprobar, rechazar o eliminar, con filtros
-  por estado y contador de pendientes.
-- **Ajustes** (`/admin/settings.php`): activar/desactivar el módulo, publicar
-  automáticamente sin moderar, y elegir herramienta externa.
-- **Trustpilot**: la vía fiable es el **widget oficial (TrustBox)**. En Ajustes pega
-  el enlace de tu ficha y el *Business Unit ID*; la web muestra tus reseñas reales
-  en la sección de valoraciones (carrusel o mini estrellas, a elegir).
-  La nota media que ve el visitante combina tus valoraciones propias con las de
-  Trustpilot. Opciones: `trustpilot`, `google` o `custom` (solo valoraciones propias).
+- **Valoraciones propias** (`reviews`): los clientes puntúan servicios y proyectos
+  (1-5 + comentario). Se moderan en `/admin/reviews`.
+- **Reseñas de Google** (`google_reviews`): se leen de Google Places API y se
+  cachean en la BD (`/api/index?resource=google_reviews`). Sin credenciales, la
+  web conserva las reseñas de ejemplo del HTML.
+- **Trustpilot**: la vía fiable es el **widget oficial (TrustBox)**. En Ajustes se
+  pega el enlace de la ficha y el *Business Unit ID*.
+- **Aportaciones** (`user_submissions`): testimonios y preguntas que envían los
+  visitantes; se moderan en `/admin/submissions`. Las FAQ se ordenan por
+  importancia (peso manual + cuántos preguntaron lo mismo).
 
-  > Trustpilot bloquea (HTTP 403) la lectura automática de su web, por eso no se
-  > rastrean las reseñas: el widget oficial es la forma correcta y sin API key.
-
-- **Anti-abuso**: token CSRF, campo trampa y límite por IP (`review_rate_max`).
-
-## Pasos para publicar en el hosting
-
-1. Sube todo el contenido a `public_html` (FTP o el gestor de archivos).
-2. Copia `app/config.php` a `app/config.local.php` y edita ahi:
-   - datos de MySQL (`host`, `name`, `user`, `password`),
-   - `site_url` con tu dominio (`https://www.c-rotulus.com`),
-   - `security.app_key` con una cadena larga y aleatoria,
-   - `mail` (SMTP de tu proveedor, o `mail` para usar `mail()`),
-   - `google` si quieres el acceso con Google.
-3. Asegura permisos de escritura en `app/data/` (solo si usas SQLite o modo log).
-4. Entra en `https://TU-DOMINIO/admin/` y **registra el primer usuario** (será el
-   administrador). Verifica el correo si el envío está configurado.
-5. En el panel, revisa **Ajustes** (teléfono, correo, dirección, mapa, redes) y
-   **Contenido** (servicios, proyectos, testimonios, FAQ, proceso).
-
-> `app/config.local.php` **no** debe subirse a un repositorio público: contiene
-> contraseñas. Ya está excluido en `.gitignore`.
-
-## Mapa
-
-En el panel, **Ajustes → Mapa**, pega la URL de *incrustacion* de Google Maps
-(Compartir → Insertar un mapa → copia solo el `src` del iframe, debe empezar por
-`https://www.google.com/maps/embed?...`). La web la carga automáticamente en la
-sección de Contacto. También puedes poner un enlace "Como llegar" con
-`google_maps_url`. Si lo dejas vacio, se muestra la imagen `assets/img/mapa.svg`.
+---
 
 ## Panel de administración
 
-El acceso al panel está enlazado desde la web pública: el enlace **Acceder** de
-la cabecera y del pie apunta a `admin/login.php`. El panel comparte la identidad
-visual del sitio (mismas tipografias, azul de marca y tarjetas).
+El enlace **Acceder** de la cabecera y del pie apunta a `/admin/login`. El panel
+comparte la identidad visual del sitio.
 
 | Sección | Qué hace |
 |---|---|
 | Mensajes | Bandeja con los mensajes del formulario (estado, borrado) |
 | Contenido | CRUD de servicios, proyectos, testimonios, FAQ y proceso |
-| Valoraciones | Modera las reseñas de servicios y proyectos (aprobar/rechazar/borrar) |
-| Ajustes | Datos de contacto, mapa, redes, correo de prueba, valoraciones y Google |
-| Textos | Portada, cifras, «Sobre nosotros», cabeceras de sección y pie (editables sin código) |
+| Blog | Artículos (título, slug, extracto, cuerpo, categoría, autor, imagen) |
+| Equipo | Miembros (nombre, cargo, biografía, contacto, avatar) |
+| Valoraciones | Modera las reseñas (aprobar/rechazar/borrar) |
+| Aportaciones | Modera testimonios y preguntas de los usuarios |
+| Ajustes | Contacto, textos, correo de prueba, reseñas, seguridad, Google, rutas |
 | Usuarios | Cuentas: activar, desactivar, cambiar rol y borrar |
 
-**Acceso y contraseñas:**
-- Iniciar sesión: `/admin/login.php` · Crear cuenta: `/admin/register.php`
-- Recuperar contraseña: `/admin/forgot.php` (enlace válido 1 hora)
-- Restablecer: `/admin/reset.php?token=...` (lo envia el correo)
-- El primer usuario registrado se convierte automáticamente en administrador.
+- Iniciar sesión: `/admin/login` · Crear cuenta: `/admin/register`
+- Recuperar contraseña: `/admin/forgot` · Restablecer: `/admin/reset?token=...`
+- El primer usuario registrado se convierte en administrador.
 
-**Validaciones** (cliente en `admin/assets/admin-auth.js` y servidor en
-`app/lib/validator.php` y `api/auth.php`, siempre las mismas reglas):
-- Correo con formato válido y longitud máxima.
-- Contraseña: mínimo `security.password_min` (8 por defecto) caracteres,
-  con letra y número; medidor de fortaleza en el registro.
-- Repetición de contraseña coincidente.
-- Nombre entre 2 y 120 caracteres.
-- Proteccion CSRF en todos los formularios y limite de intentos por IP
-  (login, registro y recuperación).
+**Validaciones** (cliente y servidor, siempre las mismas reglas):
+correo válido, contraseña con mínimo de caracteres + letra + número, repetición
+coincidente, nombre de 2 a 120 caracteres, CSRF y límite de intentos por IP.
 
-## Vista previa local
+---
 
-```bash
-php -S localhost:8000 -t .
-# abre http://localhost:8000
-```
+## Compatibilidad de URLs
 
-## Pendiente antes de publicar
+`next.config.mjs` reescribe las rutas `.php` antiguas a las nuevas, para no tocar
+`public/js/main.js`: `api/index.php → /api/index`, `api/contact.php → /api/contact`,
+`admin/login.php → /admin/login`, etc. Las URLs limpias `/` y `/empresa` también
+están declaradas.
 
-- Sustituir los datos `[...]` por los reales (o hacerlo desde el panel).
-- Configurar MySQL y `security.app_key` en `app/config.local.php`.
-- Configurar el correo (SMTP) para verificación y recuperación.
-- Opcional: credenciales de Google OAuth y fotos reales en los proyectos.
+---
+
+## Paleta y tipografías
+
+Paleta oficial del cliente (idéntica en `public/css/styles.css` y
+`public/admin/assets/admin.css`):
+
+| Variable | Valor | Uso |
+|---|---|---|
+| `--color-primary` | `#136493` | Azul petróleo (principal) |
+| `--color-primary-dark` | `#0E4E75` | Degradados y hovers |
+| `--color-primary-soft` | `#E7F1F8` | Fondos suaves |
+| `--color-navy` | `#0B2E45` | Fondos oscuros (hero, pie) |
+| `--color-accent` | `#2E86B8` | Azul de acento |
+| `--color-ice` | `#C5E2F2` | Azul hielo (texto claro sobre azul) |
+| `--color-steel` | `#BDBDBD` | Gris neutro (bordes, placa) |
+
+Tipografías autoalojadas en `public/assets/fonts/` (sin Google Fonts ni CDN):
+**Inter** para el cuerpo e **Plus Jakarta Sans** para los titulares.
+
+---
 
 ## Notas de mantenimiento
 
-- **Versionado de recursos (cache):** `index.html` carga `css/styles.css?v=20261013f` y `js/main.js?v=20261013f`. Al editar el CSS o el JS, sube ese número (p. ej. `?v=20261014`) para que los navegadores no usen la versión guardada en cache.
-- **Panel:** `admin.css` y `admin-auth.js` usan la constante `APP_ASSET_VERSION` de `app/bootstrap.php`. Sube ese valor al editarlos para forzar la recarga.
-- **Animacion de aparicion:** el contenido es visible por defecto; solo se anima cuando `js/main.js` anade la clase `.has-reveal-anim` a `<html>`. Si el JS no se ejecuta (o el navegador sirve uno antiguo), las secciones se ven igualmente, y hay una red de seguridad que revela todo tras unos segundos.
+- **Caché de recursos:** `index.html` carga `css/styles.css?v=...` y
+  `js/main.js?v=...`. Al editar el CSS o el JS, sube ese número para que los
+  navegadores no usen la versión guardada.
+- **Animación de aparición:** el contenido es visible por defecto; solo se anima
+  cuando `js/main.js` añade `.has-reveal-anim` a `<html>`. Si el JS no se ejecuta,
+  las secciones se ven igualmente.
+- **Backend PHP antiguo:** vive en `legacy/` como referencia. No se ejecuta ni se
+  despliega; se conserva para consultar la paridad de comportamiento.

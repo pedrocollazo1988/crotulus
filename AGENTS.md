@@ -1,42 +1,69 @@
 # AGENTS.md — Notas del proyecto C-ROTULUS
 
-Sitio corporativo estatico (HTML/CSS/JS vanilla) + panel PHP de administracion.
+Sitio corporativo de C-ROTULUS S.U.R.L.
 
-## ⚠️ Commits: pedir aprobacion SIEMPRE (LEER PRIMERO)
+> ⚠️ **El proyecto esta migrando de PHP + SQLite/MySQL a Next.js 15 + PostgreSQL
+> (Neon), desplegable de forma nativa en Vercel.** Lee la seccion
+> "Migracion a Next.js + PostgreSQL" al final de este documento ANTES de tocar
+> nada. El backend PHP antiguo vive intacto en `legacy/` solo como referencia y
+> **no se ejecuta**.
+
+## ⚠️ Commits y aprobaciones: solo lo importante (LEER PRIMERO)
 
 **No hacer `git commit` ni `git push` sin la aprobacion explicita del usuario.**
 Regla del propietario del repositorio: antes de confirmar cambios en git, mostrar
 el resumen/`git diff` y **esperar a que el usuario diga que sí**. Se pueden hacer
 ediciones y pruebas libremente; lo que requiere permiso es **consolidar en git**.
 
+**Granularidad de la aprobacion (preferencia del usuario):** pedir aprobacion
+**solo para el PLAN GENERAL y para las FASES mas importantes o criticas**. Todo lo
+demas (subfases, ajustes menores, correcciones, pruebas, tareas rutinarias) se
+hace de forma autonoma, sin pedir permiso en cada paso. Detenerse y consultar
+unicamente cuando:
+- se presenta o cambia el **plan general**,
+- se abre o cierra una **fase critica** (migracion de datos, seguridad/autenticacion,
+  despliegue en produccion, borrado/movimiento de datos o archivos, cambios que
+  rompen compatibilidad),
+- se va a **consolidar en git** (commit/push),
+- hay una **decision irreversible** o una duda real de criterio.
+
+Nunca pedir permiso para: editar codigo, probar, corregir errores, ajustar estilos,
+leer/inspeccionar archivos, ejecutar el servidor de vista previa o tareas menores
+dentro de una fase ya aprobada. Ante la duda, avanzar y reportar al cerrar la fase.
+
 
 ## ⚠️ Arranque automatico del servidor de vista previa (LEER PRIMERO)
 
-Este entorno se **recrea entre sesiones**: desaparecen PHP (`/usr`), `.bashrc`
-(`/home`) y los procesos. Solo persiste `/workspace`, donde vive un **PHP portatil**
-autonomo (`/workspace/.php-runtime`). **Al iniciar cualquier conversacion, ejecuta:**
+Este entorno se **recrea entre sesiones**: desaparecen los paquetes del sistema
+(`/usr`), `.bashrc` (`/home`) y los procesos. Solo persiste `/workspace`, donde
+viven el **PostgreSQL portatil** (`/workspace/.pg-runtime`) y `node_modules`.
+**Al iniciar cualquier conversacion, ejecuta:**
 
 ```bash
-bash tools/serve.sh --ensure
+bash tools/serve-next.sh --ensure
 ```
 
-Eso levanta (o deja ya levantado) el servidor en `0.0.0.0:12000` **y ademas deja un
-vigilante en segundo plano** que lo revive cada 15 s si se cae. Sin duplicados (flock)
-y sin volver a instalar nada: usa el PHP portatil de `/workspace`.
-Si solo quieres el vigilante en primer plano: `bash tools/serve.sh --watch`.
-Detalle completo en la seccion "Servidor de vista previa que se apaga" (abajo).
+Eso arranca PostgreSQL (si hace falta), levanta Next.js en `0.0.0.0:12000` **y deja
+un vigilante en segundo plano** que lo revive cada 15 s. Sin duplicados (flock).
+Si solo quieres el vigilante en primer plano: `bash tools/serve-next.sh --watch`.
+Para un build de produccion real: `bash tools/serve-next.sh --prod`.
+Detalle completo en la seccion "Migracion a Next.js + PostgreSQL" (abajo).
 
-## Arquitectura
+## Arquitectura (Next.js)
 
-- `index.html` — landing publica (una sola pagina, anclas + scroll suave).
-- `css/styles.css`, `js/main.js` — estilos y comportamiento del sitio publico.
-- `assets/img/` — logo, favicon, ilustraciones (SVG). Mantener permisos `644`.
-- `admin/` — panel (login, register, forgot, reset, index/mensajes, content, settings, users).
-- `admin/assets/admin.css`, `admin/assets/admin-auth.js` — UI y validacion del panel.
-- `api/auth.php`, `api/contact.php`, `api/verify.php`, `api/index.php` — endpoints.
-- `app/bootstrap.php` — constantes (`APP_ASSET_VERSION`) y arranque.
-- `app/lib/` — `helpers.php` (`url()`, `site_base_url()`), `security.php`, `validator.php`, `auth.php`, `settings.php`.
-- `app/config.php` / `app/config.local.php` — configuracion (local no se versiona).
+- `public/index.html`, `public/empresa.html` — sitio publico (HTML/CSS/JS estatico).
+  `public/css/styles.css`, `public/js/main.js`, `public/assets/` (imagenes, fuentes).
+- `src/app/` — App Router: paginas (`/`, `/admin/*`) y rutas de API (`/api/*`).
+- `src/lib/` — logica del backend (una lib por modulo del PHP antiguo): `db.ts`
+  (Prisma), `auth.ts`, `session.ts`, `csrf.ts`, `captcha.ts`, `settings.ts`,
+  `content.ts`, `blog.ts`, `team.ts`, `reviews.ts`, `submissions.ts`, `faq.ts`,
+  `mailer.ts`, `google-reviews.ts`, `trustpilot.ts`, `validator.ts`, `config.ts`.
+- `prisma/schema.prisma` — esquema PostgreSQL (13 modelos) + `prisma/migrations/`.
+- `scripts/seed.ts` — semilla de datos; `scripts/migrate-sqlite-to-pg.ts` — importa
+  los datos del SQLite antiguo.
+- `tools/pgdev.sh` — PostgreSQL portatil de desarrollo; `tools/serve-next.sh` —
+  vista previa (Next + PG).
+- `legacy/` — backend PHP + SQLite original (referencia historica, NO se despliega).
 
 ## Convenciones
 
@@ -74,6 +101,40 @@ Hay Chromium en `/usr/bin/chromium`. Para comprobar JS real en el navegador se u
 Node (`WebSocket` nativo) y `--user-data-dir` nuevo por ejecucion para evitar cache.
 Los formularios del panel llevan `novalidate` para que los mensajes salgan del JS
 (validacion nativa y validacion propia no se pisan).
+
+Para **auditar el layout** (botones deformes, desalineaciones, desbordes) se abre
+Chromium con `--headless=new --remote-debugging-port=9222` y se miden los elementos
+con `getBoundingClientRect`/`getComputedStyle` a varios anchos (1440/1280/1024/820/
+600/390). Al interpretar los resultados: comparar cajas de **contenido**
+(`x + paddingLeft`), no de borde; ignorar lo que viva dentro de un `overflow-x:auto`
+(p. ej. `.table-wrap`); y comparar los **centros** de los botones (no la `y`) para
+detectar si una fila se ha partido en dos lineas.
+
+## CSS del panel: regla global `form` (IMPORTANTE)
+
+En `public/admin/assets/admin.css` la regla global `form { background:#fff; border;
+padding:1.35rem; box-shadow }` convierte **cualquier** formulario en tarjeta. Eso
+deformaba el `<form>` de "Salir" del topbar (87px de alto) y creaba caja dentro de
+caja en Ajustes/Mi cuenta (un `<form>` que contiene `.settings-card`). Los envoltorios
+se excluyen con `form.inline, form:has(> .settings-card), .settings-card form`.
+Al añadir formularios nuevos, tenlo en cuenta. `.btn` mantiene una escala coherente
+(~41px normal, 32px `.btn--sm`) con `white-space:nowrap`; el topbar usa
+`.topbar__inner` con el mismo ancho que `.wrap` para que todo alinee.
+
+## Formularios POST, CSRF y redirecciones (panel Next.js)
+
+- **Todo `<form method="post">` que llame a una Server Action con `csrfVerify()`
+  necesita su campo oculto `<input type="hidden" name="_csrf" value={csrf} />`**
+  (`csrf` sale de `csrfToken()`; el layout y las páginas son server components).
+  Si falta, la accion responde `419` y el boton parece "no hacer nada". Le paso al
+  boton "Salir" del topbar: apuntaba a `POST /api/auth?action=logout` sin `_csrf`.
+- El boton "Salir" usa ahora `/api/logout`, que **redirige** a `/admin/login`
+  (el `?action=logout` de `api/auth` devuelve JSON crudo).
+- **Redirecciones tras un proxy**: `new URL(ruta, req.url)` produce el host interno
+  (`https://localhost:12000`). Usar `requestOrigin(req)` de `src/lib/http.ts`.
+- **No ejecutar `npm run build` con `next dev` en marcha**: corrompe `.next`
+  (`Cannot read properties of undefined (reading 'call')`). Parar el servidor,
+  borrar `.next` y relanzar `tools/serve-next.sh --ensure`, o usar `--prod`.
 
 ## Pruebas manuales utiles (curl)
 
@@ -684,3 +745,86 @@ Evidencia real sobre `crotulus.vercel.app` y los deployments de GitHub:
 - `VERCEL.md` reescrito con la sección 0 (diagnóstico del 403) y la Opción B como
   recomendada.
 
+
+
+## Migracion a Next.js + PostgreSQL (2026-10-15)
+
+Motivo: **Vercel no ejecuta PHP** (y su firewall bloquea las URLs `.php`). En lugar
+de contenedores o del plan Pro, se reescribio el backend en **Next.js 15 (App Router)
++ Prisma + PostgreSQL**, que Vercel ejecuta de forma nativa.
+
+### Que se conserva y que cambia
+- **Sitio publico**: sigue siendo HTML/CSS/JS estatico, ahora en `public/`
+  (`index.html`, `empresa.html`, `css/`, `js/`, `assets/`). Sin cambios de diseno.
+- **Backend**: las rutas de `api/*.php` y `admin/*.php` se reescriben a rutas de
+  Next (`src/app/api/*`, `src/app/admin/*`). El panel pasa de PHP a React con
+  **Server Actions** (misma validacion CSRF).
+- **Base de datos**: de SQLite/MySQL a **PostgreSQL**. El esquema Prisma
+  (`prisma/schema.prisma`) es una migracion 1:1 con mejoras: `meta` TEXT -> `Json`
+  (JSONB), `is_active` INT -> `Boolean`, se elimina `php_sessions`, y `rate_limits`
+  usa upsert atomico.
+- **PHP antiguo**: intacto en `legacy/` (no se ejecuta ni se despliega).
+
+### Compatibilidad de URLs (rewrites)
+`next.config.mjs` reescribe las rutas `.php` antiguas a las nuevas, para no tocar
+`js/main.js`: `api/index.php` -> `/api/index`, `admin/login.php` -> `/admin/login`,
+etc. Las URLs limpias `/` y `/empresa` tambien estan declaradas.
+
+### Desarrollo local
+```bash
+bash tools/pgdev.sh --ensure        # PostgreSQL portatil en 127.0.0.1:5432
+cp .env.example .env.local          # y rellena DATABASE_URL / DIRECT_URL / APP_KEY
+npm install
+npx prisma migrate deploy           # crea las tablas
+npm run db:seed                     # contenido de ejemplo (solo tablas vacias)
+bash tools/serve-next.sh --ensure   # Next en 0.0.0.0:12000 + vigilante
+```
+Credenciales locales de Postgres: usuario `crotulus`, base `crotulus`, en
+`/workspace/.pg-runtime`. La contrasena de desarrollo la define `tools/pgdev.sh`.
+
+### Importar datos del SQLite antiguo
+```bash
+npm run db:migrate-sqlite -- legacy/app/data/c-rotulus.sqlite
+```
+Conserva los IDs originales, convierte `meta` a JSONB y reajusta las secuencias
+(`setval`) al terminar. Es idempotente: omite tablas que ya tienen filas
+(`--force` para reimportar). No migra `sessions` ni `tokens` (son efimeros).
+
+### Despliegue en Vercel + Neon
+1. Crea la base en **Neon** (o cualquier Postgres) y copia dos cadenas:
+   `DATABASE_URL` (host **pooler**, para el runtime serverless) y `DIRECT_URL`
+   (sin pooler, para las migraciones).
+2. En Vercel > Settings > Environment Variables define: `DATABASE_URL`,
+   `DIRECT_URL`, `APP_SITE_URL`, `APP_KEY`, `MAIL_*` (SMTP), `GOOGLE_*` (opcional).
+3. `vercel.json` ya trae `framework: nextjs`, `buildCommand: prisma generate &&
+   next build` y la region `iad1`.
+4. Tras el primer deploy, aplica las migraciones contra Neon:
+   `DATABASE_URL=... DIRECT_URL=... npx prisma migrate deploy` y siembra con
+   `npm run db:seed` (o importa el SQLite).
+5. **Limite de 12 funciones (plan Hobby)**: se evita porque cada *ruta* de Next es
+   una funcion agrupada; no hay una funcion por archivo como con `vercel-php`.
+
+### Variables de entorno
+`.env.example` documenta todas: `DATABASE_URL`, `DIRECT_URL`, `APP_SITE_URL`,
+`APP_KEY`, `TZ`, `MAIL_TRANSPORT/HOST/PORT/USER/PASS/SECURE/FROM_NAME/TO`,
+`GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_PLACES_API_KEY`.
+`.gitignore` **protege** `.env` y `.env.local` (nunca se suben).
+
+### Verificado de extremo a extremo (2026-10-15)
+- Build de produccion: `prisma generate && next build` compila sin errores.
+- API: `resource=health` -> `driver: pgsql`; settings/content/blog/team/faqs/reviews/
+  google_reviews/trustpilot/testimonials/session responden con la forma correcta.
+- Formulario de contacto: CSRF + captcha (campo `captcha`, no `captcha_answer`) ->
+  `{"ok":true}` y fila en `contact_messages`.
+- Panel: login, registro, forgot, reset y las 9 secciones (mensajes, contenido, blog,
+  equipo, valoraciones, aportaciones, ajustes, usuarios, cuenta) devuelven 200;
+  guardar ajustes con Server Action -> `?ok=Ajustes guardados.`
+- `testimonials` devuelve `items: []` **a proposito**: el endpoint lista
+  aportaciones aprobadas de usuarios (`user_submissions`), no los testimonios de
+  ejemplo de la portada, que salen de `content_items` (paridad con el PHP antiguo).
+
+### Herramientas locales
+- `tools/pgdev.sh` — PostgreSQL portatil (`--ensure` / `--stop` / `--reset`).
+- `tools/serve-next.sh` — vista previa Next + PG (`--ensure` / `--watch` / `--prod`).
+- `tools/serve.sh` — servidor PHP antiguo (ya no se usa; se conserva por referencia).
+- `tools/build_zip.py` — empaquetado del sitio estatico (heredado del hosting PHP).

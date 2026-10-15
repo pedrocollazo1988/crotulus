@@ -1,154 +1,176 @@
-# Caso de uso · Despliegue en Vercel (C-ROTULUS)
+# Despliegue en Vercel · C-ROTULUS (Next.js + PostgreSQL)
 
-Esta guía explica cómo publicar C-ROTULUS **completo** (web estática + panel PHP
-+ API) en **Vercel**, usando la **opción B (contenedor)**.
+Guia para publicar C-ROTULUS **completo** (web estatica + panel + API) en Vercel,
+sin contenedores y sin plan Pro.
 
-> **Conclusión corta:** sí se puede tener *todo* en Vercel, con dos condiciones:
-> 1) empaquetar el backend en **un contenedor** (FrankenPHP/Caddy) en vez de 21
->    funciones serverless, y 2) usar **URLs sin `.php`**, porque el firewall de
->    Vercel bloquea cualquier petición terminada en `.php`. La base de datos es
->    **externa** (MySQL/Postgres); el contenedor no guarda archivos.
-
----
-
-## 0. El error `403 Forbidden` al pulsar «Acceder» (diagnóstico)
-
-Si ves `Forbidden` con un identificador tipo `sfo1::…` / `cle1::…`, **no lo genera
-tu PHP**: lo genera el **firewall (WAF) de Vercel**. La cabecera de respuesta lo
-confirma:
-
-    x-vercel-mitigated: deny     (<- bloqueo duro)
-
-Comprobado con peticiones reales: Vercel bloquea **cualquier URL terminada en
-`.php`** (`/index.php`, `/api/index.php`, `/admin/login.php`, `/wp-admin`…),
-mientras que las rutas sin `.php` **no** se bloquean. Por eso la aplicación usa
-**URLs limpias** (ver sección 4).
+> **Resumen:** el backend esta reescrito en **Next.js 15 + Prisma + PostgreSQL**,
+> que Vercel ejecuta de forma nativa. La base de datos vive en **Neon** (Postgres
+> externo). El backend PHP antiguo queda en `legacy/` como referencia y **no se
+> despliega**.
 
 ---
 
-## 1. Por qué un contenedor (y no funciones sueltas)
+## 0. Por que NO se usa el backend PHP en Vercel
 
-El **plan Hobby limita a 12 funciones serverless por despliegue**. Este proyecto
-tiene **21 archivos `.php`** (`admin/` + `api/`), así que un despliegue por
-funciones **falla con**:
+Dos motivos, comprobados con peticiones reales:
 
-    Error: No more than 12 Serverless Functions can be added to a Deployment on the Hobby plan.
+1. **El firewall (WAF) de Vercel bloquea cualquier URL terminada en `.php`.**
+   La respuesta trae `x-vercel-mitigated: deny` / `challenge` y `server: Vercel`.
+   Afecta a `/index.php`, `/api/index.php`, `/admin/login.php`, `/wp-admin`...
+2. **El plan Hobby limita a 12 funciones serverless por despliegue.** El backend
+   PHP tiene 21 archivos (15 en `admin/` + 6 en `api/`); con `vercel-php` cada
+   archivo seria 1 funcion y el build falla con
+   `No more than 12 Serverless Functions can be added to a Deployment`.
 
-La solución: un único **servicio de tipo contenedor** (`Dockerfile.vercel`) con
-un servidor web real (**FrankenPHP + Caddy**) que ejecuta PHP. Es **una sola
-función**, así que respeta el límite. El *Container Runtime* de Vercel está en
-**beta y disponible en todos los planes**, incluido Hobby.
-
----
-
-## 2. Archivos de la opción B (ya en el repo)
-
-| Archivo | Para qué sirve |
-|---|---|
-| `Dockerfile.vercel` | Construye la imagen (PHP 8.4 + extensiones) y arranca FrankenPHP. |
-| `Caddyfile` | Servidor web: raíz `/app`, `try_files` con URLs limpias. |
-| `vercel.json` | Declara el `service` contenedor y enruta todo el tráfico a él. |
-| `.dockerignore` | No copia `.git`, datos locales ni docs a la imagen. |
-| `.vercelignore` | Qué NO se sube a Vercel (credenciales, herramientas, docs). |
+**Solucion adoptada:** reescribir el backend en Next.js (App Router). Cada *ruta*
+de Next es **una** funcion agrupada, no una por archivo, asi que el limite de 12
+no se alcanza. La base de datos es externa (Neon).
 
 ---
 
-## 3. Base de datos (obligatoria y externa)
+## 1. Crear la base de datos en Neon
 
-El contenedor de Vercel **no conserva archivos** (se apaga al no haber tráfico).
-Por tanto la base de datos **debe ser externa**:
+1. Entra en <https://neon.tech>, crea un proyecto (region `us-east-1` / `aws`,
+   para que quede cerca de la region `iad1` de Vercel).
+2. Copia **dos** cadenas de conexion:
+   - **`DATABASE_URL`** — la del **pooler** (`...-pooler...`). La usa el runtime
+     serverless, que abre muchas conexiones cortas.
+   - **`DIRECT_URL`** — la directa, **sin** pooler. La usan las migraciones.
+3. Anade `?sslmode=require` si Neon no lo incluye ya.
 
-- **Neon (PostgreSQL)** — recomendado para Vercel, plan gratuito, certificado SSL.
-- **MySQL/MariaDB gestionado** (Raiola, Aiven, Clever Cloud, Railway…).
-- **SQLite** solo para pruebas locales.
+---
 
-Configura las credenciales con **variables de entorno** en Vercel
-(Project -> Settings -> Environment Variables). `app/config.php` ya las lee:
+## 2. Subir el proyecto a Vercel
 
-| Variable | Ejemplo (Neon) | Notas |
+### Opcion A · Con la CLI
+
+```bash
+npm i -g vercel
+vercel login
+vercel            # despliegue de vista previa
+vercel --prod     # despliegue de produccion
+```
+
+### Opcion B · Con GitHub
+
+Conecta el repositorio en el panel de Vercel. `vercel.json` ya define:
+`framework: nextjs`, `buildCommand: prisma generate && next build` y la region
+`iad1`.
+
+---
+
+## 3. Variables de entorno
+
+En **Vercel > Project > Settings > Environment Variables** (marca *Production*,
+*Preview* y *Development*), define:
+
+| Variable | Obligatoria | Valor |
 |---|---|---|
-| `DB_DRIVER` | `pgsql` | `pgsql`, `mysql` o `sqlite` |
-| `DB_HOST` | `ep-xxx-pooler.eu-central-1.aws.neon.tech` | host de Neon |
-| `DB_PORT` | `5432` | 5432 en Postgres |
-| `DB_NAME` | `neondb` | |
-| `DB_USER` | `neondb_owner` | |
-| `DB_PASSWORD` | (secreto) | |
-| `DB_SSLMODE` | `require` | **Neon exige SSL** |
-| `APP_SITE_URL` | `https://www.c-rotulus.com` | Sin barra final |
-| `APP_KEY` | (clave larga) | Firma de sesiones/CSRF |
-| `SESSION_HANDLER` | `database` | Sesiones en la BD (recomendado en Vercel) |
-| `MAIL_SMTP_USER`, `MAIL_SMTP_PASS`, `MAIL_TO` | … | Correo |
+| `DATABASE_URL` | Si | Cadena del **pooler** de Neon |
+| `DIRECT_URL` | Si | Cadena directa (sin pooler) de Neon |
+| `APP_SITE_URL` | Si | `https://tu-dominio.com` |
+| `APP_KEY` | Si | Cadena larga y aleatoria (firma CSRF/captcha) |
+| `MAIL_TRANSPORT` | No | `smtp` (recomendado), `mail` o `log` |
+| `MAIL_SMTP_HOST` | Si `smtp` | `smtp.gmail.com` |
+| `MAIL_SMTP_PORT` | Si `smtp` | `587` |
+| `MAIL_SMTP_USER` | Si `smtp` | Tu cuenta SMTP |
+| `MAIL_SMTP_PASS` | Si `smtp` | Contrasena de aplicacion |
+| `MAIL_SMTP_SECURE` | No | `tls` (587) o `ssl` (465) |
+| `MAIL_FROM_NAME` | No | `C-ROTULUS` |
+| `MAIL_TO` | No | Destino de los avisos del formulario |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | No | Para el login con Google |
+| `GOOGLE_PLACES_API_KEY` | No | Para las resenas de Google en vivo |
 
-> Sin `DB_*` la web carga (contenido por defecto) pero el panel y el formulario
-> devuelven error de conexión. El esquema se crea **solo** en la primera conexión.
+Genera `APP_KEY` con, por ejemplo: `openssl rand -hex 32`.
 
-### Pasos con Neon (PostgreSQL)
+Con la CLI:
+```bash
+vercel env add DATABASE_URL production
+vercel env add DIRECT_URL production
+vercel env add APP_KEY production
+# ...
+vercel env pull .env.local   # para desarrollo local
+```
 
-1. Crea un proyecto en **neon.tech** y copia la cadena de conexión
-   (*Connection string*). Usa el host **pooler** (`...-pooler...`) para Vercel.
-2. En Vercel añade las variables de la tabla con los valores de Neon
-   (`DB_DRIVER=pgsql`, `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_SSLMODE=require`).
-3. **Redeploy** y abre `/admin/login`: se crean las tablas y podrás **crear tu
-   cuenta de administrador**.
-
----
-
-## 4. URLs limpias (imprescindible en Vercel)
-
-La app **enlaza siempre a URLs sin `.php`**:
-
-| URL pública | Archivo real |
-|---|---|
-| `/admin/login` | `admin/login.php` |
-| `/api/contact` | `api/contact.php` |
-| `/empresa` | `empresa.html` |
-
-Esto lo resuelve:
-- **En Vercel:** el `Caddyfile` (`try_files {path} {path}.php {path}.html …`).
-- **En un hosting Apache (Raiola):** las reglas de reescritura del `.htaccess`.
-
-En PHP se centraliza en `url()` (`app/lib/helpers.php`) y en el front, en
-`withBackend()` (`js/main.js`). **No hay que cambiar nada más.**
+> `.gitignore` protege `.env` y `.env.local`: **nunca** se suben al repositorio.
 
 ---
 
-## 5. Primer despliegue en Vercel
+## 4. Aplicar el esquema y sembrar datos
 
-1. Importa el repositorio en Vercel (producción = rama `main`).
-2. **Settings -> Environment Variables**: añade las `DB_*` y `APP_SITE_URL`.
-3. **Settings -> Functions** (si aplica): deja el *Container Runtime* activado.
-4. Despliega. En **Deployments** verás el build y, al terminar, la URL.
-5. Comprueba:
-   - `/` y `/empresa` cargan.
-   - `/admin/login` responde `200` (no `403`).
-   - El formulario de contacto guarda el mensaje.
+Las migraciones se ejecutan **desde tu maquina** apuntando a Neon (no en el build,
+para no bloquear el despliegue):
 
-> **Vista previa (preproducción):** en **Deployments**, el despliegue marcado
-> *Preview* tiene botón **Visit**. Por defecto, las previews están **protegidas**
-> (pide iniciar sesión en Vercel). Para verlas sin login: **Settings ->
-> Deployment Protection** -> ajusta *Vercel Authentication* (solo Preview).
+```bash
+# 1. Crea las tablas
+DATABASE_URL="postgresql://...-pooler.../neondb?sslmode=require" \
+DIRECT_URL="postgresql://.../neondb?sslmode=require" \
+npx prisma migrate deploy
 
----
+# 2. Siembra contenido de ejemplo (solo en tablas vacias)
+DATABASE_URL="..." DIRECT_URL="..." npm run db:seed
 
-## 6. Alternativa clásica: Raiola (sin contenedor)
+# 3. (Opcional) Importa los datos del SQLite antiguo
+DATABASE_URL="..." DIRECT_URL="..." npm run db:migrate-sqlite -- legacy/app/data/c-rotulus.sqlite
+```
 
-Si prefieres **no depender del beta de contenedores**, la vía más sencilla sigue
-siendo publicar en un **hosting con PHP** (Raiola): ahí no hay límite de 12
-funciones ni firewall anti-`.php`. El backend es el mismo y las **URLs limpias
-del `.htaccess`** ya están preparadas. Guía paso a paso en **`DEPLOY-RAIOLA.md`**.
-
-En ese caso, en Vercel se puede publicar solo la web estática (rama `main`) y
-apuntar el panel al hosting con PHP con `BACKEND_URL` en `js/main.js`
-(`var BACKEND_URL = "https://www.c-rotulus.com";`).
+> Si no tienes el SQLite original, salta el paso 3: el paso 2 crea contenido de
+> ejemplo y el panel permite editarlo.
 
 ---
 
-## 7. Probar el contenedor en local (opcional)
+## 5. Dominio, correo y Google
 
-Requiere Docker instalado:
+- **Dominio:** Vercel > Settings > Domains. Anade tu dominio y sigue las DNS.
+  Actualiza `APP_SITE_URL` y el `[DOMINIO]` de `public/sitemap.xml` /
+  `public/robots.txt`.
+- **Correo:** usa una **contrasena de aplicacion** de Gmail (no la contrasena
+  normal) y verifica el envio con el boton "Enviar correo de prueba" del panel
+  (Ajustes > Correo).
+- **Google OAuth:** registra la URI de redireccion exacta que muestra
+  Ajustes > Google (`https://tu-dominio.com/api/auth?action=google_callback`).
 
-    docker build -f Dockerfile.vercel -t crotulus .
-    docker run --rm -p 8080:80 -e DB_DRIVER=sqlite -e APP_SITE_URL=http://localhost:8080 crotulus
-    # abre http://localhost:8080
+---
 
-(SQLite sirve solo para pruebas locales; en producción usa MySQL/Postgres.)
+## 6. Comprobar que funciona
+
+```bash
+curl -s https://tu-dominio.com/api/index.php?resource=health
+# -> {"ok":true,"status":"ok","driver":"pgsql"}
+
+curl -s -o /dev/null -w "%{http_code}\n" https://tu-dominio.com/
+curl -s -o /dev/null -w "%{http_code}\n" https://tu-dominio.com/admin/login
+```
+
+- `health` debe responder `driver: pgsql` (si dice otra cosa, `DATABASE_URL` es
+  incorrecta).
+- La portada debe cargar los textos de la BD (telefono, servicios, blog...).
+- El login del panel debe funcionar y las tablas mostrar filas.
+
+---
+
+## 7. Problemas frecuentes
+
+| Sintoma | Causa probable | Solucion |
+|---|---|---|
+| `403 Forbidden` en `/admin` | WAF de Vercel con *Attack Challenge Mode* / *Bot Protection* | Desactivalo en Settings > Security, o accede con navegador real |
+| `P1001: Can't reach database` | `DATABASE_URL` mal o Neon suspendido | Revisa la cadena y reactiva el proyecto Neon |
+| `too many connections` | Se usa la cadena directa en runtime | Usa la del **pooler** en `DATABASE_URL` |
+| El login falla con "token invalido" | `APP_KEY` cambia entre despliegues | Fija `APP_KEY` como variable de entorno estable |
+| El formulario dice OK pero no llega correo | SMTP mal configurado | Revisa `MAIL_*` y usa el boton de prueba del panel |
+| Build falla en `prisma generate` | Falta `DIRECT_URL` | Anade ambas variables antes del build |
+
+---
+
+## 8. Estructura del despliegue
+
+```
+public/            Sitio publico estatico (index.html, empresa.html, css, js, assets)
+src/app/api/       API publica (settings, content, blog, team, faqs, reviews, contact...)
+src/app/admin/     Panel React (Server Actions)
+prisma/            Esquema + migraciones PostgreSQL
+vercel.json        Config de Vercel (framework, build, region, cabeceras)
+```
+
+Cada carpeta de ruta (`src/app/api/<x>`) es **una** funcion serverless: muy por
+debajo del limite de 12 del plan Hobby.

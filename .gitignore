@@ -1,22 +1,44 @@
 # ============================================================================
-#  Archivos que NO deben subirse al hosting ni a Git
+#  C-ROTULUS (Next.js + PostgreSQL) - Archivos que NO van a Git
 # ============================================================================
 
-# Configuracion local (contiene contrasenas) y datos generados
+# --- Secretos y configuracion local (NUNCA subir) ---------------------------
+.env
+.env.*
+!.env.example
+config.local.php
 app/config.local.php
-app/data/*
-!app/data/.gitignore
-!app/data/.htaccess
-!app/data/index.html
 
-# Sistema
+# --- Backend PHP antiguo: datos y configuracion -----------------------------
+legacy/app/data/*
+!legacy/app/data/.gitignore
+!legacy/app/data/.htaccess
+!legacy/app/data/index.html
+legacy/app/config.local.php
+
+# --- Dependencias y artefactos de compilacion -------------------------------
+node_modules/
+.next/
+out/
+build/
+*.tsbuildinfo
+next-env.d.ts
+
+# --- Datos locales de desarrollo (PostgreSQL portatil, logs, correo) --------
+app-data/
+*.log
+
+# --- Memoria del agente (local, no se versiona) ---
+.openhands/
+
+# --- Sistema ---
 .DS_Store
 Thumbs.db
 *.swp
 .agent_tmp/
 
-# Artefacto de empaquetado (se regenera con tools/build_zip.py)
+# --- Artefacto de empaquetado (se regenera con tools/build_zip.py) ----------
 /c-rotulus-sitio.zip
 
-# Capturas de vista previa (artefactos de desarrollo)
+# --- Capturas de vista previa (artefactos de desarrollo) --------------------
 /preview/

@@ -1,24 +1,29 @@
 # ============================================================================
-#  .vercelignore  —  Qué NO se sube a Vercel (opción B: contenedor)
+#  .vercelignore  -  Que NO se sube a Vercel (C-ROTULUS: Next.js + Postgres)
 # ----------------------------------------------------------------------------
-#  Con el contenedor (Dockerfile.vercel + Caddyfile) SÍ subimos el backend PHP
-#  completo (api/, admin/, app/): lo ejecuta FrankenPHP dentro de la imagen.
-#  Solo excluimos datos sensibles, herramientas y documentación interna.
+#  El despliegue es NATIVO de Next.js: Vercel construye la app y ejecuta las
+#  rutas de /api y /admin como funciones serverless (una sola funcion agrupada
+#  por ruta, muy por debajo del limite de 12 del plan Hobby). La base de datos
+#  es PostgreSQL externa (Neon), por lo que no se sube ningun dato.
 # ============================================================================
 
-# --- NUNCA subir credenciales ni datos locales -----------------------------
-config.local.php
-app/config.local.php
-app/data/*.sqlite
-app/data/*.sqlite-*
-app/data/*.log
+# --- Secretos y datos locales (NUNCA subir) --------------------------------
+.env
+.env.*
+!.env.example
+app-data/
+*.log
+*.sqlite
+*.sqlite-*
+
+# --- Backend PHP antiguo (se conserva en el repo como referencia) ----------
+legacy/
 
 # --- Herramientas y artefactos de desarrollo -------------------------------
 tools/
 preview/
 .agent_tmp/
 c-rotulus-sitio.zip
-deploy/
 
 # --- Documentacion interna (no hace falta publicarla) ----------------------
 AGENTS.md

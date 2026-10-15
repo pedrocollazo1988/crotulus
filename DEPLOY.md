@@ -1,5 +1,12 @@
 # Guía de despliegue de C-ROTULUS
 
+> ⚠️ **Aviso (2026-10-15):** el backend se migró de **PHP + SQLite/MySQL** a
+> **Next.js 15 + PostgreSQL**. Esta guía describe el despliegue del **backend PHP
+> antiguo**, que ahora vive en `legacy/` como referencia y **ya no se usa**. Para
+> el despliegue actual (Vercel + Neon, o un VPS con Node) usa **[VERCEL.md](VERCEL.md)**
+> y la sección "Arranque local" del **[README.md](README.md)**. Esta guía se
+> conserva solo por si necesitas consultar el backend PHP histórico.
+
 Esta guía lleva el sitio desde lo **más básico** (subir archivos por FTP a un
 hosting gratuito) hasta lo **más avanzado** (VPS con Nginx, SSH, copias
 automáticas y CDN). Elige tu nivel y sigue solo esa parte.
