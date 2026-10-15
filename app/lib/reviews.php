@@ -118,7 +118,8 @@ function review_set_status(int $id, string $status): bool
 function trustpilot_domain(): string
 {
     $url = trim((string) setting('trustpilot_url', ''));
-    if ($url === '' || !filter_var($url, FILTER_VALIDATE_URL)) {
+    // Ignora la URL de ejemplo sin configurar (marcador entre corchetes).
+    if ($url === '' || str_contains($url, '[') || !filter_var($url, FILTER_VALIDATE_URL)) {
         return '';
     }
     $path = trim((string) parse_url($url, PHP_URL_PATH), '/'); // p. ej. "review/miempresa.com"

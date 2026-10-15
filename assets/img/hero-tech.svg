@@ -1,103 +1,106 @@
-<!-- Ilustración HERO: transformación digital (marcador editable, reemplazable por una foto real) -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Ilustración de la transformación digital: de los sistemas tradicionales a la nube, los datos y la automatización">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Panel de control de C-ROTULUS con gráficas, servicios en la nube y una red de datos conectada">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#071729"/><stop offset="1" stop-color="#0B2440"/></linearGradient>
-    <linearGradient id="path" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#1E88E5"/><stop offset="1" stop-color="#00C2B8"/></linearGradient>
-    <linearGradient id="cloud" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#CFE6FA"/></linearGradient>
-    <linearGradient id="bar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#00C2B8"/><stop offset="1" stop-color="#0E6FB8"/></linearGradient>
-    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="6"/></filter>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F6FBFF"/><stop offset="1" stop-color="#CCE5F4"/></linearGradient>
+    <linearGradient id="scr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3E93C4"/><stop offset="1" stop-color="#136493"/></linearGradient>
+    <linearGradient id="bar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7FC0E0"/><stop offset="1" stop-color="#136493"/></linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7FC0E0"/><stop offset="1" stop-color="#2E86B8" stop-opacity="0"/></linearGradient>
+    <radialGradient id="orb" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#8ECBEA"/><stop offset="1" stop-color="#136493"/></radialGradient>
+    <filter id="soft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="14"/></filter>
+    <filter id="ds" x="-25%" y="-25%" width="150%" height="150%"><feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#0B2E45" flood-opacity=".18"/></filter>
+    <clipPath id="clip"><rect width="640" height="480" rx="24"/></clipPath>
+    <style>
+      .f{animation:f 7s ease-in-out infinite}
+      .f2{animation:f 8.6s ease-in-out infinite;animation-delay:-2.1s}
+      .f3{animation:f 9.8s ease-in-out infinite;animation-delay:-4.3s}
+      .trace{stroke-dasharray:7 9;animation:dash 10s linear infinite}
+      .pulse{animation:pulse 3.4s ease-in-out infinite}
+      @keyframes f{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+      @keyframes dash{to{stroke-dashoffset:-160}}
+      @keyframes pulse{0%,100%{opacity:.30}50%{opacity:1}}
+      @media (prefers-reduced-motion: reduce){.f,.f2,.f3,.trace,.pulse{animation:none}}
+    </style>
   </defs>
-  <rect width="640" height="480" rx="20" fill="url(#bg)"/>
-  <g stroke="#1E88E5" stroke-width="1" opacity=".10">
-    <path d="M160 0 V480"/>
-    <path d="M320 0 V480"/>
-    <path d="M480 0 V480"/>
-    <path d="M0 120 H640"/>
-    <path d="M0 240 H640"/>
-    <path d="M0 360 H640"/>
-  </g>
-  <g fill="#1E88E5" opacity=".22">
-    <circle cx="96" cy="110" r="4"/>
-    <circle cx="556" cy="74" r="4"/>
-    <circle cx="70" cy="222" r="3"/>
-    <circle cx="606" cy="286" r="3"/>
-    <circle cx="300" cy="60" r="3"/>
-  </g>
-  <g>
-    <rect x="46" y="300" width="64" height="120" rx="7" fill="#1B3E62"/>
-    <rect x="56" y="312" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.28"/>
-    <rect x="56" y="334" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.42"/>
-    <rect x="56" y="356" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.56"/>
-    <rect x="56" y="378" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.70"/>
-    <rect x="72" y="312" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.70"/>
-    <rect x="72" y="334" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.28"/>
-    <rect x="72" y="356" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.42"/>
-    <rect x="72" y="378" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.56"/>
-    <rect x="88" y="312" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.56"/>
-    <rect x="88" y="334" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.70"/>
-    <rect x="88" y="356" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.28"/>
-    <rect x="88" y="378" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.42"/>
-    <rect x="104" y="252" width="60" height="168" rx="7" fill="#245176"/>
-    <rect x="114" y="264" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.28"/>
-    <rect x="114" y="286" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.42"/>
-    <rect x="114" y="308" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.56"/>
-    <rect x="114" y="330" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.70"/>
-    <rect x="114" y="352" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.28"/>
-    <rect x="114" y="374" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.42"/>
-    <rect x="130" y="264" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.70"/>
-    <rect x="130" y="286" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.28"/>
-    <rect x="130" y="308" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.42"/>
-    <rect x="130" y="330" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.56"/>
-    <rect x="130" y="352" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.70"/>
-    <rect x="130" y="374" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.28"/>
-    <rect x="158" y="322" width="52" height="98" rx="7" fill="#173A5C"/>
-    <rect x="168" y="334" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.28"/>
-    <rect x="168" y="356" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.42"/>
-    <rect x="168" y="378" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.56"/>
-    <rect x="184" y="334" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.70"/>
-    <rect x="184" y="356" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.28"/>
-    <rect x="184" y="378" width="8" height="9" rx="2" fill="#7FC3F2" opacity="0.42"/>
-  </g>
-  <path d="M170 300 C300 300 330 182 470 160" fill="none" stroke="url(#path)" stroke-width="14" stroke-linecap="round" opacity=".22" filter="url(#glow)"/>
-  <path d="M170 300 C300 300 330 182 470 160" fill="none" stroke="url(#path)" stroke-width="4.5" stroke-linecap="round"/>
-  <path d="M462 150 L478 160 L462 170 Z" fill="#00C2B8"/>
-  <g fill="#00C2B8">
-    <rect x="236" y="282" width="8" height="8" rx="2" opacity=".85"/>
-    <rect x="326" y="228" width="8" height="8" rx="2" opacity=".85"/>
-    <rect x="404" y="182" width="8" height="8" rx="2" opacity=".85"/>
-    <rect x="448" y="159" width="8" height="8" rx="2" opacity=".85"/>
-  </g>
-  <g>
-    <circle cx="170" cy="300" r="10" fill="#0B2440" stroke="#1E88E5" stroke-width="3"/>
-    <circle cx="170" cy="300" r="3.5" fill="#FFFFFF"/>
-    <circle cx="300" cy="268" r="10" fill="#0B2440" stroke="#1E88E5" stroke-width="3"/>
-    <circle cx="300" cy="268" r="3.5" fill="#FFFFFF"/>
-    <circle cx="400" cy="196" r="10" fill="#0B2440" stroke="#1E88E5" stroke-width="3"/>
-    <circle cx="400" cy="196" r="3.5" fill="#FFFFFF"/>
-  </g>
-  <g transform="translate(470 118)">
-    <ellipse cx="52" cy="40" rx="70" ry="24" fill="#00C2B8" opacity=".18" filter="url(#glow)"/>
-    <path d="M28 70 a22 22 0 0 1 -2 -44 a28 28 0 0 1 52 -10 a24 24 0 0 1 30 22 a18 18 0 0 1 -4 32 Z" fill="url(#cloud)"/>
-    <g stroke="#0E6FB8" stroke-width="2.4" opacity=".7" fill="none">
-      <path d="M44 80 V96"/><path d="M62 80 V92"/><path d="M80 80 V96"/>
+  <g clip-path="url(#clip)">
+    <rect width="640" height="480" fill="url(#bg)"/>
+
+    <!-- Circuitos de fondo: trazas tenues con nodos que laten -->
+    <g class="trace" stroke="#2E86B8" fill="none" stroke-width="2" opacity=".30">
+      <path d="M28 70 H150 V128"/>
+      <path d="M612 96 H512 V164"/>
+      <path d="M36 430 V356 H120"/>
+      <path d="M616 420 V348 H520"/>
+      <path d="M150 128 L120 356"/>
     </g>
-    <g fill="#0E6FB8" opacity=".8">
-      <circle cx="44" cy="101" r="3"/><circle cx="62" cy="97" r="3"/><circle cx="80" cy="101" r="3"/>
+    <g class="pulse" fill="#5FA8C9"><circle cx="150" cy="128" r="6"/><circle cx="512" cy="164" r="6"/><circle cx="120" cy="356" r="6"/></g>
+    <g fill="#2E86B8" opacity=".55"><circle cx="150" cy="128" r="3"/><circle cx="512" cy="164" r="3"/><circle cx="120" cy="356" r="3"/></g>
+
+    <!-- Halo de marca -->
+    <circle cx="500" cy="110" r="150" fill="url(#glow)" opacity=".55" filter="url(#soft)"/>
+
+    <!-- Tarjeta flotante: Nube -->
+    <g class="f3" filter="url(#ds)">
+      <rect x="452" y="52" width="140" height="74" rx="16" fill="#FFFFFF"/>
+      <rect x="452" y="52" width="6" height="74" rx="3" fill="#2E86B8"/>
+      <path d="M492 66 a14 14 0 0 1 -1.5 -28 a18 18 0 0 1 34 -6 a15 15 0 0 1 18 14 a12 12 0 0 1 -3 20 z" fill="none" stroke="#136493" stroke-width="2.6"/>
+      <path d="M486 92 h26 l6 14 h-38 z" fill="#2E86B8"/>
+      <rect x="478" y="108" width="66" height="6" rx="3" fill="#C5E2F2"/>
     </g>
-  </g>
-  <g>
-    <rect x="392" y="366" width="22" height="64" rx="5" fill="url(#bar)" opacity=".92"/>
-    <rect x="432" y="338" width="22" height="92" rx="5" fill="url(#bar)" opacity=".92"/>
-    <rect x="472" y="310" width="22" height="120" rx="5" fill="url(#bar)" opacity=".92"/>
-    <rect x="512" y="280" width="22" height="150" rx="5" fill="url(#bar)" opacity=".92"/>
-    <rect x="552" y="248" width="22" height="182" rx="5" fill="url(#bar)" opacity=".92"/>
-  </g>
-  <path d="M386 366 L640 366" stroke="#1E88E5" stroke-width="1.6" opacity=".35"/>
-  <g transform="translate(150 150)" opacity=".9">
-    <path d="M0 -22 l7 5 8 -2 3 8 8 3 -2 8 5 7 -5 7 2 8 -8 3 -3 8 -8 -2 -7 5 -7 -5 -8 2 -3 -8 -8 -3 2 -8 -5 -7 5 -7 -2 -8 8 -3 3 -8 8 2 Z" fill="none" stroke="#1E88E5" stroke-width="2.2"/>
-    <circle cx="0" cy="0" r="6" fill="none" stroke="#1E88E5" stroke-width="2.2"/>
-  </g>
-  <g transform="translate(600 250)">
-    <path d="M0 -14 L4 -4 L14 0 L4 4 L0 14 L-4 4 L-14 0 L-4 -4 Z" fill="#00C2B8" opacity=".9"/>
+
+    <!-- Tarjeta flotante: Seguridad -->
+    <g class="f2" filter="url(#ds)">
+      <rect x="26" y="286" width="128" height="84" rx="16" fill="#FFFFFF"/>
+      <path d="M90 300 l20 7 v16 c0 14 -12 22 -20 26 c-8 -4 -20 -12 -20 -26 v-16 z" fill="#136493"/>
+      <path d="M82 328 l6 7 l12 -14" fill="none" stroke="#C5E2F2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="46" y="352" width="88" height="7" rx="3.5" fill="#E1EDF5"/>
+    </g>
+
+    <!-- Ventana principal: panel de control -->
+    <g filter="url(#ds)">
+      <rect x="150" y="104" width="360" height="256" rx="18" fill="#FFFFFF"/>
+      <rect x="150" y="104" width="360" height="40" rx="18" fill="url(#scr)"/>
+      <rect x="150" y="128" width="360" height="16" fill="url(#scr)"/>
+      <circle cx="172" cy="124" r="4.5" fill="#EAF4FA"/><circle cx="188" cy="124" r="4.5" fill="#8ECBEA"/><circle cx="204" cy="124" r="4.5" fill="#5FA8C9"/>
+      <rect x="300" y="116" width="120" height="16" rx="8" fill="#0E4E75" opacity=".55"/>
+      <!-- Barra lateral -->
+      <rect x="164" y="158" width="70" height="188" rx="12" fill="#EAF3FA"/>
+      <rect x="176" y="172" width="46" height="8" rx="4" fill="#136493"/>
+      <rect x="176" y="192" width="34" height="7" rx="3.5" fill="#9EC6E0"/>
+      <rect x="176" y="210" width="42" height="7" rx="3.5" fill="#9EC6E0"/>
+      <rect x="176" y="228" width="30" height="7" rx="3.5" fill="#9EC6E0"/>
+      <rect x="176" y="246" width="40" height="7" rx="3.5" fill="#9EC6E0"/>
+      <!-- Cabecera del panel -->
+      <rect x="250" y="164" width="150" height="12" rx="6" fill="#136493"/>
+      <rect x="250" y="184" width="96" height="8" rx="4" fill="#9EC6E0"/>
+      <!-- Grafica de barras -->
+      <rect x="250" y="204" width="152" height="124" rx="12" fill="#F5FAFE" stroke="#DCEBF5"/>
+      <g fill="url(#bar)">
+        <rect x="266" y="272" width="16" height="42" rx="5"/>
+        <rect x="290" y="252" width="16" height="62" rx="5"/>
+        <rect x="314" y="286" width="16" height="28" rx="5"/>
+        <rect x="338" y="234" width="16" height="80" rx="5"/>
+        <rect x="362" y="262" width="16" height="52" rx="5"/>
+      </g>
+      <!-- Panel lateral de datos -->
+      <rect x="414" y="204" width="80" height="58" rx="12" fill="#F5FAFE" stroke="#DCEBF5"/>
+      <path d="M426 246 l14 -16 l12 10 l16 -20" fill="none" stroke="#2E86B8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="414" y="270" width="80" height="58" rx="12" fill="#F5FAFE" stroke="#DCEBF5"/>
+      <circle cx="440" cy="299" r="15" fill="none" stroke="#C5E2F2" stroke-width="6"/>
+      <path d="M440 284 a15 15 0 0 1 13 22" fill="none" stroke="#136493" stroke-width="6" stroke-linecap="round"/>
+      <rect x="462" y="292" width="24" height="6" rx="3" fill="#136493"/>
+      <rect x="462" y="304" width="18" height="6" rx="3" fill="#9EC6E0"/>
+    </g>
+
+    <!-- Tarjeta flotante: IA / asistente -->
+    <g class="f" filter="url(#ds)">
+      <rect x="452" y="316" width="150" height="76" rx="16" fill="#0E4E75"/>
+      <circle cx="482" cy="354" r="16" fill="url(#orb)"/>
+      <path d="M476 354 h12 M482 348 v12" stroke="#EAF4FA" stroke-width="2.4" stroke-linecap="round"/>
+      <rect x="508" y="338" width="78" height="8" rx="4" fill="#8ECBEA"/>
+      <rect x="508" y="354" width="58" height="8" rx="4" fill="#5FA8C9"/>
+      <rect x="508" y="370" width="68" height="8" rx="4" fill="#3E93C4"/>
+    </g>
+
+    <!-- Suelo -->
+    <rect y="424" width="640" height="56" fill="#C7DEF0" opacity=".85"/>
   </g>
 </svg>

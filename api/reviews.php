@@ -80,7 +80,7 @@ $html = mailer_template('Nueva valoración recibida', "
     <p><strong>Comentario:</strong></p><p>" . nl2br(e($data['comment'])) . "</p>
     <p><em>Estado: $status.</em></p>
 ");
-$notify = (string) setting('correo', config('defaults.correo'));
+$notify = mail_notify_to();
 if (filter_var($notify, FILTER_VALIDATE_EMAIL)) {
     @send_mail($notify, 'Nueva valoración · ' . config('site_name'), $html);
 }

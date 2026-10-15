@@ -21,7 +21,7 @@ define('DATA_DIR', __DIR__ . '/data');
 /* --- Version de los recursos del panel (cache-busting) -------------------
    Sube este valor al editar admin.css o admin-auth.js para que los
    navegadores no usen la version guardada en cache. */
-define('APP_ASSET_VERSION', '20261015i');
+define('APP_ASSET_VERSION', '20261017b');
 
 /* --- Configuracion: config.local.php tiene prioridad ---------------------- */
 $config = require APP_DIR . '/config.php';
@@ -63,13 +63,17 @@ require_once APP_DIR . '/lib/helpers.php';
 require_once APP_DIR . '/lib/db.php';
 require_once APP_DIR . '/lib/security.php';
 require_once APP_DIR . '/lib/validator.php';
+require_once APP_DIR . '/lib/captcha.php';
 require_once APP_DIR . '/lib/http.php';
 require_once APP_DIR . '/lib/mailer.php';
 require_once APP_DIR . '/lib/auth.php';
 require_once APP_DIR . '/lib/settings.php';
 require_once APP_DIR . '/lib/reviews.php';
+require_once APP_DIR . '/lib/google_reviews.php';
 require_once APP_DIR . '/lib/faq.php';
 require_once APP_DIR . '/lib/submissions.php';
+require_once APP_DIR . '/lib/blog.php';
+require_once APP_DIR . '/lib/team.php';
 
 /* --- Los ajustes guardados en la base de datos tienen prioridad -----------
    Permiten cambiar correo, seguridad, etc. desde el panel sin editar

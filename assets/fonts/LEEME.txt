@@ -5,12 +5,12 @@ Este directorio contiene las tipografias del sitio, servidas desde el propio
 proyecto (sin llamadas a Google Fonts ni a CDN externos).
 
 Familias y uso:
-  - Inter (variable, wght 100-900)         -> texto de parrafo. Pesos: 400/600/700.
-  - Space Grotesk (variable, wght 300-700) -> titulares. Pesos: 500/600/700.
+  - Inter (variable, wght 100-900)              -> texto de parrafo. Pesos: 400/500/600/700.
+  - Plus Jakarta Sans (variable, wght 400-800)  -> titulares. Pesos: 600/700/800.
 
 Archivos (subconjuntos latin y latin-ext, formato WOFF2):
   Inter-latin.woff2 / Inter-latin-ext.woff2
-  SpaceGrotesk-latin.woff2 / SpaceGrotesk-latin-ext.woff2
+  PlusJakartaSans-latin.woff2 / PlusJakartaSans-latin-ext.woff2
 
 Origen: Google Fonts. Ambas familias se distribuyen bajo licencia SIL Open
 Font License 1.1 (OFL), por lo que su autoalojamiento es libre.
@@ -18,3 +18,8 @@ Font License 1.1 (OFL), por lo que su autoalojamiento es libre.
 Declaracion @font-face: css/styles.css (bloque TIPOGRAFIA).
 Para cambiar de tipografia: sustituye los .woff2 y actualiza ahi el nombre
 de familia y los archivos.
+
+Nota: se sustituyo "Space Grotesk" por "Plus Jakarta Sans" para lograr un
+aspecto mas moderno y redondeado, con mejor legibilidad en pantalla y en
+movil (buena para SEO por su claridad de lectura). El texto de parrafo sigue
+en Inter, muy neutra y optimizada para interfaces.

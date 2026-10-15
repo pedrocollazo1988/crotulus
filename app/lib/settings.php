@@ -57,14 +57,34 @@ function settings_editable(): array
         // Valoraciones y reseñas
         'reviews_enabled', 'reviews_auto_approve', 'reviews_provider',
         'trustpilot_url', 'trustpilot_business_id', 'trustpilot_template',
-        'google_reviews_url',
+        'google_reviews_url', 'google_place_id', 'google_places_api_key',
+        'google_reviews_cache_ttl',
         // Aportaciones de usuarios y FAQ
         'submissions_enabled', 'submissions_auto_approve', 'faq_portal_count',
         // Identidad del sitio (SEO y avisos por correo)
         'site_name', 'site_url', 'meta_description', 'meta_keywords',
         'og_image',
+        // Textos de la portada (hero), cifras y cabeceras de sección
+        'hero_badge', 'hero_title', 'hero_title_accent', 'hero_subtitle',
+        'hero_cta1_label', 'hero_cta2_label', 'hero_image', 'hero_image_alt',
+        'stat1_value', 'stat1_label', 'stat2_value', 'stat2_label',
+        'stat3_value', 'stat3_label', 'stat4_value', 'stat4_label',
+        'about_eyebrow', 'about_title', 'about_lead', 'about_body',
+        'about_image', 'about_image_alt',
+        'team_eyebrow', 'team_title', 'team_lead',
+        'services_eyebrow', 'services_title', 'services_lead',
+        'projects_eyebrow', 'projects_title', 'projects_lead',
+        'blog_eyebrow', 'blog_title', 'blog_lead',
+        'process_eyebrow', 'process_title', 'process_lead',
+        'testimonials_eyebrow', 'testimonials_title', 'testimonials_lead',
+        'reviews_eyebrow', 'reviews_title', 'reviews_lead',
+        'trustpilot_eyebrow', 'trustpilot_title', 'trustpilot_lead',
+        'contact_eyebrow', 'contact_title', 'contact_lead',
+        'location_eyebrow', 'location_title', 'location_lead',
+        'faq_eyebrow', 'faq_title', 'faq_lead',
+        'footer_tagline', 'footer_legal',
         // Correo saliente (SMTP / mail() / log)
-        'mail_transport', 'mail_from_email', 'mail_from_name',
+        'mail_transport', 'mail_from_email', 'mail_from_name', 'mail_to_email',
         'mail_smtp_host', 'mail_smtp_port', 'mail_smtp_user', 'mail_smtp_pass',
         'mail_smtp_secure',
         // Seguridad y limitación de envíos
@@ -94,7 +114,7 @@ function settings_checkboxes(): array
 /** Claves sensibles: se guardan pero se muestran enmascaradas en el panel. */
 function settings_secret_keys(): array
 {
-    return ['google_client_secret', 'mail_smtp_pass'];
+    return ['google_client_secret', 'mail_smtp_pass', 'google_places_api_key'];
 }
 
 /**
@@ -122,6 +142,7 @@ function settings_config_map(): array
         'mail_transport'   => 'mail.transport',
         'mail_from_email'  => 'mail.from_email',
         'mail_from_name'   => 'mail.from_name',
+        'mail_to_email'    => 'mail.to_email',
         'mail_smtp_host'   => 'mail.smtp_host',
         'mail_smtp_port'   => 'mail.smtp_port',
         'mail_smtp_user'   => 'mail.smtp_user',
@@ -217,10 +238,29 @@ function settings_public(): array
         'facebook', 'instagram', 'linkedin', 'github',
         'reviews_enabled', 'reviews_auto_approve', 'reviews_provider',
         'trustpilot_url', 'trustpilot_business_id', 'trustpilot_template',
-        'google_reviews_url',
+        'google_reviews_url', 'google_place_id',
         'submissions_enabled', 'submissions_auto_approve', 'faq_portal_count',
         'site_name', 'site_url', 'meta_description',
         'maintenance_mode', 'maintenance_message',
+        // Textos editables de la portada, cifras, secciones y pie
+        'hero_badge', 'hero_title', 'hero_title_accent', 'hero_subtitle',
+        'hero_cta1_label', 'hero_cta2_label', 'hero_image', 'hero_image_alt',
+        'stat1_value', 'stat1_label', 'stat2_value', 'stat2_label',
+        'stat3_value', 'stat3_label', 'stat4_value', 'stat4_label',
+        'about_eyebrow', 'about_title', 'about_lead', 'about_body',
+        'about_image', 'about_image_alt',
+        'team_eyebrow', 'team_title', 'team_lead',
+        'services_eyebrow', 'services_title', 'services_lead',
+        'projects_eyebrow', 'projects_title', 'projects_lead',
+        'blog_eyebrow', 'blog_title', 'blog_lead',
+        'process_eyebrow', 'process_title', 'process_lead',
+        'testimonials_eyebrow', 'testimonials_title', 'testimonials_lead',
+        'reviews_eyebrow', 'reviews_title', 'reviews_lead',
+        'trustpilot_eyebrow', 'trustpilot_title', 'trustpilot_lead',
+        'contact_eyebrow', 'contact_title', 'contact_lead',
+        'location_eyebrow', 'location_title', 'location_lead',
+        'faq_eyebrow', 'faq_title', 'faq_lead',
+        'footer_tagline', 'footer_legal',
     ];
     $all = settings_all();
     $out = [];

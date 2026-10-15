@@ -1,0 +1,69 @@
+# ============================================================================
+#  C-ROTULUS · Configuracion de Nginx (nivel avanzado: VPS con Nginx)
+# ----------------------------------------------------------------------------
+#  Sustituye TU-DOMINIO por tu dominio real y /ruta/... por la carpeta donde
+#  hayas subido el sitio. Copia este archivo a:
+#      /etc/nginx/sites-available/tu-dominio
+#  y activalo:
+#      ln -s /etc/nginx/sites-available/tu-dominio /etc/nginx/sites-enabled/
+#      nginx -t && systemctl reload nginx
+#
+#  Certificado SSL gratuito con Let's Encrypt:
+#      apt install certbot python3-certbot-nginx
+#      certbot --nginx -d tu-dominio.com -d www.tu-dominio.com
+# ============================================================================
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name tu-dominio.com www.tu-dominio.com;
+
+    root /var/www/tu-dominio/public_html;
+    index index.html index.php;
+
+    charset utf-8;
+
+    # --- Página de inicio estática -----------------------------------------
+    location = / {
+        try_files /index.html =404;
+    }
+
+    # --- Bloquea el acceso a las carpetas del backend ----------------------
+    # (Equivale a las reglas del .htaccess de Apache.)
+    location ^~ /app/    { deny all; }
+    location ^~ /deploy/ { deny all; }
+    location ^~ /tools/  { deny all; }
+
+    # --- Protege archivos sensibles ----------------------------------------
+    location ~* /(\.git|\.agent_tmp)/            { deny all; }
+    location ~* \.(sqlite|sqlite-journal|sqlite-wal|log|md)$ { deny all; }
+    location ~* /config\.local\.php$             { deny all; }
+
+    # --- PHP (FPM) ---------------------------------------------------------
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php8.2-fpm.sock;   # ajusta la version
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    }
+
+    # --- Caché de estáticos ------------------------------------------------
+    location ~* \.(css|js|svg|png|jpe?g|webp|avif|woff2|ico)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+        access_log off;
+    }
+
+    # --- Compresión --------------------------------------------------------
+    gzip on;
+    gzip_types text/html text/css application/javascript application/json application/ld+json image/svg+xml;
+    gzip_min_length 1024;
+
+    # --- Cabeceras de seguridad --------------------------------------------
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    add_header Permissions-Policy "geolocation=(), microphone=(), camera=()" always;
+
+    # --- Oculta la version de Nginx en los errores -------------------------
+    server_tokens off;
+}

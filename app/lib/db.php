@@ -265,6 +265,42 @@ function db_init(): void
             user_agent $str DEFAULT '',
             created_at $dt DEFAULT NULL
         ) $engine",
+
+        // Articulos del blog. `meta` guarda datos extra en JSON (autor,
+        // categoria, imagen de portada, extracto...). `is_active` = publicado.
+        'blog_posts' => "CREATE TABLE IF NOT EXISTS blog_posts (
+            id $serial,
+            slug VARCHAR(200) NOT NULL DEFAULT '',
+            title $str DEFAULT '',
+            excerpt $text DEFAULT NULL,
+            body $text DEFAULT NULL,
+            category VARCHAR(80) DEFAULT '',
+            author $str DEFAULT '',
+            image $str DEFAULT '',
+            meta $text DEFAULT NULL,
+            sort_order INT NOT NULL DEFAULT 0,
+            is_active INT NOT NULL DEFAULT 1,
+            published_at $dt DEFAULT NULL,
+            created_at $dt DEFAULT NULL,
+            updated_at $dt DEFAULT NULL
+        ) $engine",
+
+        // Miembros del equipo. `meta` guarda datos extra en JSON (cargo,
+        // correo, telefono, redes, avatar...). `is_active` = visible en la web.
+        'team_members' => "CREATE TABLE IF NOT EXISTS team_members (
+            id $serial,
+            name $str DEFAULT '',
+            role $str DEFAULT '',
+            bio $text DEFAULT NULL,
+            email $str DEFAULT '',
+            phone VARCHAR(40) DEFAULT '',
+            avatar $str DEFAULT '',
+            meta $text DEFAULT NULL,
+            sort_order INT NOT NULL DEFAULT 0,
+            is_active INT NOT NULL DEFAULT 1,
+            created_at $dt DEFAULT NULL,
+            updated_at $dt DEFAULT NULL
+        ) $engine",
     ];
 
     foreach ($tables as $sql) {
@@ -289,6 +325,8 @@ function db_init(): void
         'CREATE INDEX idx_reviews_status ON reviews (status)',
         'CREATE INDEX idx_reviews_target ON reviews (target_type, target_id)',
         'CREATE INDEX idx_submissions_type ON user_submissions (stype, status)',
+        'CREATE INDEX idx_blog_active ON blog_posts (is_active, published_at)',
+        'CREATE INDEX idx_team_active ON team_members (is_active, sort_order)',
     ];
     foreach ($indexes as $sql) {
         try {
@@ -300,6 +338,113 @@ function db_init(): void
 
     seed_defaults();
     seed_content();
+    seed_blog_and_team();
+}
+
+/** Devuelve true si una tabla existe (consulta portable MySQL/SQLite). */
+function db_table_exists(string $table): bool
+{
+    try {
+        if (db_driver() === 'mysql') {
+            $row = db_one(
+                'SELECT COUNT(*) AS c FROM information_schema.tables
+                  WHERE table_schema = DATABASE() AND table_name = ?',
+                [$table]
+            );
+        } else {
+            $row = db_one(
+                "SELECT COUNT(*) AS c FROM sqlite_master WHERE type = 'table' AND name = ?",
+                [$table]
+            );
+        }
+        return (int) ($row['c'] ?? 0) > 0;
+    } catch (Throwable $e) {
+        return false;
+    }
+}
+
+/**
+ * Siembra ejemplos del blog y del equipo la primera vez. Solo actua si la
+ * tabla esta vacia, asi que nunca pisa lo que el administrador haya creado.
+ * Es seguro aunque el esquema antiguo no tuviera estas tablas: se comprueba
+ * su existencia antes de insertar.
+ */
+function seed_blog_and_team(): void
+{
+    $now = date('Y-m-d H:i:s');
+
+    if (db_table_exists('team_members') && (int) (db_one('SELECT COUNT(*) AS c FROM team_members')['c'] ?? 0) === 0) {
+        $team = [
+            ['Marta López', 'Directora de proyectos', 'Coordina cada proyecto de principio a fin y se asegura de que cumplimos plazos y presupuesto.', 'marta.lopez@crotulus.example', 'assets/img/equipo/marta-lopez.svg'],
+            ['Javier Ruiz', 'Ingeniero de redes', 'Diseña y protege la infraestructura de red de nuestros clientes, con foco en la seguridad.', 'javier.ruiz@crotulus.example', 'assets/img/equipo/javier-ruiz.svg'],
+            ['Cristina Serra', 'Especialista en IA', 'Crea automatizaciones y agentes de IA que ahorran horas de trabajo repetitivo.', 'cristina.serra@crotulus.example', 'assets/img/equipo/cristina-serra.svg'],
+            ['Diego Marín', 'Desarrollador web', 'Construye webs y aplicaciones rápidas, accesibles y fáciles de gestionar.', 'diego.marin@crotulus.example', 'assets/img/equipo/diego-marin.svg'],
+        ];
+        foreach ($team as $i => $m) {
+            db_insert('team_members', [
+                'name'       => $m[0],
+                'role'       => $m[1],
+                'bio'        => $m[2],
+                'email'      => $m[3],
+                'phone'      => '',
+                'avatar'     => $m[4],
+                'meta'       => null,
+                'sort_order' => $i,
+                'is_active'  => 1,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]);
+        }
+    }
+
+    if (db_table_exists('blog_posts') && (int) (db_one('SELECT COUNT(*) AS c FROM blog_posts')['c'] ?? 0) === 0) {
+        $posts = [
+            [
+                'automatizacion-ia-pymes',
+                'Cómo la IA puede ahorrar horas a tu pyme',
+                'Descubre qué tareas conviene automatizar primero y cómo empezar sin complicaciones.',
+                'La inteligencia artificial ya no es cosa de grandes empresas. En este artículo repasamos tareas cotidianas que puedes automatizar —presupuestos, respuestas frecuentes, informes— y cómo dar el primer paso con un coste bajo.',
+                'Automatización',
+                'Marta López',
+                'assets/img/blog/automatizacion-ia-pymes.svg',
+            ],
+            [
+                'seguridad-red-pyme',
+                'Protege tu red: 5 medidas básicas',
+                'Cinco acciones sencillas que reducen drásticamente el riesgo de un incidente.',
+                'No necesitas un gran presupuesto para proteger tu negocio. Estas cinco medidas —copias de seguridad, contraseñas robustas, actualizaciones, Wi-Fi segmentado y formación del equipo— cubren la mayoría de riesgos habituales.',
+                'Seguridad',
+                'Javier Ruiz',
+                'assets/img/blog/seguridad-red-pyme.svg',
+            ],
+            [
+                'web-que-convierte',
+                'Una web que convierte visitas en clientes',
+                'Qué debe tener tu web para que quien llega termine contactando contigo.',
+                'Una web bonita que no genera contactos es un gasto, no una inversión. Repasamos los elementos que marcan la diferencia: mensaje claro, prueba social, llamadas a la acción visibles y velocidad de carga.',
+                'Desarrollo web',
+                'Diego Marín',
+                'assets/img/blog/web-que-convierte.svg',
+            ],
+        ];
+        foreach ($posts as $i => $p) {
+            db_insert('blog_posts', [
+                'slug'         => $p[0],
+                'title'        => $p[1],
+                'excerpt'      => $p[2],
+                'body'         => $p[3],
+                'category'     => $p[4],
+                'author'       => $p[5],
+                'image'        => $p[6],
+                'meta'         => json_encode(['reading_minutes' => 4], JSON_UNESCAPED_UNICODE),
+                'sort_order'   => $i,
+                'is_active'    => 1,
+                'published_at' => date('Y-m-d H:i:s', strtotime('-' . ($i + 1) . ' days')),
+                'created_at'   => $now,
+                'updated_at'   => $now,
+            ]);
+        }
+    }
 }
 
 /** Inserta los valores por defecto (solo si la tabla esta vacia). */
@@ -344,10 +489,10 @@ function seed_content(): void
             ['Renovación de red en oficinas', 'Redes y seguridad', 'Cableado, Wi-Fi profesional y firewall gestionado para 60 puestos de trabajo.', ['image' => 'assets/img/proyecto-redes.svg']],
         ],
         'testimonio' => [
-            // [nombre, cargo, texto, ['photo' => ruta de la foto]]
-            ['Marta López', 'Gerente, Distribuciones ML', 'Nos renovaron la web y automatizaron los presupuestos. Ahora ahorramos varias horas cada semana y todo es mucho más claro.', ['photo' => 'assets/img/testimonios/marta-lopez.jpg']],
-            ['Javier Ruiz', 'Director, Talleres Ruiz', 'En una semana teníamos la red y las copias de seguridad funcionando. El soporte responde siempre rápido.', ['photo' => 'assets/img/testimonios/javier-ruiz.jpg']],
-            ['Cristina Serra', 'Fundadora, CliniSalud', 'Un asistente de IA atiende nuestras consultas fuera de horario. Ha mejorado la atención al cliente notablemente.', ['photo' => 'assets/img/testimonios/cristina-serra.jpg']],
+            // [nombre, cargo, texto, ['photo' => ruta, 'rating' => 1-5, 'resultado' => dato]]
+            ['Marta López', 'Gerente · Distribuciones ML', 'Nos renovaron la web y automatizaron los presupuestos. Ahora ahorramos varias horas cada semana y todo es mucho más claro.', ['photo' => 'assets/img/testimonios/marta-lopez.jpg', 'rating' => 5, 'resultado' => '+40% de solicitudes online en 3 meses']],
+            ['Javier Ruiz', 'Director · Talleres Ruiz', 'En una semana teníamos la red y las copias de seguridad funcionando. El soporte responde siempre rápido.', ['photo' => 'assets/img/testimonios/javier-ruiz.jpg', 'rating' => 5, 'resultado' => '0 incidencias críticas en 12 meses']],
+            ['Cristina Serra', 'Fundadora · CliniSalud', 'Un asistente de IA atiende nuestras consultas fuera de horario. Ha mejorado la atención al cliente notablemente.', ['photo' => 'assets/img/testimonios/cristina-serra.jpg', 'rating' => 5, 'resultado' => '70% de consultas resueltas sin espera']],
         ],
         'proceso' => [
             ['Diagnóstico', '', 'Escuchamos tus necesidades y analizamos el estado actual de tu tecnología.'],

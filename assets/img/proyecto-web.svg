@@ -1,69 +1,84 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Ilustración: desarrollo web y tienda online">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Tienda online para una distribuidora local con catálogo de productos y pago integrado">
   <defs>
-    <linearGradient id="bgW" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#EAF2FB"/>
-      <stop offset="1" stop-color="#F4F9FE"/>
-    </linearGradient>
-    <linearGradient id="barW" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#005AA5"/>
-      <stop offset="1" stop-color="#00C2B8"/>
-    </linearGradient>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F6FBFF"/><stop offset="1" stop-color="#CCE5F4"/></linearGradient>
+    <linearGradient id="scr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3E93C4"/><stop offset="1" stop-color="#136493"/></linearGradient>
+    <linearGradient id="prod" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EAF4FA"/><stop offset="1" stop-color="#C5E2F2"/></linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7FC0E0"/><stop offset="1" stop-color="#2E86B8" stop-opacity="0"/></linearGradient>
+    <linearGradient id="cta" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2E86B8"/><stop offset="1" stop-color="#136493"/></linearGradient>
+    <filter id="soft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="16"/></filter>
+    <filter id="ds" x="-25%" y="-25%" width="150%" height="150%"><feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#0B2E45" flood-opacity=".18"/></filter>
+    <clipPath id="clip"><rect width="800" height="500" rx="24"/></clipPath>
+    <style>
+      .f{animation:f 7s ease-in-out infinite}
+      .f2{animation:f 8.6s ease-in-out infinite;animation-delay:-2.1s}
+      .f3{animation:f 9.6s ease-in-out infinite;animation-delay:-4s}
+      .trace{stroke-dasharray:7 9;animation:dash 11s linear infinite}
+      .pulse{animation:pulse 3.4s ease-in-out infinite}
+      @keyframes f{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+      @keyframes dash{to{stroke-dashoffset:-180}}
+      @keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+      @media (prefers-reduced-motion: reduce){.f,.f2,.f3,.trace,.pulse{animation:none}}
+    </style>
   </defs>
+  <g clip-path="url(#clip)">
+    <rect width="800" height="500" fill="url(#bg)"/>
+    <g class="trace" stroke="#2E86B8" fill="none" stroke-width="2" opacity=".28">
+      <path d="M30 78 H160 V150"/><path d="M770 110 H650 V180"/><path d="M40 448 V380 H150"/>
+    </g>
+    <circle cx="150" cy="150" r="6" class="pulse" fill="#5FA8C9"/>
+    <circle cx="650" cy="180" r="6" class="pulse" fill="#5FA8C9"/>
+    <circle cx="640" cy="90" r="160" fill="url(#glow)" opacity=".5" filter="url(#soft)"/>
 
-  <rect width="800" height="500" fill="url(#bgW)"/>
-  <!-- nodos de fondo -->
-  <g stroke="#CFE4F7" stroke-width="2" fill="none" opacity=".7">
-    <path d="M60 440 L140 400 L240 430 L340 390"/>
-    <path d="M620 60 L700 100 L760 70"/>
-  </g>
-  <g fill="#A9D2F0" opacity=".8">
-    <circle cx="60" cy="440" r="5"/><circle cx="140" cy="400" r="5"/><circle cx="240" cy="430" r="5"/>
-    <circle cx="340" cy="390" r="5"/><circle cx="620" cy="60" r="5"/><circle cx="700" cy="100" r="5"/>
-  </g>
+    <!-- Portatil con la tienda online -->
+    <g filter="url(#ds)">
+      <rect x="150" y="70" width="440" height="286" rx="18" fill="#FFFFFF"/>
+      <rect x="150" y="70" width="440" height="40" rx="18" fill="url(#scr)"/>
+      <rect x="150" y="94" width="440" height="16" fill="url(#scr)"/>
+      <circle cx="172" cy="90" r="4.5" fill="#EAF4FA"/><circle cx="188" cy="90" r="4.5" fill="#8ECBEA"/><circle cx="204" cy="90" r="4.5" fill="#5FA8C9"/>
+      <rect x="320" y="82" width="130" height="16" rx="8" fill="#0E4E75" opacity=".5"/>
+      <!-- Cabecera de la tienda -->
+      <rect x="176" y="128" width="120" height="11" rx="5.5" fill="#136493"/>
+      <rect x="470" y="126" width="96" height="18" rx="9" fill="url(#cta)"/>
+      <rect x="486" y="132" width="64" height="6" rx="3" fill="#EAF4FA"/>
+      <!-- Productos -->
+      <g>
+        <rect x="176" y="164" width="150" height="120" rx="12" fill="url(#prod)" stroke="#DCEBF5"/>
+        <circle cx="251" cy="210" r="26" fill="#FFFFFF"/><path d="M239 212 h24 l-3 -22 h-18 z" fill="#2E86B8"/>
+        <rect x="196" y="248" width="80" height="9" rx="4.5" fill="#136493"/>
+        <rect x="196" y="264" width="52" height="8" rx="4" fill="#7FA9C6"/>
 
-  <!-- ventana de navegador -->
-  <rect x="130" y="90" width="540" height="330" rx="18" fill="#FFFFFF" stroke="#DFE6F0" stroke-width="2"/>
-  <rect x="130" y="90" width="540" height="52" rx="18" fill="url(#barW)"/>
-  <rect x="130" y="124" width="540" height="18" fill="url(#barW)"/>
-  <circle cx="164" cy="116" r="6" fill="#FFFFFF" opacity=".85"/>
-  <circle cx="186" cy="116" r="6" fill="#FFFFFF" opacity=".6"/>
-  <circle cx="208" cy="116" r="6" fill="#FFFFFF" opacity=".4"/>
-  <rect x="250" y="106" width="300" height="20" rx="10" fill="#FFFFFF" opacity=".35"/>
+        <rect x="344" y="164" width="150" height="120" rx="12" fill="url(#prod)" stroke="#DCEBF5"/>
+        <circle cx="419" cy="210" r="26" fill="#FFFFFF"/><rect x="407" y="198" width="24" height="26" rx="4" fill="#136493"/><rect x="411" y="203" width="16" height="4" rx="2" fill="#8ECBEA"/>
+        <rect x="364" y="248" width="80" height="9" rx="4.5" fill="#136493"/>
+        <rect x="364" y="264" width="52" height="8" rx="4" fill="#7FA9C6"/>
 
-  <!-- tarjetas de producto -->
-  <g>
-    <rect x="165" y="175" width="150" height="150" rx="14" fill="#EAF2FB" stroke="#CFE4F7" stroke-width="2"/>
-    <rect x="185" y="195" width="110" height="80" rx="10" fill="#A9D2F0"/>
-    <path d="M215 255 L230 235 L245 250 L258 230 L275 255 Z" fill="#005AA5" opacity=".55"/>
-    <circle cx="212" cy="212" r="9" fill="#00C2B8"/>
-    <rect x="185" y="288" width="80" height="10" rx="5" fill="#7A7A7A" opacity=".6"/>
-    <rect x="185" y="304" width="50" height="10" rx="5" fill="#00C2B8"/>
+        <rect x="512" y="164" width="56" height="120" rx="12" fill="#0E4E75"/>
+        <circle cx="540" cy="200" r="18" fill="#2E86B8"/>
+        <path d="M532 200 l6 7 l12 -14" fill="none" stroke="#EAF4FA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="524" y="230" width="32" height="7" rx="3.5" fill="#8ECBEA"/>
+        <rect x="524" y="244" width="24" height="7" rx="3.5" fill="#5FA8C9"/>
+      </g>
+      <!-- Base del portatil -->
+      <rect x="128" y="356" width="484" height="16" rx="8" fill="#0E4E75"/>
+      <rect x="330" y="356" width="80" height="8" rx="4" fill="#0B2E45"/>
+    </g>
 
-    <rect x="330" y="175" width="150" height="150" rx="14" fill="#EAF2FB" stroke="#CFE4F7" stroke-width="2"/>
-    <rect x="350" y="195" width="110" height="80" rx="10" fill="#A9D2F0"/>
-    <path d="M380 255 L395 235 L410 250 L423 230 L440 255 Z" fill="#005AA5" opacity=".55"/>
-    <circle cx="377" cy="212" r="9" fill="#00C2B8"/>
-    <rect x="350" y="288" width="80" height="10" rx="5" fill="#7A7A7A" opacity=".6"/>
-    <rect x="350" y="304" width="50" height="10" rx="5" fill="#00C2B8"/>
+    <!-- Carrito flotante -->
+    <g class="f2" filter="url(#ds)">
+      <circle cx="686" cy="330" r="42" fill="url(#cta)"/>
+      <path d="M668 312 h8 l6 30 h26 l6 -22 h-30" fill="none" stroke="#EAF4FA" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="680" cy="352" r="4" fill="#EAF4FA"/><circle cx="700" cy="352" r="4" fill="#EAF4FA"/>
+    </g>
 
-    <rect x="495" y="175" width="150" height="150" rx="14" fill="#EAF2FB" stroke="#CFE4F7" stroke-width="2"/>
-    <rect x="515" y="195" width="110" height="80" rx="10" fill="#A9D2F0"/>
-    <path d="M545 255 L560 235 L575 250 L588 230 L605 255 Z" fill="#005AA5" opacity=".55"/>
-    <circle cx="542" cy="212" r="9" fill="#00C2B8"/>
-    <rect x="515" y="288" width="80" height="10" rx="5" fill="#7A7A7A" opacity=".6"/>
-    <rect x="515" y="304" width="50" height="10" rx="5" fill="#00C2B8"/>
-  </g>
+    <!-- Etiqueta flotante de ventas -->
+    <g class="f3" filter="url(#ds)">
+      <rect x="40" y="286" width="140" height="82" rx="16" fill="#FFFFFF"/>
+      <rect x="40" y="286" width="6" height="82" rx="3" fill="#2E86B8"/>
+      <path d="M62 348 l20 -22 l16 14 l24 -30" fill="none" stroke="#2E86B8" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="62" y="302" width="70" height="9" rx="4.5" fill="#136493"/>
+      <rect x="62" y="318" width="46" height="8" rx="4" fill="#9EC6E0"/>
+    </g>
 
-  <!-- boton / carrito -->
-  <rect x="165" y="345" width="120" height="34" rx="17" fill="#005AA5"/>
-  <rect x="185" y="358" width="80" height="8" rx="4" fill="#FFFFFF" opacity=".9"/>
-
-  <!-- carrito flotante -->
-  <g transform="translate(560 330)">
-    <circle cx="60" cy="60" r="58" fill="#00C2B8"/>
-    <circle cx="60" cy="60" r="58" fill="none" stroke="#FFFFFF" stroke-width="3" opacity=".4"/>
-    <path d="M32 40 h14 l8 40 h34 l8 -28 h-46" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="58" cy="92" r="6" fill="#FFFFFF"/>
-    <circle cx="84" cy="92" r="6" fill="#FFFFFF"/>
+    <rect y="440" width="800" height="60" fill="#C7DEF0" opacity=".85"/>
   </g>
 </svg>

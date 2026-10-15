@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <!-- ============================================================
+       C-ROTULUS S.U.R.L. - Página "Empresa"
+       Reúne el contenido corporativo que antes estaba repartido en la
+       portada: Sobre nosotros (historia, misión, visión y valores) y Equipo.
+       Misma cabecera, pie y estilos que index.html (sitio 100% estático).
+       ============================================================ -->
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#136493">
+  <meta name="author" content="C-ROTULUS S.U.R.L.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <meta name="geo.region" content="ES">
+  <meta name="geo.placename" content="[CIUDAD]">
+  <meta name="language" content="es">
+
+  <!-- ============ SEO BÁSICO ============
+       EDITAR: sustituye "www.c-rotulus.example" por tu dominio real. -->
+  <title>Empresa | C-ROTULUS S.U.R.L. — Sobre nosotros y equipo</title>
+  <meta name="description" content="Conoce a C-ROTULUS S.U.R.L.: nuestra historia, misión, visión y valores, y el equipo de profesionales que diseña y mantiene la tecnología de tu empresa." data-seo-desc>
+  <meta name="keywords" content="C-ROTULUS, empresa tecnológica, sobre nosotros, equipo, misión, visión, valores" data-seo-keywords>
+  <link rel="canonical" href="https://www.c-rotulus.example/empresa.html">
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="sitemap.xml">
+
+  <!-- ============ OPEN GRAPH / REDES SOCIALES ============ -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:site_name" content="C-ROTULUS S.U.R.L." data-seo-name>
+  <meta property="og:title" content="Empresa | C-ROTULUS S.U.R.L." data-seo-title>
+  <meta property="og:description" content="Nuestra historia, misión, visión, valores y el equipo detrás de C-ROTULUS." data-seo-ogdesc>
+  <meta property="og:url" content="https://www.c-rotulus.example/empresa.html" data-seo-url>
+  <meta property="og:image" content="https://www.c-rotulus.example/assets/img/og-image.jpg" data-seo-image>
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://www.c-rotulus.example/assets/img/og-image.jpg" data-seo-image>
+
+  <!-- ============ FAVICON (basado en el logo) ============ -->
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/img/favicon.png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+
+  <!-- ============ TIPOGRAFÍA (autoalojada, 2 familias) ============ -->
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/PlusJakartaSans-latin.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Inter-latin.woff2" crossorigin>
+
+  <!-- ============ ESTILOS ============ -->
+  <link rel="stylesheet" href="css/styles.css?v=20261017b">
+
+  <!-- ============ DATOS ESTRUCTURADOS: Organización ============
+       EDITAR: teléfono, correo, dirección y redes. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "C-ROTULUS S.U.R.L.",
+    "url": "https://www.c-rotulus.example/",
+    "logo": "https://www.c-rotulus.example/assets/img/logo-header.png",
+    "telephone": "+5359888821",
+    "email": "crotulus.mipyme@gmail.com",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Calle 29 #5408 e/ 54 y 56",
+      "addressLocality": "Artemisa",
+      "addressCountry": "CU"
+    },
+    "sameAs": ["https://www.facebook.com/com.rotulus.surl"]
+  }
+  </script>
+
+  <!-- ============ DATOS ESTRUCTURADOS: AboutPage + migas ============ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "name": "Empresa | C-ROTULUS S.U.R.L.",
+    "url": "https://www.c-rotulus.example/empresa.html",
+    "inLanguage": "es-ES",
+    "isPartOf": { "@type": "WebSite", "url": "https://www.c-rotulus.example/" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://www.c-rotulus.example/" },
+      { "@type": "ListItem", "position": 2, "name": "Empresa", "item": "https://www.c-rotulus.example/empresa.html" }
+    ]
+  }
+  </script>
+</head>
+
+<body>
+  <!-- Capa decorativa: fondo animado ligero (circuitos y nodos). -->
+  <div class="bg-fx" aria-hidden="true">
+    <span class="bg-fx__blob bg-fx__blob--a"></span>
+    <span class="bg-fx__blob bg-fx__blob--b"></span>
+    <span class="bg-fx__grid"></span>
+  </div>
+
+  <a class="skip-link" href="#contenido">Saltar al contenido principal</a>
+
+  <!-- ==================== CABECERA / NAVEGACIÓN ==================== -->
+  <div class="topbar">
+    <div class="container topbar__inner">
+      <ul class="topbar__list">
+        <li class="topbar__item">
+          <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="M4 5h4l2 5-2 1a12 12 0 0 0 5 5l1-2 5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 3 6a1 1 0 0 1 1-1Z"/></svg>
+          <a href="tel:+5359888821" data-site="telefono" data-tel-primary>+53 5988 8821</a>
+          <span class="topbar__sep" aria-hidden="true">·</span>
+          <a href="tel:+5349368808" data-tel-secondary>+53 4936 8808</a>
+        </li>
+        <li class="topbar__item">
+          <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="M3 6h18v12H3zM3 7l9 6 9-6"/></svg>
+          <a href="mailto:crotulus.mipyme@gmail.com" data-site="correo">crotulus.mipyme@gmail.com</a>
+        </li>
+        <li class="topbar__item topbar__item--hide-sm">
+          <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="M12 7v5l3 2"/></svg>
+          <span data-site="horario">Lunes a Viernes de 9:00 am a 5:00 pm</span>
+        </li>
+      </ul>
+      <ul class="topbar__social" aria-label="Redes sociales de C-ROTULUS">
+        <li><a href="https://www.facebook.com/com.rotulus.surl" data-social="facebook" aria-label="Facebook" rel="noopener"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M13 22v-8h3l1-4h-4V8c0-1 .3-1.6 1.7-1.6H17V3.1C16.4 3 15.4 3 14.3 3 11.8 3 10 4.4 10 7.3V10H7v4h3v8h3Z"/></svg></a></li>
+        <li><a href="#" data-social="instagram" aria-label="Instagram" rel="noopener"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M12 7.5A4.5 4.5 0 1 0 12 16.5 4.5 4.5 0 0 0 12 7.5Zm0 7.4a2.9 2.9 0 1 1 0-5.8 2.9 2.9 0 0 1 0 5.8Zm4.7-7.6a1.05 1.05 0 1 0 0 2.1 1.05 1.05 0 0 0 0-2.1Z"/></svg></a></li>
+        <li><a href="#" data-social="linkedin" aria-label="LinkedIn" rel="noopener"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0 0-5ZM3 9h4v12H3zM10 9h3.8v1.7h.1c.5-.9 1.8-1.9 3.6-1.9 3.9 0 4.6 2.4 4.6 5.6V21h-4v-5.3c0-1.3 0-2.9-1.8-2.9s-2 1.4-2 2.8V21h-4z"/></svg></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <header class="site-header" id="top">
+    <div class="container site-header__inner">
+      <a class="brand" href="index.html" aria-label="C-ROTULUS, ir al inicio">
+        <picture>
+          <source type="image/avif" srcset="assets/img/logo-header.avif">
+          <source type="image/webp" srcset="assets/img/logo-header.webp">
+          <img class="brand__img" src="assets/img/logo-header.png" alt="Logotipo de C-ROTULUS S.U.R.L." width="226" height="85" decoding="async" fetchpriority="high">
+        </picture>
+      </a>
+
+      <!-- Navegación principal. Los enlaces a secciones de la portada llevan
+           "index.html#seccion" (funcionan desde cualquier página). -->
+      <nav class="primary-nav" id="primaryNav" aria-label="Navegación principal">
+        <ul class="primary-nav__list">
+          <li><a class="nav-link" href="index.html">Inicio</a></li>
+          <li><a class="nav-link is-active" href="empresa.html" aria-current="page">Empresa</a></li>
+          <li><a class="nav-link" href="index.html#servicios">Servicios</a></li>
+          <li><a class="nav-link" href="index.html#proyectos">Proyectos</a></li>
+          <li><a class="nav-link" href="index.html#blog">Blog</a></li>
+          <li><a class="nav-link" href="index.html#proceso">Proceso</a></li>
+          <li><a class="nav-link" href="index.html#testimonios">Testimonios</a></li>
+          <li><a class="nav-link" href="index.html#valoraciones">Opiniones</a></li>
+          <li><a class="nav-link" href="index.html#ubicacion">Ubicación</a></li>
+          <li><a class="nav-link" href="index.html#faq">FAQ</a></li>
+        </ul>
+      </nav>
+
+      <div class="site-header__actions">
+        <a class="nav-link nav-link--auth" id="navAuthLink" href="admin/login.php">Acceder</a>
+        <a class="btn btn--primary btn--nav-cta" href="index.html#contacto">
+          <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 5h16v14H4zM4 7l8 5 8-5"/></svg>
+          Contacto
+        </a>
+        <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="primaryNav" aria-label="Abrir menú de navegación">
+          <span class="nav-toggle__bar"></span>
+          <span class="nav-toggle__bar"></span>
+          <span class="nav-toggle__bar"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <!-- ==================== CABECERA DE PÁGINA ==================== -->
+    <section class="page-hero">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Ruta de navegación">
+          <ol>
+            <li><a href="index.html">Inicio</a></li>
+            <li aria-current="page">Empresa</li>
+          </ol>
+        </nav>
+        <p class="eyebrow">Empresa</p>
+        <h1 class="page-hero__title">Quiénes somos</h1>
+        <p class="page-hero__lead">
+          Somos C-ROTULUS S.U.R.L., una empresa de servicios tecnológicos. Conoce nuestra
+          historia, lo que nos mueve y al equipo que estará a tu lado.
+        </p>
+      </div>
+    </section>
+
+    <!-- ==================== SOBRE NOSOTROS ==================== -->
+    <section class="section" id="sobre-nosotros">
+      <div class="container">
+        <header class="section__head">
+          <p class="eyebrow" data-site="about_eyebrow">Sobre nosotros</p>
+          <h2 class="section__title" data-site="about_title">Un equipo cercano con soluciones serias</h2>
+          <p class="section__lead" data-site="about_lead">Desde [AÑO DE FUNDACIÓN] acompañamos a empresas en su transformación digital, combinando tecnología y trato humano.</p>
+        </header>
+
+        <div class="about__grid">
+          <div class="about__media">
+            <img src="assets/img/equipo.svg" alt="Equipo de profesionales de C-ROTULUS trabajando en un proyecto" data-site-image="about_image" data-site-alt="about_image_alt" width="640" height="420" loading="lazy" decoding="async">
+          </div>
+          <div class="about__body">
+            <!-- Historia. El panel puede sobrescribir este texto con la clave
+                 "about_body" (Ajustes · Textos). -->
+            <h3 class="about__subtitle">Nuestra historia</h3>
+            <p data-site="about_body">C-ROTULUS nació con una idea sencilla: la tecnología no debería ser un dolor de cabeza. Empezamos resolviendo pequeños problemas informáticos para negocios de nuestro entorno y, con el tiempo, ampliamos el servicio hasta diseñar, desplegar y mantener la infraestructura digital completa de nuestros clientes.</p>
+            <p>Hoy trabajamos con pymes y autónomos que necesitan soluciones claras, seguras y sin sorpresas: desde una web que convierte visitas en clientes hasta la automatización de tareas con inteligencia artificial o la protección de su red.</p>
+
+            <h3 class="about__subtitle">Nuestros valores</h3>
+            <ul class="values">
+              <li class="value"><span class="value__icon" aria-hidden="true">&#10003;</span> Cercanía y transparencia</li>
+              <li class="value"><span class="value__icon" aria-hidden="true">&#10003;</span> Compromiso con los plazos</li>
+              <li class="value"><span class="value__icon" aria-hidden="true">&#10003;</span> Calidad y seguridad</li>
+              <li class="value"><span class="value__icon" aria-hidden="true">&#10003;</span> Mejora continua</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Misión y visión -->
+        <div class="mv-grid">
+          <article class="mv-card">
+            <h3 class="mv-card__title">Misión</h3>
+            <p>Aportar tecnología fiable y comprensible que permita a las empresas trabajar mejor, con más seguridad y menos costes ocultos.</p>
+          </article>
+          <article class="mv-card">
+            <h3 class="mv-card__title">Visión</h3>
+            <p>Ser el socio tecnológico de referencia de las pymes de nuestro entorno, reconocidos por la cercanía y la calidad del servicio.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== EQUIPO ==================== -->
+    <section class="section section--soft" id="equipo">
+      <div class="container">
+        <header class="section__head">
+          <p class="eyebrow" data-site="team_eyebrow">Equipo</p>
+          <h2 class="section__title" data-site="team_title">Las personas detrás de C-ROTULUS</h2>
+          <p class="section__lead" data-site="team_lead">Un equipo pequeño, cercano y especializado. Estas son las personas que te atenderán y trabajarán en tu proyecto.</p>
+        </header>
+
+        <div class="team" data-team-list>
+          <!-- MIEMBRO 1 -->
+          <article class="team-card">
+            <div class="team-card__media">
+              <img src="assets/img/equipo/marta-lopez.svg" width="400" height="400" alt="Retrato de Marta López, Directora de proyectos" loading="lazy" decoding="async">
+            </div>
+            <div class="team-card__body">
+              <h3 class="team-card__name">Marta López</h3>
+              <p class="team-card__role">Directora de proyectos</p>
+              <p class="team-card__bio">Coordina cada proyecto de principio a fin y se asegura de que cumplimos plazos y presupuesto.</p>
+              <a class="team-card__mail" href="mailto:marta.lopez@crotulus.example">marta.lopez@crotulus.example</a>
+            </div>
+          </article>
+
+          <!-- MIEMBRO 2 -->
+          <article class="team-card">
+            <div class="team-card__media">
+              <img src="assets/img/equipo/javier-ruiz.svg" width="400" height="400" alt="Retrato de Javier Ruiz, Ingeniero de redes" loading="lazy" decoding="async">
+            </div>
+            <div class="team-card__body">
+              <h3 class="team-card__name">Javier Ruiz</h3>
+              <p class="team-card__role">Ingeniero de redes</p>
+              <p class="team-card__bio">Diseña y protege la infraestructura de red de nuestros clientes, con foco en la seguridad.</p>
+              <a class="team-card__mail" href="mailto:javier.ruiz@crotulus.example">javier.ruiz@crotulus.example</a>
+            </div>
+          </article>
+
+          <!-- MIEMBRO 3 -->
+          <article class="team-card">
+            <div class="team-card__media">
+              <img src="assets/img/equipo/cristina-serra.svg" width="400" height="400" alt="Retrato de Cristina Serra, Especialista en IA" loading="lazy" decoding="async">
+            </div>
+            <div class="team-card__body">
+              <h3 class="team-card__name">Cristina Serra</h3>
+              <p class="team-card__role">Especialista en IA</p>
+              <p class="team-card__bio">Crea automatizaciones y agentes de IA que ahorran horas de trabajo repetitivo.</p>
+              <a class="team-card__mail" href="mailto:cristina.serra@crotulus.example">cristina.serra@crotulus.example</a>
+            </div>
+          </article>
+
+          <!-- MIEMBRO 4 -->
+          <article class="team-card">
+            <div class="team-card__media">
+              <img src="assets/img/equipo/diego-marin.svg" width="400" height="400" alt="Retrato de Diego Marín, Desarrollador web" loading="lazy" decoding="async">
+            </div>
+            <div class="team-card__body">
+              <h3 class="team-card__name">Diego Marín</h3>
+              <p class="team-card__role">Desarrollador web</p>
+              <p class="team-card__bio">Construye webs y aplicaciones rápidas, accesibles y fáciles de gestionar.</p>
+              <a class="team-card__mail" href="mailto:diego.marin@crotulus.example">diego.marin@crotulus.example</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== LLAMADA A LA ACCIÓN ==================== -->
+    <section class="section section--blue page-cta" id="empresa-cta">
+      <div class="container">
+        <h2 class="section__title">¿Hablamos de tu proyecto?</h2>
+        <p class="section__lead">
+          Cuéntanos qué necesitas y te propondremos la mejor solución, sin compromiso.
+        </p>
+        <p>
+          <a class="btn btn--primary" href="index.html#contacto">Solicitar presupuesto</a>
+          <a class="btn btn--outline-light" href="https://wa.me/5359888821?text=Hola%20C-ROTULUS%2C%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n%20sobre%20sus%20servicios%20tecnol%C3%B3gicos." data-whatsapp-link target="_blank" rel="noopener">Escríbenos por WhatsApp</a>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==================== PIE DE PÁGINA ==================== -->
+  <footer class="site-footer">
+    <div class="container site-footer__grid">
+      <div class="site-footer__brand">
+        <span class="logo-plate">
+          <picture>
+            <source type="image/avif" srcset="assets/img/logo-header.avif">
+            <source type="image/webp" srcset="assets/img/logo-header.webp">
+            <img src="assets/img/logo-header.png" alt="Logotipo de C-ROTULUS S.U.R.L." width="170" height="64" loading="lazy" decoding="async">
+          </picture>
+        </span>
+        <p data-site="footer_tagline">Servicios tecnológicos para empresas. Desarrollo, automatización, redes y soporte con trato cercano.</p>
+      </div>
+
+      <nav class="site-footer__col" aria-label="Enlaces rápidos">
+        <h3>Enlaces rápidos</h3>
+        <ul>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="empresa.html">Empresa</a></li>
+          <li><a href="index.html#servicios">Servicios</a></li>
+          <li><a href="index.html#proyectos">Proyectos</a></li>
+          <li><a href="index.html#blog">Blog</a></li>
+          <li><a href="index.html#contacto">Contacto</a></li>
+          <li><a href="index.html#ubicacion">Ubicación</a></li>
+          <li><a href="index.html#faq">Preguntas frecuentes</a></li>
+          <li><a href="admin/login.php">Acceder</a></li>
+        </ul>
+      </nav>
+
+      <div class="site-footer__col">
+        <h3>Contacto</h3>
+        <ul>
+          <li><a href="tel:+5359888821" data-site="telefono" data-tel-primary>+53 5988 8821</a></li>
+          <li><a href="tel:+5349368808" data-tel-secondary>+53 4936 8808</a></li>
+          <li><a href="mailto:crotulus.mipyme@gmail.com" data-site="correo">crotulus.mipyme@gmail.com</a></li>
+          <li><span data-site-direccion>Calle 29 #5408 e/ 54 y 56, Artemisa</span></li>
+          <li><span data-site="horario">Lunes a Viernes de 9:00 am a 5:00 pm</span></li>
+        </ul>
+      </div>
+
+      <div class="site-footer__col">
+        <h3>Síguenos</h3>
+        <ul class="social" aria-label="Redes sociales de C-ROTULUS">
+          <li><a href="https://www.facebook.com/com.rotulus.surl" data-social="facebook" aria-label="Facebook" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M13 22v-8h3l1-4h-4V8c0-1 .3-1.6 1.7-1.6H17V3.1C16.4 3 15.4 3 14.3 3 11.8 3 10 4.4 10 7.3V10H7v4h3v8h3Z"/></svg></a></li>
+          <li><a href="#" data-social="instagram" aria-label="Instagram" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 7.5A4.5 4.5 0 1 0 12 16.5 4.5 4.5 0 0 0 12 7.5Zm0 7.4a2.9 2.9 0 1 1 0-5.8 2.9 2.9 0 0 1 0 5.8Zm4.7-7.6a1.05 1.05 0 1 0 0 2.1 1.05 1.05 0 0 0 0-2.1Z"/></svg></a></li>
+          <li><a href="#" data-social="linkedin" aria-label="LinkedIn" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0 0-5ZM3 9h4v12H3zM10 9h3.8v1.7h.1c.5-.9 1.8-1.9 3.6-1.9 3.9 0 4.6 2.4 4.6 5.6V21h-4v-5.3c0-1.3 0-2.9-1.8-2.9s-2 1.4-2 2.8V21h-4z"/></svg></a></li>
+          <li><a href="#" data-social="github" aria-label="GitHub" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.6.4-1.1.6-1.3-2.2-.2-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.6 0 0 .8-.3 2.8 1a9.6 9.6 0 0 1 5 0c2-1.3 2.8-1 2.8-1 .5 1.3.2 2.3.1 2.6.6.7 1 1.6 1 2.7 0 3.9-2.4 4.8-4.6 5 .4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10 10 0 0 0 12 2Z"/></svg></a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container site-footer__bottom">
+      <p>&copy; <span id="year">2026</span> C-ROTULUS S.U.R.L. Todos los derechos reservados.</p>
+      <p class="site-footer__legal" data-footer-legal>Aviso legal &middot; Privacidad &middot; Cookies</p>
+    </div>
+  </footer>
+
+  <!-- ==================== BOTONES FLOTANTES ==================== -->
+  <!-- Botón flotante de WhatsApp: SUSTITUIDO por el widget de chat de CreatuAgente.
+       Para recuperarlo, descomenta el enlace y borra el script del widget (abajo). -->
+  <!--
+  <a class="float-wa" href="https://wa.me/5359888821?text=Hola%20C-ROTULUS%2C%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n%20sobre%20sus%20servicios%20tecnol%C3%B3gicos." data-whatsapp-link aria-label="Escríbenos por WhatsApp (se abre en una pestana nueva)" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="M12.04 2a9.9 9.9 0 0 0-8.5 15l-1.3 4.7 4.82-1.26A9.9 9.9 0 1 0 12.04 2Zm5.77 14.06c-.24.68-1.4 1.3-1.93 1.34-.5.05-.98.24-3.3-.7-2.77-1.1-4.53-3.94-4.67-4.12-.14-.19-1.12-1.5-1.12-2.86 0-1.36.72-2.03.97-2.3.24-.28.53-.35.71-.35l.51.01c.16 0 .39-.06.6.46.24.57.8 1.98.87 2.13.07.14.12.31.02.5-.09.19-.14.3-.28.47l-.42.49c-.14.14-.29.29-.12.57.16.28.73 1.2 1.57 1.95 1.08.96 1.98 1.26 2.26 1.4.28.14.44.12.6-.07.17-.19.7-.82.89-1.1.19-.28.37-.23.63-.14.26.1 1.66.78 1.94.92.28.14.47.21.54.33.07.12.07.68-.17 1.36Z"/></svg>
+  </a>
+  -->
+
+  <button class="back-top" id="backTop" type="button" aria-label="Volver arriba" hidden>
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 19V5M5 12l7-7 7 7"/></svg>
+  </button>
+
+  <script src="js/main.js?v=20261017b" defer></script>
+
+  <!-- Widget de CreatuAgente (chat de atención al cliente).
+       Inyecta su propio botón flotante abajo a la derecha; por eso el botón
+       verde de WhatsApp queda desactivado arriba. Para quitarlo, borra esta
+       línea y vuelve a descomentar el enlace de WhatsApp. -->
+  <script src="https://api.creatuagente.io/widget/cmv8ia68j0f3j0bs6190merf8/widget-profile.js" async></script>
+</body>
+</html>

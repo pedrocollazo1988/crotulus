@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Panel con una gráfica creciente que muestra cómo la IA ahorra horas de trabajo en una pyme">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F6FBFF"/><stop offset="1" stop-color="#CCE5F4"/></linearGradient>
+    <linearGradient id="scr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3E93C4"/><stop offset="1" stop-color="#136493"/></linearGradient>
+    <linearGradient id="area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5FA8C9" stop-opacity=".6"/><stop offset="1" stop-color="#5FA8C9" stop-opacity="0"/></linearGradient>
+    <filter id="soft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="16"/></filter>
+    <filter id="ds" x="-25%" y="-25%" width="150%" height="150%"><feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#0B2E45" flood-opacity=".18"/></filter>
+    <clipPath id="clip"><rect width="800" height="500" rx="24"/></clipPath>
+    <style>
+      .f{animation:f 7s ease-in-out infinite}
+      .f2{animation:f 8.8s ease-in-out infinite;animation-delay:-2.2s}
+      .draw{stroke-dasharray:520;stroke-dashoffset:520;animation:draw 3.4s ease-out forwards}
+      .pulse{animation:pulse 3.4s ease-in-out infinite}
+      @keyframes f{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+      @keyframes draw{to{stroke-dashoffset:0}}
+      @keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+      @media (prefers-reduced-motion: reduce){.f,.f2,.draw,.pulse{animation:none}}
+    </style>
+  </defs>
+  <g clip-path="url(#clip)">
+    <rect width="800" height="500" fill="url(#bg)"/>
+    <circle cx="150" cy="120" r="130" fill="#7FC0E0" opacity=".35" filter="url(#soft)"/>
+
+    <!-- Panel con la grafica -->
+    <g filter="url(#ds)">
+      <rect x="150" y="90" width="460" height="300" rx="18" fill="#FFFFFF"/>
+      <rect x="150" y="90" width="460" height="40" rx="18" fill="url(#scr)"/>
+      <rect x="150" y="114" width="460" height="16" fill="url(#scr)"/>
+      <circle cx="172" cy="110" r="4.5" fill="#EAF4FA"/><circle cx="188" cy="110" r="4.5" fill="#8ECBEA"/><circle cx="204" cy="110" r="4.5" fill="#5FA8C9"/>
+      <rect x="330" y="102" width="130" height="16" rx="8" fill="#0E4E75" opacity=".5"/>
+      <rect x="176" y="146" width="140" height="12" rx="6" fill="#136493"/>
+      <rect x="176" y="168" width="90" height="9" rx="4.5" fill="#9EC6E0"/>
+      <!-- Ejes y rejilla -->
+      <g stroke="#E1EDF5" stroke-width="1.4">
+        <path d="M186 348 H586"/><path d="M186 300 H586"/><path d="M186 252 H586"/><path d="M186 204 H586"/>
+      </g>
+      <path d="M186 194 V348 H586" fill="none" stroke="#C5E2F2" stroke-width="2"/>
+      <!-- Area bajo la curva -->
+      <path d="M206 330 L286 300 L366 306 L446 244 L526 250 L566 196 L566 348 L206 348 Z" fill="url(#area)"/>
+      <!-- Curva creciente -->
+      <path class="draw" d="M206 330 L286 300 L366 306 L446 244 L526 250 L566 196" fill="none" stroke="#136493" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <g fill="#FFFFFF" stroke="#136493" stroke-width="3">
+        <circle cx="206" cy="330" r="6"/><circle cx="286" cy="300" r="6"/><circle cx="366" cy="306" r="6"/>
+        <circle cx="446" cy="244" r="6"/><circle cx="526" cy="250" r="6"/><circle class="pulse" cx="566" cy="196" r="8"/>
+      </g>
+    </g>
+
+    <!-- Etiqueta de horas ahorradas -->
+    <g class="f2" filter="url(#ds)">
+      <rect x="566" y="196" width="150" height="70" rx="16" fill="#0E4E75"/>
+      <circle cx="596" cy="231" r="16" fill="#2E86B8"/>
+      <path d="M596 223 v8 l6 4" fill="none" stroke="#EAF4FA" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="620" y="220" width="80" height="8" rx="4" fill="#8ECBEA"/>
+      <rect x="620" y="236" width="58" height="8" rx="4" fill="#5FA8C9"/>
+    </g>
+
+    <!-- Chip flotante de IA -->
+    <g class="f" filter="url(#ds)">
+      <rect x="40" y="300" width="130" height="80" rx="16" fill="#FFFFFF"/>
+      <rect x="40" y="300" width="6" height="80" rx="3" fill="#2E86B8"/>
+      <circle cx="86" cy="340" r="20" fill="#136493"/>
+      <path d="M78 340 h16 M86 332 v16" stroke="#EAF4FA" stroke-width="2.6" stroke-linecap="round"/>
+      <rect x="116" y="326" width="40" height="8" rx="4" fill="#2E86B8"/>
+      <rect x="116" y="342" width="30" height="8" rx="4" fill="#C5E2F2"/>
+    </g>
+
+    <rect y="430" width="800" height="70" fill="#C7DEF0" opacity=".8"/>
+  </g>
+</svg>

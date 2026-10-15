@@ -40,6 +40,13 @@ if (input('_gotcha') !== '') {
     json_ok(['message' => 'Gracias, hemos recibido tu mensaje.']);
 }
 
+/* --- 3b. Captcha propio: reto aritmetico firmado y con caducidad ---------- */
+if (!captcha_verify(input('captcha_token'), input('captcha'))) {
+    json_error('La verificacion de seguridad no es correcta. Intentalo de nuevo.', 422, [
+        'fields' => ['captcha' => 'Resuelve la operacion para demostrar que eres una persona.'],
+    ]);
+}
+
 /* --- 4. Validacion -------------------------------------------------------- */
 $result = validate_contact(request_input());
 if (!empty($result['errors'])) {
@@ -72,9 +79,10 @@ $html = mailer_template('Nuevo mensaje de contacto', "
     <p><strong>Mensaje:</strong></p>
     <p>" . nl2br(e($data['message'])) . "</p>
 ");
-$notify = (string) setting('correo', config('defaults.correo'));
-if (filter_var($notify, FILTER_VALIDATE_EMAIL)) {
-    @send_mail($notify, 'Nuevo mensaje de contacto · ' . config('site_name'), $html);
+$notify = mail_notify_to();
+if ($notify !== '') {
+    // Reply-To = correo del cliente: al responder el aviso, respondes al cliente.
+    @send_mail($notify, 'Nuevo mensaje de contacto · ' . config('site_name'), $html, '', (string) $data['email']);
 }
 
 /* --- 7. Respuesta --------------------------------------------------------- */

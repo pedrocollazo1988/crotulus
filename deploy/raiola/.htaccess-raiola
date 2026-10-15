@@ -1,0 +1,110 @@
+# ============================================================================
+#  C-ROTULUS · .htaccess optimizado para RAIOLA NETWORKS
+#  (cPanel + CloudLinux + LiteSpeed Web Server)
+# ----------------------------------------------------------------------------
+#  Este archivo es una ALTERNATIVA al .htaccess general del proyecto, ajustada
+#  a la infraestructura de Raiola. Si tu hosting es Raiola:
+#
+#    1) Renombra el .htaccess general (o guárdalo) y usa ESTE contenido como
+#       tu .htaccess en la raíz de public_html.
+#    2) Descomenta UNA de las redirecciones HTTPS segun uses Cloudflare o no.
+#    3) Sube tambien 404.html a la raiz (la pagina de error ya esta activada).
+#
+#  IMPORTANTE sobre la version de PHP: en Raiola (CloudLinux) la version NO se
+#  elige en .htaccess, sino en cPanel:
+#     Software > "Seleccionar version PHP" (toda la cuenta)
+#     o "Domain PHP Selector" (por dominio).
+#  Elige PHP 8.1, 8.2 o 8.3. NO anadas lineas AddHandler/AddType de PHP aqui:
+#  romperian el sitio con LiteSpeed.
+# ============================================================================
+
+# --- Página de inicio y pagina de error ---
+DirectoryIndex index.html
+ErrorDocument 404 /404.html
+
+# --- Sin listado de carpetas ---
+<IfModule mod_autoindex.c>
+  Options -Indexes
+</IfModule>
+
+# --- Juego de caracteres por defecto ---
+AddDefaultCharset UTF-8
+
+# --- Compresión (LiteSpeed soporta mod_deflate) ---
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml \
+    application/json application/javascript application/ld+json image/svg+xml
+</IfModule>
+
+# --- Caché del navegador ---
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css            "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType image/svg+xml       "access plus 1 year"
+  ExpiresByType image/png           "access plus 1 year"
+  ExpiresByType image/jpeg          "access plus 1 year"
+  ExpiresByType image/webp          "access plus 1 year"
+  ExpiresByType image/avif          "access plus 1 year"
+  ExpiresByType font/woff2          "access plus 1 year"
+  ExpiresByType image/x-icon        "access plus 1 year"
+  # El HTML siempre fresco (para que los cambios se vean al instante).
+  ExpiresByType text/html           "access plus 0 seconds"
+</IfModule>
+
+# --- Tipos MIME modernos (AVIF y fuentes) ---
+<IfModule mod_mime.c>
+  AddType image/avif .avif
+  AddType font/woff2 .woff2
+</IfModule>
+
+# --- El backend dinamico NO se debe cachear (API y panel) ---
+<IfModule mod_headers.c>
+  SetEnvIf Request_URI "^/(api|admin)/" NOCACHE=1
+  Header set Cache-Control "no-store, no-cache, must-revalidate" env=NOCACHE
+
+  # --- Cabeceras de seguridad ---
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+  # Descomenta cuando el certificado SSL este activo:
+  # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
+
+# --- Protege archivos sensibles ---
+<FilesMatch "(^\.|\.(sqlite|sqlite-journal|sqlite-wal|log|md|zip)$|^config\.local\.php$)">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# --- Bloquea el acceso directo a las carpetas internas ---
+RedirectMatch 404 ^/app(/|$)
+RedirectMatch 404 ^/deploy(/|$)
+RedirectMatch 404 ^/tools(/|$)
+
+# ============================================================================
+#  REDIRECCIONES HTTPS  ·  elige UNA y descomentala
+# ============================================================================
+
+# (A) SIN Cloudflare: fuerza HTTPS + www (recomendado para el dominio principal).
+#     Sustituye TU-DOMINIO por el tuyo.
+# <IfModule mod_rewrite.c>
+#   RewriteEngine On
+#   RewriteCond %{HTTPS} !=on [OR]
+#   RewriteCond %{HTTP_HOST} !^www\. [NC]
+#   RewriteRule ^(.*)$ https://www.TU-DOMINIO.com/$1 [R=301,L]
+# </IfModule>
+
+# (B) CON Cloudflare (Raiola suele usarlo): el SSL lo termina Cloudflare, por lo
+#     que hay que mirar X-Forwarded-Proto y NO %{HTTPS} (si no, bucle infinito).
+# <IfModule mod_rewrite.c>
+#   RewriteEngine On
+#   RewriteCond %{HTTP:X-Forwarded-Proto} =http
+#   RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+# </IfModule>

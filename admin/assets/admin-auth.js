@@ -59,6 +59,14 @@
       if (value.length < 2) return "Escribe tu nombre (mínimo 2 caracteres).";
       if (value.length > 120) return "El nombre es demasiado largo.";
     }
+    if (kind === "text") {
+      if (value.length < 10) return "Cuéntanos un poco más (mínimo 10 caracteres).";
+      if (value.length > 1500) return "El texto es demasiado largo.";
+    }
+    if (kind === "question") {
+      if (value.length < 8) return "Escribe la pregunta (mínimo 8 caracteres).";
+      if (value.length > 200) return "La pregunta es demasiado larga.";
+    }
     if (kind === "password") {
       var min = minLength(input);
       if (value.length < min) return "La contraseña debe tener al menos " + min + " caracteres.";
@@ -96,9 +104,9 @@
 
   /* ===================== 3. ENVIO (fetch + CSRF) ======================== */
 
-  function submitForm(form, okId, errId, onSuccess) {
+  function submitForm(form, okId, errId, onSuccess, errBoxOverride) {
     var okBox = document.getElementById(okId);
-    var errBox = document.getElementById(errId);
+    var errBox = errBoxOverride || document.getElementById(errId);
     var btn = form.querySelector('button[type="submit"]');
     if (okBox) okBox.hidden = true;
     if (errBox) errBox.hidden = true;
@@ -206,8 +214,12 @@
       login.addEventListener("submit", function (ev) {
         ev.preventDefault();
         if (!validateAll(login)) return;
-        submitForm(login, null, "loginError", function () {
-          window.location.href = login.getAttribute("data-success-url") || "/admin/";
+        submitForm(login, null, "loginError", function (data) {
+          // Según el rol: administradores al panel; el resto, a su área privada.
+          var role = data && data.user && data.user.role;
+          window.location.href = (role === "admin")
+            ? (login.getAttribute("data-admin-url") || "admin/")
+            : (login.getAttribute("data-success-url") || "admin/account.php");
         });
       });
     }
@@ -244,6 +256,26 @@
         if (!validateAll(reset)) ev.preventDefault();
       });
     }
+
+    /* --- Aportaciones del área privada (Mi cuenta) ---
+       Testimonios y preguntas. Envío por fetch con CSRF; el servidor valida y
+       responde JSON. Los avisos se muestran en la propia tarjeta. */
+    Array.prototype.slice.call(document.querySelectorAll(".js-account-form")).forEach(function (form) {
+      setupValidation(form);
+      form.addEventListener("submit", function (ev) {
+        ev.preventDefault();
+        if (!validateAll(form)) return;
+        var okBox  = form.querySelector("[data-account-ok]");
+        var errBox = form.querySelector("[data-account-error]");
+        if (okBox) okBox.hidden = true;
+        if (errBox) errBox.hidden = true;
+        submitForm(form, null, null, function (data) {
+          if (okBox) { okBox.textContent = (data && data.message) || "Enviado."; okBox.hidden = false; }
+          form.reset();
+          setTimeout(function () { window.location.reload(); }, 1200);
+        }, errBox);
+      });
+    });
   }
 
   if (document.readyState === "loading") {

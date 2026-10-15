@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- sitemap.xml · C-ROTULUS S.U.R.L.
      EDITAR: sustituye https://www.c-rotulus.example por tu dominio real (p. ej. https://www.c-rotulus.com).
-     Es una web de una sola página, por eso solo se declara la raíz; las anclas
-     (#servicios, #contacto...) no son URLs independientes para los buscadores. -->
+     La portada es una web de una sola página, por eso solo se declara su raíz;
+     las anclas (#servicios, #contacto...) no son URLs independientes. La página
+     "Empresa" sí es una URL propia y se declara aparte. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.c-rotulus.example/</loc>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://www.c-rotulus.example/empresa.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
 </urlset>

@@ -39,7 +39,8 @@ admin_auth_page('Iniciar sesión', '<li>Gestiona mensajes y contenido del sitio<
 
   <form id="loginForm" class="js-auth-form" method="post" novalidate
         action="<?= e(url('api/auth.php?action=login')) ?>"
-        data-success-url="<?= e(url('admin/')) ?>">
+        data-success-url="<?= e(url('admin/account.php')) ?>"
+        data-admin-url="<?= e(url('admin/')) ?>">
     <h1>Iniciar sesión</h1>
     <div class="alert alert--error" id="loginError" role="alert" hidden></div>
     <input type="hidden" name="_csrf" value="<?= e($csrf) ?>">

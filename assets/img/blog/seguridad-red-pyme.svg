@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Red de oficina protegida con un escudo de seguridad y nodos de datos conectados">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F6FBFF"/><stop offset="1" stop-color="#CCE5F4"/></linearGradient>
+    <radialGradient id="orb" cx=".35" cy=".3" r=".85"><stop offset="0" stop-color="#8ECBEA"/><stop offset="1" stop-color="#136493"/></radialGradient>
+    <radialGradient id="shield" cx=".35" cy=".35" r=".9"><stop offset="0" stop-color="#3E93C4"/><stop offset="1" stop-color="#0E4E75"/></radialGradient>
+    <filter id="soft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="16"/></filter>
+    <filter id="ds" x="-25%" y="-25%" width="150%" height="150%"><feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#0B2E45" flood-opacity=".18"/></filter>
+    <clipPath id="clip"><rect width="800" height="500" rx="24"/></clipPath>
+    <style>
+      .f{animation:f 7s ease-in-out infinite}
+      .f2{animation:f 8.8s ease-in-out infinite;animation-delay:-2.2s}
+      .pulse{animation:pulse 3.4s ease-in-out infinite}
+      .trace{stroke-dasharray:6 8;animation:dash 10s linear infinite}
+      @keyframes f{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+      @keyframes dash{to{stroke-dashoffset:-150}}
+      @keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+      @media (prefers-reduced-motion: reduce){.f,.f2,.pulse,.trace{animation:none}}
+    </style>
+  </defs>
+  <g clip-path="url(#clip)">
+    <rect width="800" height="500" fill="url(#bg)"/>
+    <circle cx="400" cy="250" r="190" fill="#7FC0E0" opacity=".33" filter="url(#soft)"/>
+
+    <!-- Red de nodos con trazas -->
+    <g class="trace" stroke="#2E86B8" fill="none" stroke-width="2.6" opacity=".5">
+      <path d="M180 150 L360 250 L180 350"/>
+      <path d="M360 250 L620 170"/>
+      <path d="M360 250 L620 330"/>
+      <path d="M180 150 L180 350"/>
+    </g>
+    <g fill="#136493"><circle cx="180" cy="150" r="14"/><circle cx="180" cy="350" r="14"/><circle cx="620" cy="170" r="14"/><circle cx="620" cy="330" r="14"/></g>
+    <g class="pulse" fill="#5FA8C9"><circle cx="180" cy="150" r="6"/><circle cx="180" cy="350" r="6"/><circle cx="620" cy="170" r="6"/><circle cx="620" cy="330" r="6"/></g>
+
+    <!-- Escudo central con candado -->
+    <g class="f" filter="url(#ds)">
+      <circle cx="400" cy="250" r="86" fill="#FFFFFF"/>
+      <path d="M400 190 l50 17 v40 c0 34 -30 52 -50 62 c-20 -10 -50 -28 -50 -62 v-40 z" fill="url(#shield)"/>
+      <rect x="382" y="244" width="36" height="30" rx="7" fill="#EAF4FA"/>
+      <path d="M388 244 v-8 a12 12 0 0 1 24 0 v8" fill="none" stroke="#EAF4FA" stroke-width="5"/>
+      <circle cx="400" cy="258" r="4.5" fill="#136493"/>
+    </g>
+
+    <!-- Chip flotante: Wi-Fi profesional -->
+    <g class="f2" filter="url(#ds)">
+      <rect x="60" y="60" width="150" height="76" rx="16" fill="#FFFFFF"/>
+      <path d="M110 118 a34 34 0 0 1 48 0" fill="none" stroke="#136493" stroke-width="4" stroke-linecap="round"/>
+      <path d="M122 106 a18 18 0 0 1 24 0" fill="none" stroke="#2E86B8" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="134" cy="120" r="4.5" fill="#136493"/>
+      <rect x="168" y="86" width="30" height="7" rx="3.5" fill="#2E86B8"/>
+      <rect x="168" y="102" width="22" height="7" rx="3.5" fill="#C5E2F2"/>
+    </g>
+
+    <!-- Chip flotante: firewall / monitor -->
+    <g class="f2" filter="url(#ds)">
+      <rect x="590" y="380" width="160" height="76" rx="16" fill="#0E4E75"/>
+      <rect x="608" y="398" width="60" height="40" rx="8" fill="#12405E"/>
+      <path d="M616 430 l12 -14 l10 8 l14 -18" fill="none" stroke="#8ECBEA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="680" y="402" width="52" height="8" rx="4" fill="#8ECBEA"/>
+      <rect x="680" y="418" width="38" height="8" rx="4" fill="#5FA8C9"/>
+    </g>
+
+    <!-- Chip flotante: verificado -->
+    <g class="f" filter="url(#ds)">
+      <rect x="600" y="92" width="150" height="72" rx="16" fill="#FFFFFF"/>
+      <circle cx="632" cy="128" r="18" fill="#2E86B8"/>
+      <path d="M624 128 l6 6 l12 -13" fill="none" stroke="#EAF4FA" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="660" y="116" width="72" height="8" rx="4" fill="#136493"/>
+      <rect x="660" y="132" width="50" height="8" rx="4" fill="#C5E2F2"/>
+    </g>
+
+    <rect y="440" width="800" height="60" fill="#C7DEF0" opacity=".8"/>
+  </g>
+</svg>

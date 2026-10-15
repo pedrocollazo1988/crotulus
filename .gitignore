@@ -14,3 +14,9 @@ app/data/*
 Thumbs.db
 *.swp
 .agent_tmp/
+
+# Artefacto de empaquetado (se regenera con tools/build_zip.py)
+/c-rotulus-sitio.zip
+
+# Capturas de vista previa (artefactos de desarrollo)
+/preview/

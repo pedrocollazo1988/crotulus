@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Página no encontrada (404) · C-ROTULUS S.U.R.L.</title>
+<meta name="robots" content="noindex, follow">
+<!-- Página de error 404. Es autónoma (no depende del CSS ni del JS del sitio)
+     para que funcione aunque el archivo que faltaba fuera un recurso.
+     Súbela a la raíz de public_html y actívala en .htaccess:
+         ErrorDocument 404 /404.html
+     EDITAR: cambia el teléfono/WhatsApp si hace falta (busca 5359888821). -->
+<style>
+  :root{
+    --primary:#136493; --primary-dark:#0E4E75; --accent:#2E86B8;
+    --ice:#C5E2F2; --navy:#0B2E45; --navy-soft:#103C58;
+    --ink:#E7F1F8; --muted:#9DBBCE; --wa:#25D366;
+    --font:"Inter",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+    padding:24px; color:var(--ink); font-family:var(--font); text-align:center;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(46,134,184,.28), transparent 45%),
+      radial-gradient(circle at 85% 80%, rgba(197,226,242,.16), transparent 45%),
+      var(--navy);
+    position:relative; overflow:hidden;
+  }
+  /* Motivo de nodos/circuito sutil (decorativo) */
+  body::before{
+    content:""; position:absolute; inset:0; opacity:.5; pointer-events:none;
+    background-image:
+      radial-gradient(rgba(197,226,242,.28) 1.4px, transparent 1.5px),
+      radial-gradient(rgba(197,226,242,.16) 1.4px, transparent 1.5px);
+    background-size:64px 64px, 64px 64px;
+    background-position:0 0, 32px 32px;
+  }
+  .box{position:relative; max-width:620px; width:100%}
+  .logo{width:210px; height:auto; margin:0 auto 26px; display:block}
+  .code{
+    font-size:clamp(74px,18vw,132px); font-weight:800; line-height:1; margin:0;
+    letter-spacing:-.04em;
+    background:linear-gradient(135deg,var(--ice),var(--accent));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  h1{font-size:clamp(22px,4vw,30px); margin:10px 0 12px}
+  p{color:var(--muted); font-size:16px; line-height:1.65; margin:0 auto 28px; max-width:460px}
+  .actions{display:flex; flex-wrap:wrap; gap:12px; justify-content:center}
+  .btn{
+    display:inline-flex; align-items:center; gap:9px; padding:13px 22px; border-radius:999px;
+    font-weight:600; font-size:15px; text-decoration:none; transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .btn:hover{transform:translateY(-2px)}
+  .btn--primary{background:var(--primary); color:#fff; box-shadow:0 10px 24px rgba(19,100,147,.4)}
+  .btn--primary:hover{background:var(--primary-dark)}
+  .btn--wa{background:var(--wa); color:#04310f}
+  .links{margin-top:26px; font-size:14px; color:var(--muted)}
+  .links a{color:var(--ice); text-decoration:none; margin:0 8px}
+  .links a:hover{text-decoration:underline}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+  <main class="box">
+    <img class="logo" src="assets/img/logo-footer.png" alt="C-ROTULUS S.U.R.L." width="210" height="79">
+    <p class="code">404</p>
+    <h1>Esta página no existe</h1>
+    <p>Puede que el enlace esté mal escrito o que la página se haya movido. Vuelve al inicio o escríbenos y te ayudamos.</p>
+    <div class="actions">
+      <a class="btn btn--primary" href="/">Volver al inicio</a>
+      <a class="btn btn--wa" href="https://wa.me/5359888821?text=Hola%20C-ROTULUS%2C%20he%20llegado%20a%20una%20p%C3%A1gina%20que%20no%20existe." target="_blank" rel="noopener">Escríbenos por WhatsApp</a>
+    </div>
+    <p class="links">
+      <a href="/#servicios">Servicios</a>·
+      <a href="/#contacto">Contacto</a>·
+      <a href="/#faq">Preguntas frecuentes</a>
+    </p>
+  </main>
+</body>
+</html>

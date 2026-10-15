@@ -31,7 +31,7 @@ function admin_header(string $title, bool $nav = true, string $active = ''): voi
         . "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
         . "<meta name=\"color-scheme\" content=\"light\">"
         . "<title>" . e($title) . " · Panel · $site</title>"
-        . "<link rel=\"preload\" as=\"font\" type=\"font/woff2\" href=\"" . url('assets/fonts/SpaceGrotesk-latin.woff2') . "?v=" . APP_ASSET_VERSION . "\" crossorigin>"
+        . "<link rel=\"preload\" as=\"font\" type=\"font/woff2\" href=\"" . url('assets/fonts/PlusJakartaSans-latin.woff2') . "?v=" . APP_ASSET_VERSION . "\" crossorigin>"
         . "<link rel=\"preload\" as=\"font\" type=\"font/woff2\" href=\"" . url('assets/fonts/Inter-latin.woff2') . "?v=" . APP_ASSET_VERSION . "\" crossorigin>"
         . "<link rel=\"icon\" type=\"image/png\" href=\"" . url('assets/img/favicon.png') . "\">"
         . "<link rel=\"stylesheet\" href=\"" . url('admin/assets/admin.css') . "?v=" . APP_ASSET_VERSION . "\"></head><body>";
@@ -44,13 +44,21 @@ function admin_header(string $title, bool $nav = true, string $active = ''): voi
         $pendingSubs = (int) (db_one("SELECT COUNT(*) AS c FROM user_submissions WHERE status = 'pendiente'")['c'] ?? 0);
         $counts = ['Mensajes' => $unread, 'Usuarios' => $pending, 'Valoraciones' => $pendingReviews, 'Aportaciones' => $pendingSubs];
         $links  = [
-            'Mensajes' => ['admin/index.php', 'Mensajes'],
-            'Contenido' => ['admin/content.php', 'Contenido'],
-            'Valoraciones' => ['admin/reviews.php', 'Valoraciones'],
-            'Aportaciones' => ['admin/submissions.php', 'Aportaciones'],
-            'Ajustes' => ['admin/settings.php', 'Ajustes'],
-            'Usuarios' => ['admin/users.php', 'Usuarios'],
+            'Mi cuenta' => ['admin/account.php', 'Mi cuenta'],
         ];
+        // Las secciones de gestión solo tienen sentido para administradores.
+        if (is_admin()) {
+            $links += [
+                'Mensajes' => ['admin/index.php', 'Mensajes'],
+                'Contenido' => ['admin/content.php', 'Contenido'],
+                'Blog' => ['admin/blog.php', 'Blog'],
+                'Equipo' => ['admin/team.php', 'Equipo'],
+                'Valoraciones' => ['admin/reviews.php', 'Valoraciones'],
+                'Aportaciones' => ['admin/submissions.php', 'Aportaciones'],
+                'Ajustes' => ['admin/settings.php', 'Ajustes'],
+                'Usuarios' => ['admin/users.php', 'Usuarios'],
+            ];
+        }
         $items = '';
         foreach ($links as $key => [$href, $label]) {
             $cls = $active === $key ? ' class="is-active"' : '';
@@ -89,11 +97,12 @@ function admin_auth_page(string $title, string $bulletsHtml): void
     $v      = APP_ASSET_VERSION;
     $logo   = url('assets/img/logo-header.png') . "?v=$v";
     $home   = url('index.html');
+
     echo "<!doctype html><html lang=\"es\"><head><meta charset=\"utf-8\">"
         . "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
         . "<meta name=\"color-scheme\" content=\"light\">"
         . "<title>" . e($title) . " · $site</title>"
-        . "<link rel=\"preload\" as=\"font\" type=\"font/woff2\" href=\"" . url('assets/fonts/SpaceGrotesk-latin.woff2') . "?v=" . APP_ASSET_VERSION . "\" crossorigin>"
+        . "<link rel=\"preload\" as=\"font\" type=\"font/woff2\" href=\"" . url('assets/fonts/PlusJakartaSans-latin.woff2') . "?v=" . APP_ASSET_VERSION . "\" crossorigin>"
         . "<link rel=\"preload\" as=\"font\" type=\"font/woff2\" href=\"" . url('assets/fonts/Inter-latin.woff2') . "?v=" . APP_ASSET_VERSION . "\" crossorigin>"
         . "<link rel=\"icon\" type=\"image/png\" href=\"" . url('assets/img/favicon.png') . "\">"
         . "<link rel=\"stylesheet\" href=\"" . url('admin/assets/admin.css') . "?v=$v\"></head><body>"

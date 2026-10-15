@@ -5,12 +5,13 @@ declare(strict_types=1);
  * ============================================================================
  *  API DE APORTACIONES  ->  POST /api/submissions.php
  *  ----------------------------------------------------------------------------
- *  Abierto a cualquier visitante. Permite enviar:
+ *  Requiere sesión iniciada. Permite enviar:
  *    - tipo=testimonio  (nombre + experiencia)  -> se publica al aprobarse.
  *    - tipo=pregunta    (pregunta + detalle)     -> alimenta las FAQ y su
  *                                                   algoritmo de importancia.
- *  Si hay sesión iniciada se asocia la aportación a esa cuenta (0 = anónimo).
- *  Seguridad: CSRF, límite por IP, honeypot y validación.
+ *  La aportación queda asociada a la cuenta que la envía. Los formularios
+ *  viven en el área privada (admin/account.php).
+ *  Seguridad: sesión obligatoria, CSRF, límite por IP, honeypot y validación.
  *  Respeta el ajuste "submissions_auto_approve".
  * ============================================================================
  */
@@ -26,9 +27,9 @@ if (!submissions_enabled()) {
     json_error('Las aportaciones están desactivadas.', 503);
 }
 
-/* --- 0. Abierto a cualquier visitante ------------------------------------ */
-$user = current_user();
-$userId = $user ? (int) $user['id'] : 0;
+/* --- 0. Sesión obligatoria ----------------------------------------------- */
+$user   = require_user();
+$userId = (int) $user['id'];
 
 /* --- 1. Anti-CSRF --------------------------------------------------------- */
 csrf_require();
@@ -69,8 +70,8 @@ $id = db_insert('user_submissions', [
 audit('submission_created', ['id' => $id, 'type' => $data['stype'], 'user' => $userId]);
 
 /* --- 6. Aviso por correo (no bloquea la respuesta) ------------------------ */
-$tipo = submission_type_label($data['stype']);
-$autor = $user ? (string) ($user['name'] ?: $user['email']) : 'Visitante anónimo';
+$tipo  = submission_type_label($data['stype']);
+$autor = (string) ($user['name'] ?: $user['email']);
 $html = mailer_template("Nueva aportación: $tipo", "
     <p><strong>Tipo:</strong> " . e($tipo) . "</p>
     <p><strong>Autor:</strong> " . e($autor) . "</p>
@@ -78,7 +79,7 @@ $html = mailer_template("Nueva aportación: $tipo", "
     <p><strong>Detalle:</strong></p><p>" . nl2br(e($data['body'])) . "</p>
     <p><em>Estado: $status.</em></p>
 ");
-$notify = (string) setting('correo', config('defaults.correo'));
+$notify = mail_notify_to();
 if (filter_var($notify, FILTER_VALIDATE_EMAIL)) {
     @send_mail($notify, "Nueva aportación · " . config('site_name'), $html);
 }

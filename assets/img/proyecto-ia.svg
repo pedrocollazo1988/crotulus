@@ -1,72 +1,96 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Ilustración: automatización y agentes de IA">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Asistente de inteligencia artificial que responde consultas 24/7, conectado a la nube y a la base de datos">
   <defs>
-    <linearGradient id="bgA" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#EAF2FB"/>
-      <stop offset="1" stop-color="#F4F9FE"/>
-    </linearGradient>
-    <linearGradient id="bubbleA" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#005AA5"/>
-      <stop offset="1" stop-color="#1E88E5"/>
-    </linearGradient>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F6FBFF"/><stop offset="1" stop-color="#CCE5F4"/></linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7FC0E0"/><stop offset="1" stop-color="#2E86B8" stop-opacity="0"/></linearGradient>
+    <radialGradient id="orb" cx=".35" cy=".3" r=".85"><stop offset="0" stop-color="#8ECBEA"/><stop offset="1" stop-color="#136493"/></radialGradient>
+    <linearGradient id="chip" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3E93C4"/><stop offset="1" stop-color="#136493"/></linearGradient>
+    <filter id="soft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="16"/></filter>
+    <filter id="ds" x="-25%" y="-25%" width="150%" height="150%"><feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#0B2E45" flood-opacity=".18"/></filter>
+    <clipPath id="clip"><rect width="800" height="500" rx="24"/></clipPath>
+    <style>
+      .f{animation:f 7s ease-in-out infinite}
+      .f2{animation:f 8.8s ease-in-out infinite;animation-delay:-2.2s}
+      .f3{animation:f 10s ease-in-out infinite;animation-delay:-4.4s}
+      .pulse{animation:pulse 3.6s ease-in-out infinite}
+      .trace{stroke-dasharray:6 8;animation:dash 9s linear infinite}
+      @keyframes f{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+      @keyframes dash{to{stroke-dashoffset:-140}}
+      @keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+      @media (prefers-reduced-motion: reduce){.f,.f2,.f3,.pulse,.trace{animation:none}}
+    </style>
   </defs>
+  <g clip-path="url(#clip)">
+    <rect width="800" height="500" fill="url(#bg)"/>
+    <circle cx="400" cy="250" r="210" fill="url(#glow)" opacity=".45" filter="url(#soft)"/>
 
-  <rect width="800" height="500" fill="url(#bgA)"/>
-
-  <!-- red neuronal de fondo -->
-  <g stroke="#CFE4F7" stroke-width="2" fill="none" opacity=".85">
-    <path d="M90 120 L180 90 L270 130 L360 95"/>
-    <path d="M90 120 L170 180 L270 130"/>
-    <path d="M360 95 L450 140 L540 105"/>
-    <path d="M450 140 L470 60"/>
-    <path d="M700 400 L620 430 L540 400 L470 440"/>
-    <path d="M700 400 L640 350 L540 400"/>
-    <path d="M290 300 L380 330 L470 300"/>
-  </g>
-  <g fill="#A9D2F0">
-    <circle cx="90" cy="120" r="6"/><circle cx="180" cy="90" r="6"/><circle cx="270" cy="130" r="6"/>
-    <circle cx="360" cy="95" r="6"/><circle cx="450" cy="140" r="6"/><circle cx="540" cy="105" r="6"/>
-    <circle cx="470" cy="60" r="6"/><circle cx="700" cy="400" r="6"/><circle cx="620" cy="430" r="6"/>
-    <circle cx="540" cy="400" r="6"/><circle cx="470" cy="440" r="6"/><circle cx="640" cy="350" r="6"/>
-    <circle cx="170" cy="180" r="6"/><circle cx="290" cy="300" r="6"/><circle cx="380" cy="330" r="6"/><circle cx="470" cy="300" r="6"/>
-  </g>
-
-  <!-- tarjeta de chat -->
-  <rect x="250" y="120" width="300" height="280" rx="20" fill="#FFFFFF" stroke="#DFE6F0" stroke-width="2"/>
-  <rect x="250" y="120" width="300" height="54" rx="20" fill="url(#bubbleA)"/>
-  <rect x="250" y="154" width="300" height="20" fill="url(#bubbleA)"/>
-  <circle cx="286" cy="147" r="15" fill="#FFFFFF" opacity=".95"/>
-  <path d="M279 147 l5 5 9 -11" fill="none" stroke="#005AA5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-  <rect x="316" y="138" width="120" height="9" rx="4.5" fill="#FFFFFF" opacity=".85"/>
-  <rect x="316" y="154" width="70" height="7" rx="3.5" fill="#FFFFFF" opacity=".5"/>
-
-  <!-- burbujas de conversacion -->
-  <rect x="275" y="200" width="200" height="44" rx="14" fill="#EAF2FB"/>
-  <rect x="292" y="214" width="150" height="7" rx="3.5" fill="#7A7A7A" opacity=".55"/>
-  <rect x="292" y="228" width="110" height="7" rx="3.5" fill="#7A7A7A" opacity=".35"/>
-
-  <rect x="325" y="258" width="200" height="44" rx="14" fill="#00C2B8"/>
-  <rect x="342" y="272" width="150" height="7" rx="3.5" fill="#FFFFFF" opacity=".9"/>
-  <rect x="342" y="286" width="100" height="7" rx="3.5" fill="#FFFFFF" opacity=".6"/>
-
-  <rect x="275" y="316" width="160" height="44" rx="14" fill="#EAF2FB"/>
-  <rect x="292" y="330" width="120" height="7" rx="3.5" fill="#7A7A7A" opacity=".55"/>
-  <rect x="292" y="344" width="80" height="7" rx="3.5" fill="#7A7A7A" opacity=".35"/>
-
-  <!-- indicador escribiendo -->
-  <g>
-    <rect x="325" y="370" width="90" height="24" rx="12" fill="#CFE4F7"/>
-    <circle cx="352" cy="382" r="4" fill="#005AA5"/>
-    <circle cx="370" cy="382" r="4" fill="#005AA5" opacity=".6"/>
-    <circle cx="388" cy="382" r="4" fill="#005AA5" opacity=".35"/>
-  </g>
-
-  <!-- chip de IA flotante -->
-  <g transform="translate(600 130)">
-    <rect x="0" y="0" width="110" height="110" rx="22" fill="#005AA5"/>
-    <rect x="34" y="34" width="42" height="42" rx="10" fill="none" stroke="#FFFFFF" stroke-width="4"/>
-    <rect x="48" y="48" width="14" height="14" rx="4" fill="#00C2B8"/>
-    <g stroke="#FFFFFF" stroke-width="4" stroke-linecap="round">
-      <path d="M55 20 v-14"/><path d="M55 104 v-14"/><path d="M20 55 h-14"/><path d="M104 55 h-14"/>
+    <!-- Nodo central: cerebro de IA -->
+    <g class="f" filter="url(#ds)">
+      <circle cx="400" cy="240" r="86" fill="#FFFFFF"/>
+      <circle cx="400" cy="240" r="70" fill="url(#orb)"/>
+      <path d="M372 214 a22 22 0 0 1 22 -18 a20 20 0 0 1 34 12 a18 18 0 0 1 6 34 a20 20 0 0 1 -30 30 a20 20 0 0 1 -32 -22 a18 18 0 0 1 0 -36 z" fill="none" stroke="#EAF4FA" stroke-width="3.2"/>
+      <path d="M382 240 h14 M400 228 v24 M414 240 h14" stroke="#EAF4FA" stroke-width="3.2" stroke-linecap="round"/>
+      <circle cx="382" cy="240" r="3.4" fill="#EAF4FA"/><circle cx="400" cy="228" r="3.4" fill="#EAF4FA"/><circle cx="414" cy="240" r="3.4" fill="#EAF4FA"/>
     </g>
+
+    <!-- Conexiones -->
+    <g class="trace" stroke="#2E86B8" fill="none" stroke-width="2.4" opacity=".45">
+      <path d="M314 240 H214"/><path d="M486 240 H586"/><path d="M400 154 V82"/><path d="M356 302 L282 372"/><path d="M444 302 L518 372"/>
+    </g>
+    <g class="pulse" fill="#5FA8C9">
+      <circle cx="264" cy="240" r="5"/><circle cx="536" cy="240" r="5"/><circle cx="400" cy="118" r="5"/>
+    </g>
+
+    <!-- Nube (arriba) -->
+    <g class="f3" filter="url(#ds)">
+      <rect x="316" y="34" width="168" height="52" rx="14" fill="#FFFFFF"/>
+      <path d="M356 54 a10 10 0 0 1 -1 -20 a13 13 0 0 1 24 -4 a11 11 0 0 1 13 10 a9 9 0 0 1 -2 14 z" fill="none" stroke="#136493" stroke-width="2.4"/>
+      <rect x="404" y="44" width="56" height="8" rx="4" fill="#2E86B8"/>
+      <rect x="404" y="60" width="38" height="8" rx="4" fill="#C5E2F2"/>
+    </g>
+
+    <!-- Burbuja de conversacion (izquierda) -->
+    <g class="f2" filter="url(#ds)">
+      <rect x="60" y="196" width="156" height="60" rx="16" fill="#FFFFFF"/>
+      <rect x="60" y="196" width="6" height="60" rx="3" fill="#2E86B8"/>
+      <circle cx="88" cy="226" r="13" fill="#C5E2F2"/>
+      <path d="M82 226 h12 M88 220 v12" stroke="#136493" stroke-width="2.2" stroke-linecap="round"/>
+      <rect x="110" y="214" width="86" height="8" rx="4" fill="#136493"/>
+      <rect x="110" y="230" width="62" height="8" rx="4" fill="#9EC6E0"/>
+    </g>
+
+    <!-- Burbuja de respuesta (derecha, estilo chat IA) -->
+    <g class="f2" filter="url(#ds)">
+      <rect x="586" y="200" width="156" height="60" rx="16" fill="url(#chip)"/>
+      <circle cx="614" cy="230" r="13" fill="#EAF4FA"/>
+      <path d="M609 230 l4 4 l8 -9" fill="none" stroke="#136493" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="636" y="218" width="86" height="8" rx="4" fill="#EAF4FA"/>
+      <rect x="636" y="234" width="60" height="8" rx="4" fill="#B9DDF1"/>
+    </g>
+
+    <!-- Tarjeta de datos (abajo dcha) -->
+    <g class="f" filter="url(#ds)">
+      <rect x="500" y="352" width="150" height="96" rx="16" fill="#FFFFFF"/>
+      <rect x="500" y="352" width="6" height="96" rx="3" fill="#136493"/>
+      <g fill="url(#chip)">
+        <rect x="518" y="394" width="14" height="38" rx="5"/>
+        <rect x="540" y="378" width="14" height="54" rx="5"/>
+        <rect x="562" y="404" width="14" height="28" rx="5"/>
+      </g>
+      <rect x="588" y="372" width="46" height="8" rx="4" fill="#136493"/>
+      <rect x="588" y="388" width="32" height="8" rx="4" fill="#9EC6E0"/>
+      <rect x="588" y="412" width="40" height="8" rx="4" fill="#C5E2F2"/>
+    </g>
+
+    <!-- Panel de estado (abajo izq) -->
+    <g class="f3" filter="url(#ds)">
+      <rect x="150" y="360" width="140" height="88" rx="16" fill="#0E4E75"/>
+      <circle cx="184" cy="392" r="14" fill="#2E86B8"/>
+      <path d="M178 392 h12 M184 386 v12" stroke="#EAF4FA" stroke-width="2.4" stroke-linecap="round"/>
+      <rect x="208" y="380" width="60" height="8" rx="4" fill="#8ECBEA"/>
+      <rect x="208" y="396" width="42" height="8" rx="4" fill="#5FA8C9"/>
+      <rect x="170" y="420" width="100" height="8" rx="4" fill="#3E93C4"/>
+    </g>
+
+    <rect y="440" width="800" height="60" fill="#C7DEF0" opacity=".8"/>
   </g>
 </svg>

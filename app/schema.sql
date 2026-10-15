@@ -114,6 +114,44 @@ CREATE TABLE IF NOT EXISTS reviews (
   created_at DATETIME DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- ----------------------------------------------------------------------------
+--  Blog: articulos publicados en la web (gestionados desde admin/blog.php)
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS blog_posts (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  slug VARCHAR(200) NOT NULL DEFAULT '',
+  title VARCHAR(255) DEFAULT '',
+  excerpt TEXT DEFAULT NULL,
+  body TEXT DEFAULT NULL,
+  category VARCHAR(80) DEFAULT '',
+  author VARCHAR(255) DEFAULT '',
+  image VARCHAR(255) DEFAULT '',
+  meta TEXT DEFAULT NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  is_active INT NOT NULL DEFAULT 1,
+  published_at DATETIME DEFAULT NULL,
+  created_at DATETIME DEFAULT NULL,
+  updated_at DATETIME DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------------------------------------------------------
+--  Equipo: personas mostradas en la seccion "Equipo" (admin/team.php)
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS team_members (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) DEFAULT '',
+  role VARCHAR(255) DEFAULT '',
+  bio TEXT DEFAULT NULL,
+  email VARCHAR(255) DEFAULT '',
+  phone VARCHAR(40) DEFAULT '',
+  avatar VARCHAR(255) DEFAULT '',
+  meta TEXT DEFAULT NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  is_active INT NOT NULL DEFAULT 1,
+  created_at DATETIME DEFAULT NULL,
+  updated_at DATETIME DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE UNIQUE INDEX idx_users_email  ON users (email);
 CREATE UNIQUE INDEX idx_users_google ON users (google_id);
 CREATE INDEX idx_sessions_token      ON sessions (token_hash);
@@ -125,3 +163,5 @@ CREATE INDEX idx_contact_created     ON contact_messages (created_at);
 CREATE INDEX idx_reviews_status      ON reviews (status);
 CREATE INDEX idx_reviews_target      ON reviews (target_type, target_id);
 CREATE INDEX idx_submissions_type    ON user_submissions (stype, status);
+CREATE INDEX idx_blog_active         ON blog_posts (is_active, published_at);
+CREATE INDEX idx_team_active         ON team_members (is_active, sort_order);

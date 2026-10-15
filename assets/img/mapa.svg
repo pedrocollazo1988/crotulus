@@ -4,7 +4,7 @@
   <g stroke="#DCE6F0" stroke-width="8" fill="none">
     <path d="M0 90 H640"/><path d="M0 220 H640"/><path d="M120 0 V360"/><path d="M400 0 V360"/><path d="M0 300 L640 120"/>
   </g>
-  <g fill="#005AA5">
+  <g fill="#136493">
     <path d="M320 120 c-26 0 -46 20 -46 46 0 34 46 78 46 78 s46 -44 46 -78 c0 -26 -20 -46 -46 -46 z"/>
   </g>
   <circle cx="320" cy="166" r="17" fill="#fff"/>

@@ -9,7 +9,7 @@
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#005AA5">
+  <meta name="theme-color" content="#136493">
   <meta name="author" content="C-ROTULUS S.U.R.L.">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <meta name="geo.region" content="ES">
@@ -47,13 +47,13 @@
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 
   <!-- ============ TIPOGRAFÍA (autoalojada, 2 familias) ============
-       Inter (texto) y Space Grotesk (titulares) se sirven desde
+       Inter (texto) y Plus Jakarta Sans (titulares) se sirven desde
        assets/fonts. No hay scripts ni hojas de estilo externas. -->
-  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/SpaceGrotesk-latin.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/PlusJakartaSans-latin.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Inter-latin.woff2" crossorigin>
 
   <!-- ============ ESTILOS ============ -->
-  <link rel="stylesheet" href="css/styles.css?v=20261015i">
+  <link rel="stylesheet" href="css/styles.css?v=20261017b">
 
   <!-- ============ DATOS ESTRUCTURADOS AutoRepair (JSON-LD) ============
        schema.org/AutoRepair (subtipo de LocalBusiness, ideal para servicios
@@ -63,32 +63,30 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "AutoRepair",
+    "@type": "ProfessionalService",
     "name": "C-ROTULUS S.U.R.L.",
     "description": "Empresa de servicios tecnológicos: desarrollo web, automatización con IA, redes, ciberseguridad y soporte técnico.",
     "url": "https://www.c-rotulus.example/",
     "image": "https://www.c-rotulus.example/assets/img/og-image.jpg",
     "logo": "https://www.c-rotulus.example/assets/img/logo-header.png",
-    "telephone": "[TELÉFONO]",
-    "email": "[CORREO]",
+    "telephone": "+5359888821",
+    "email": "crotulus.mipyme@gmail.com",
     "priceRange": "$$",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "[DIRECCIÓN]",
-      "addressLocality": "[CIUDAD]",
-      "postalCode": "[CÓDIGO POSTAL]",
-      "addressCountry": "ES"
+      "streetAddress": "Calle 29 #5408 e/ 54 y 56",
+      "addressLocality": "Artemisa",
+      "addressCountry": "CU"
     },
-    "geo": { "@type": "GeoCoordinates", "latitude": "[LATITUD]", "longitude": "[LONGITUD]" },
     "openingHoursSpecification": [{
       "@type": "OpeningHoursSpecification",
       "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
-      "opens": "09:00", "closes": "18:00"
+      "opens": "09:00", "closes": "17:00"
     }],
     "sameAs": [
-      "[URL_FACEBOOK]", "[URL_INSTAGRAM]", "[URL_LINKEDIN]", "[URL_GITHUB]"
+      "https://www.facebook.com/com.rotulus.surl"
     ],
-    "areaServed": { "@type": "Country", "name": "España" },
+    "areaServed": { "@type": "Country", "name": "Cuba" },
     "knowsAbout": ["Desarrollo web", "Automatización con IA", "Redes", "Ciberseguridad", "Soporte técnico"]
   }
   </script>
@@ -142,6 +140,35 @@
   <a class="skip-link" href="#inicio">Saltar al contenido principal</a>
 
   <!-- ==================== CABECERA / NAVEGACIÓN ==================== -->
+  <!-- Barra superior: datos de contacto rápidos (solo escritorio).
+       Todos los valores se editan desde el panel (Ajustes · Contacto) o en
+       los marcadores [TELÉFONO] / [CORREO] / [DIRECCIÓN] de este archivo. -->
+  <div class="topbar">
+    <div class="container topbar__inner">
+      <ul class="topbar__list">
+        <li class="topbar__item">
+          <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="M4 5h4l2 5-2 1a12 12 0 0 0 5 5l1-2 5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 3 6a1 1 0 0 1 1-1Z"/></svg>
+          <a href="tel:+5359888821" data-site="telefono" data-tel-primary>+53 5988 8821</a>
+          <span class="topbar__sep" aria-hidden="true">·</span>
+          <a href="tel:+5349368808" data-tel-secondary>+53 4936 8808</a>
+        </li>
+        <li class="topbar__item">
+          <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="M3 6h18v12H3zM3 7l9 6 9-6"/></svg>
+          <a href="mailto:crotulus.mipyme@gmail.com" data-site="correo">crotulus.mipyme@gmail.com</a>
+        </li>
+        <li class="topbar__item topbar__item--hide-sm">
+          <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="M12 7v5l3 2"/></svg>
+          <span data-site="horario">Lunes a Viernes de 9:00 am a 5:00 pm</span>
+        </li>
+      </ul>
+      <ul class="topbar__social" aria-label="Redes sociales de C-ROTULUS">
+        <li><a href="https://www.facebook.com/com.rotulus.surl" data-social="facebook" aria-label="Facebook" rel="noopener"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M13 22v-8h3l1-4h-4V8c0-1 .3-1.6 1.7-1.6H17V3.1C16.4 3 15.4 3 14.3 3 11.8 3 10 4.4 10 7.3V10H7v4h3v8h3Z"/></svg></a></li>
+        <li><a href="#" data-social="instagram" aria-label="Instagram" rel="noopener"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M12 7.5A4.5 4.5 0 1 0 12 16.5 4.5 4.5 0 0 0 12 7.5Zm0 7.4a2.9 2.9 0 1 1 0-5.8 2.9 2.9 0 0 1 0 5.8Zm4.7-7.6a1.05 1.05 0 1 0 0 2.1 1.05 1.05 0 0 0 0-2.1Z"/></svg></a></li>
+        <li><a href="#" data-social="linkedin" aria-label="LinkedIn" rel="noopener"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0 0-5ZM3 9h4v12H3zM10 9h3.8v1.7h.1c.5-.9 1.8-1.9 3.6-1.9 3.9 0 4.6 2.4 4.6 5.6V21h-4v-5.3c0-1.3 0-2.9-1.8-2.9s-2 1.4-2 2.8V21h-4z"/></svg></a></li>
+      </ul>
+    </div>
+  </div>
+
   <header class="site-header" id="top">
     <div class="container site-header__inner">
       <a class="brand" href="#inicio" aria-label="C-ROTULUS, ir al inicio">
@@ -152,24 +179,30 @@
         </picture>
       </a>
 
-      <!-- Navegación principal (centrada en escritorio; desplegable en móvil) -->
+      <!-- Navegación principal: pastillas centradas en escritorio y panel
+           desplegable (hamburguesa) en móvil/tableta. -->
       <nav class="primary-nav" id="primaryNav" aria-label="Navegación principal">
         <ul class="primary-nav__list">
           <li><a class="nav-link is-active" href="#inicio">Inicio</a></li>
-          <li><a class="nav-link" href="#sobre-nosotros">Sobre nosotros</a></li>
+          <li><a class="nav-link" href="empresa.html">Empresa</a></li>
           <li><a class="nav-link" href="#servicios">Servicios</a></li>
           <li><a class="nav-link" href="#proyectos">Proyectos</a></li>
-          <li><a class="nav-link" href="#proceso">Cómo trabajamos</a></li>
+          <li><a class="nav-link" href="#blog">Blog</a></li>
+          <li><a class="nav-link" href="#proceso">Proceso</a></li>
           <li><a class="nav-link" href="#testimonios">Testimonios</a></li>
           <li><a class="nav-link" href="#valoraciones">Opiniones</a></li>
-          <li><a class="nav-link nav-link--cta" href="#contacto">Contacto</a></li>
+          <li><a class="nav-link" href="#ubicacion">Ubicación</a></li>
           <li><a class="nav-link" href="#faq">FAQ</a></li>
         </ul>
       </nav>
 
-      <!-- Área privada y botón hamburguesa -->
+      <!-- Área privada, CTA y botón hamburguesa -->
       <div class="site-header__actions">
         <a class="nav-link nav-link--auth" id="navAuthLink" href="admin/login.php">Acceder</a>
+        <a class="btn btn--primary btn--nav-cta" href="#contacto">
+          <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 5h16v14H4zM4 7l8 5 8-5"/></svg>
+          Contacto
+        </a>
         <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="primaryNav" aria-label="Abrir menú de navegación">
           <span class="nav-toggle__bar"></span>
           <span class="nav-toggle__bar"></span>
@@ -184,39 +217,40 @@
     <section class="hero" id="inicio">
       <div class="container hero__grid">
         <div class="hero__content">
-          <p class="hero__badge">Agencia de servicios tecnológicos · Pymes y autónomos</p>
+          <p class="hero__badge" data-site="hero_badge">Agencia de servicios tecnológicos · Pymes y autónomos</p>
           <!-- TITULAR: que hace, para quien y que resultado obtiene el cliente -->
-          <h1 class="hero__title">
+          <h1 class="hero__title" data-site-title="hero_title" data-site-accent="hero_title_accent">
             Tecnología clara que <span class="text-accent">hace crecer</span> tu negocio
           </h1>
-          <p class="hero__subtitle">
+          <p class="hero__subtitle" data-site="hero_subtitle">
             Ayudamos a pymes y autónomos a digitalizarse con desarrollo web, automatización e IA,
             redes seguras y soporte continuo. Menos problemas, más tiempo para lo que importa.
           </p>
           <div class="hero__actions">
-            <a class="btn btn--primary" href="#contacto">Solicitar servicios</a>
-            <!-- Botón WhatsApp: el mensaje prellenado se arma en js/main.js -->
-            <a class="btn btn--outline-light" href="#contacto" data-whatsapp-link>
+            <a class="btn btn--primary" href="#contacto" data-site="hero_cta1_label">Solicitar servicios</a>
+            <!-- Botón WhatsApp: enlaza al +5359888821 con mensaje prellenado.
+                 js/main.js lo regenera con el número de la BD si cambia. -->
+            <a class="btn btn--outline-light" href="https://wa.me/5359888821?text=Hola%20C-ROTULUS%2C%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n%20sobre%20sus%20servicios%20tecnol%C3%B3gicos." data-whatsapp-link target="_blank" rel="noopener">
               <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12.04 2a9.9 9.9 0 0 0-8.5 15l-1.3 4.7 4.82-1.26A9.9 9.9 0 1 0 12.04 2Zm5.77 14.06c-.24.68-1.4 1.3-1.93 1.34-.5.05-.98.24-3.3-.7-2.77-1.1-4.53-3.94-4.67-4.12-.14-.19-1.12-1.5-1.12-2.86 0-1.36.72-2.03.97-2.3.24-.28.53-.35.71-.35l.51.01c.16 0 .39-.06.6.46.24.57.8 1.98.87 2.13.07.14.12.31.02.5-.09.19-.14.3-.28.47l-.42.49c-.14.14-.29.29-.12.57.16.28.73 1.2 1.57 1.95 1.08.96 1.98 1.26 2.26 1.4.28.14.44.12.6-.07.17-.19.7-.82.89-1.1.19-.28.37-.23.63-.14.26.1 1.66.78 1.94.92.28.14.47.21.54.33.07.12.07.68-.17 1.36Z"/></svg>
-              Escríbenos por WhatsApp
+              <span data-site="hero_cta2_label">Escríbenos por WhatsApp</span>
             </a>
           </div>
 
           <!-- FRANJA DE CONFIANZA: cifras de ejemplo, edita los números y textos -->
           <ul class="stats" aria-label="Cifras de confianza">
-            <li class="stat">
+            <li class="stat" data-site-stat="1">
               <span class="stat__num" data-count="12">12</span>
               <span class="stat__label">años de experiencia</span>
             </li>
-            <li class="stat">
+            <li class="stat" data-site-stat="2">
               <span class="stat__num" data-count="180">180</span>
               <span class="stat__label">clientes satisfechos</span>
             </li>
-            <li class="stat">
+            <li class="stat" data-site-stat="3">
               <span class="stat__num" data-count="350">350</span>
               <span class="stat__label">proyectos entregados</span>
             </li>
-            <li class="stat">
+            <li class="stat" data-site-stat="4">
               <span class="stat__num" data-count="24">24</span>
               <span class="stat__label">horas de respuesta</span>
             </li>
@@ -225,58 +259,26 @@
 
         <div class="hero__media">
           <!-- Imagen editable: sustituye assets/img/hero-tech.svg por una foto real -->
-          <img src="assets/img/hero-tech.svg?v=20261015i" alt="Ilustración de la transformación digital: de los sistemas tradicionales a la nube, los datos y la automatización" width="640" height="480" fetchpriority="high" decoding="async">
+          <img src="assets/img/hero-tech.svg?v=20261021" alt="Panel de control de C-ROTULUS con gráficas, servicios en la nube y una red de datos conectada" width="640" height="480" fetchpriority="high" decoding="async" data-site-image="hero_image" data-site-alt="hero_image_alt">
         </div>
       </div>
+
+      <!-- Indicador de scroll (invita a bajar a la siguiente seccion) -->
+      <a class="hero__scroll" href="#servicios" aria-label="Bajar a la seccion Servicios">
+        <span class="hero__scroll-label">Descubre mas</span>
+        <span class="hero__scroll-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
+        </span>
+      </a>
     </section>
 
-    <!-- ==================== 2. SOBRE NOSOTROS ==================== -->
-    <section class="section" id="sobre-nosotros">
+    <!-- ==================== 2. SERVICIOS ==================== -->
+    <section class="section" id="servicios">
       <div class="container">
         <header class="section__head">
-          <p class="eyebrow">Sobre nosotros</p>
-          <h2 class="section__title">Un equipo cercano con soluciones serias</h2>
-          <p class="section__lead">Desde [AÑO DE FUNDACIÓN] acompañamos a empresas en su transformación digital, combinando tecnología y trato humano.</p>
-        </header>
-
-        <div class="about__grid">
-          <div class="about__media">
-            <img src="assets/img/equipo.svg" alt="Equipo de profesionales de C-ROTULUS trabajando en un proyecto" width="640" height="420" loading="lazy" decoding="async">
-          </div>
-          <div class="about__body">
-            <h3 class="about__subtitle">Nuestra historia</h3>
-            <p>C-ROTULUS nació con una idea sencilla: la tecnología no debería ser un dolor de cabeza. Empezamos resolviendo pequeños problemas informáticos y hoy diseñamos, desplegamos y mantenemos la infraestructura digital completa de nuestros clientes.</p>
-
-            <div class="mv-grid">
-              <article class="mv-card">
-                <h4 class="mv-card__title">Misión</h4>
-                <p>Aportar tecnología fiable y comprensible que permita a las empresas trabajar mejor, con más seguridad y menos costes ocultos.</p>
-              </article>
-              <article class="mv-card">
-                <h4 class="mv-card__title">Visión</h4>
-                <p>Ser el socio tecnológico de referencia de las pymes de nuestro entorno, reconocidos por la cercanía y la calidad del servicio.</p>
-              </article>
-            </div>
-
-            <h3 class="about__subtitle">Nuestros valores</h3>
-            <ul class="values">
-              <li class="value"><span class="value__icon" aria-hidden="true">&#10003;</span> Cercanía y transparencia</li>
-              <li class="value"><span class="value__icon" aria-hidden="true">&#10003;</span> Compromiso con los plazos</li>
-              <li class="value"><span class="value__icon" aria-hidden="true">&#10003;</span> Calidad y seguridad</li>
-              <li class="value"><span class="value__icon" aria-hidden="true">&#10003;</span> Mejora continua</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== 3. SERVICIOS ==================== -->
-    <section class="section section--alt" id="servicios">
-      <div class="container">
-        <header class="section__head">
-          <p class="eyebrow">Servicios</p>
-          <h2 class="section__title">Todo lo que tu empresa necesita, en un solo equipo</h2>
-          <p class="section__lead">Servicios de ejemplo fáciles de editar. Cada tarjeta incluye icono, descripción, contenido y botón de consulta.</p>
+          <p class="eyebrow" data-site="services_eyebrow">Servicios</p>
+          <h2 class="section__title" data-site="services_title">Todo lo que tu empresa necesita, en un solo equipo</h2>
+          <p class="section__lead" data-site="services_lead">Servicios de ejemplo fáciles de editar. Cada tarjeta incluye icono, descripción, contenido y botón de consulta.</p>
         </header>
 
         <div class="cards" data-content-list="servicio">
@@ -361,20 +363,20 @@
       </div>
     </section>
 
-    <!-- ==================== 4. PROYECTOS ==================== -->
-    <section class="section" id="proyectos">
+    <!-- ==================== 3. PROYECTOS ==================== -->
+    <section class="section section--blue" id="proyectos">
       <div class="container">
         <header class="section__head">
-          <p class="eyebrow">Proyectos</p>
-          <h2 class="section__title">Trabajos que ya están dando resultados</h2>
-          <p class="section__lead">Una muestra de proyectos de ejemplo. Sustituye las imágenes, los textos y las etiquetas por tus casos reales.</p>
+          <p class="eyebrow" data-site="projects_eyebrow">Proyectos</p>
+          <h2 class="section__title" data-site="projects_title">Trabajos que ya están dando resultados</h2>
+          <p class="section__lead" data-site="projects_lead">Una muestra de proyectos de ejemplo. Sustituye las imágenes, los textos y las etiquetas por tus casos reales.</p>
         </header>
 
         <div class="projects" data-content-list="proyecto">
           <!-- PROYECTO 1 -->
           <article class="project reveal">
             <div class="project__media">
-              <img src="assets/img/proyecto-web.svg" width="800" height="500" alt="Interfaz de una tienda online con varios productos a la venta" loading="lazy" decoding="async">
+              <img src="assets/img/proyecto-web.svg?v=20261021" width="800" height="500" alt="Tienda online con catálogo de productos y pago integrado" loading="lazy" decoding="async">
             </div>
             <div class="project__body">
               <span class="project__tag">Desarrollo web</span>
@@ -387,7 +389,7 @@
           <!-- PROYECTO 2 -->
           <article class="project reveal">
             <div class="project__media">
-              <img src="assets/img/proyecto-ia.svg" width="800" height="500" alt="Conversación con un asistente virtual de inteligencia artificial" loading="lazy" decoding="async">
+              <img src="assets/img/proyecto-ia.svg?v=20261021" width="800" height="500" alt="Asistente de inteligencia artificial conectado a la nube y a la base de datos" loading="lazy" decoding="async">
             </div>
             <div class="project__body">
               <span class="project__tag">Automatización e IA</span>
@@ -400,7 +402,7 @@
           <!-- PROYECTO 3 -->
           <article class="project reveal">
             <div class="project__media">
-              <img src="assets/img/proyecto-redes.svg" width="800" height="500" alt="Red de nodos protegida con un símbolo de escudo de seguridad" loading="lazy" decoding="async">
+              <img src="assets/img/proyecto-redes.svg?v=20261021" width="800" height="500" alt="Armario de red protegido con un escudo de seguridad" loading="lazy" decoding="async">
             </div>
             <div class="project__body">
               <span class="project__tag">Redes y seguridad</span>
@@ -414,13 +416,66 @@
     </section>
 
 
-    <!-- ==================== 5. COMO TRABAJAMOS (PROCESO) ==================== -->
-    <section class="section section--alt" id="proceso">
+    <!-- ==================== 4. BLOG ==================== -->
+    <section class="section" id="blog">
       <div class="container">
         <header class="section__head">
-          <p class="eyebrow">Cómo trabajamos</p>
-          <h2 class="section__title">Un proceso simple, en cuatro pasos</h2>
-          <p class="section__lead">Sin sorpresas: te acompañamos desde la primera conversación hasta el soporte del día a día.</p>
+          <p class="eyebrow" data-site="blog_eyebrow">Blog</p>
+          <h2 class="section__title" data-site="blog_title">Ideas y consejos para tu negocio</h2>
+          <p class="section__lead" data-site="blog_lead">Publicamos guías sencillas sobre tecnología, seguridad y productividad. Sin tecnicismos innecesarios.</p>
+        </header>
+
+        <div class="blog" data-blog-list>
+          <!-- ARTÍCULO 1 -->
+          <article class="post">
+            <a class="post__media" href="#blog" aria-label="Leer: Cómo la IA puede ahorrar horas a tu pyme">
+              <img src="assets/img/blog/automatizacion-ia-pymes.svg?v=20261021" width="800" height="500" alt="Panel con una gráfica creciente del ahorro de horas gracias a la IA" loading="lazy" decoding="async">
+            </a>
+            <div class="post__body">
+              <span class="post__tag">Automatización</span>
+              <h3 class="post__title"><a href="#blog">Cómo la IA puede ahorrar horas a tu pyme</a></h3>
+              <p class="post__text">Descubre qué tareas conviene automatizar primero y cómo empezar sin complicaciones.</p>
+              <p class="post__meta"><span>Marta López</span> · <time datetime="2026-10-13">13 oct 2026</time> · 4 min</p>
+            </div>
+          </article>
+
+          <!-- ARTÍCULO 2 -->
+          <article class="post">
+            <a class="post__media" href="#blog" aria-label="Leer: Protege tu red: 5 medidas básicas">
+              <img src="assets/img/blog/seguridad-red-pyme.svg?v=20261021" width="800" height="500" alt="Red de oficina protegida con un escudo de seguridad" loading="lazy" decoding="async">
+            </a>
+            <div class="post__body">
+              <span class="post__tag">Seguridad</span>
+              <h3 class="post__title"><a href="#blog">Protege tu red: 5 medidas básicas</a></h3>
+              <p class="post__text">Cinco acciones sencillas que reducen drásticamente el riesgo de un incidente.</p>
+              <p class="post__meta"><span>Javier Ruiz</span> · <time datetime="2026-10-12">12 oct 2026</time> · 4 min</p>
+            </div>
+          </article>
+
+          <!-- ARTÍCULO 3 -->
+          <article class="post">
+            <a class="post__media" href="#blog" aria-label="Leer: Una web que convierte visitas en clientes">
+              <img src="assets/img/blog/web-que-convierte.svg?v=20261021" width="800" height="500" alt="Diseño de una web moderna orientada a convertir visitas en clientes" loading="lazy" decoding="async">
+            </a>
+            <div class="post__body">
+              <span class="post__tag">Desarrollo web</span>
+              <h3 class="post__title"><a href="#blog">Una web que convierte visitas en clientes</a></h3>
+              <p class="post__text">Qué debe tener tu web para que quien llega termine contactando contigo.</p>
+              <p class="post__meta"><span>Diego Marín</span> · <time datetime="2026-10-11">11 oct 2026</time> · 4 min</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==================== 5. COMO TRABAJAMOS (PROCESO) ==================== -->
+    <section class="section section--blue" id="proceso">
+      <div class="container">
+        <header class="section__head">
+          <p class="eyebrow" data-site="process_eyebrow">Cómo trabajamos</p>
+          <h2 class="section__title" data-site="process_title">Un proceso simple, en cuatro pasos</h2>
+          <p class="section__lead" data-site="process_lead">Sin sorpresas: te acompañamos desde la primera conversación hasta el soporte del día a día.</p>
         </header>
 
         <ol class="steps" data-content-list="proceso">
@@ -449,71 +504,100 @@
     </section>
 
     <!-- ==================== 6. TESTIMONIOS ==================== -->
-    <section class="section" id="testimonios">
+    <section class="section section--soft" id="testimonios">
       <div class="container">
         <header class="section__head">
-          <p class="eyebrow">Testimonios</p>
-          <h2 class="section__title">Lo que opinan nuestros clientes</h2>
-          <p class="section__lead">Opiniones de clientes reales. Comparte la tuya: no hace falta registrarse.</p>
+          <p class="eyebrow" data-site="testimonials_eyebrow">Testimonios</p>
+          <h2 class="section__title" data-site="testimonials_title">Lo que opinan nuestros clientes</h2>
+          <p class="section__lead" data-site="testimonials_lead">Opiniones de clientes reales. Para compartir la tuya, entra en tu cuenta.</p>
         </header>
 
-        <!-- Enviar un testimonio (abierto a cualquier visitante) -->
-        <form class="user-submit" id="testimonialForm" action="api/submissions.php" method="post" novalidate>
-          <h3 class="user-submit__title">Comparte tu testimonio</h3>
-          <input type="hidden" name="_csrf" value="">
-          <input type="hidden" name="tipo" value="testimonio">
-          <div class="grid-2">
-            <div class="field">
-              <label for="tName">Tu nombre</label>
-              <input type="text" id="tName" name="titulo" required maxlength="120" autocomplete="name">
-              <small class="field__error" data-error-for="titulo"></small>
-            </div>
-            <div class="field">
-              <label for="tRole">Cargo / empresa <span class="muted">(opcional)</span></label>
-              <input type="text" id="tRole" name="cargo" maxlength="120">
-            </div>
-          </div>
-          <div class="field">
-            <label for="tText">Tu experiencia</label>
-            <textarea id="tText" name="texto" rows="4" minlength="10" maxlength="1500" required></textarea>
-            <small class="field__error" data-error-for="texto"></small>
-          </div>
-          <div class="field--hp" aria-hidden="true">
-            <label for="tGotcha">No rellenes este campo</label>
-            <input type="text" id="tGotcha" name="_gotcha" tabindex="-1" autocomplete="off">
-          </div>
-          <button class="btn btn--primary" type="submit">Enviar testimonio</button>
-          <p class="form-status" data-submit-status role="status" aria-live="polite"></p>
-        </form>
+        <p class="section__cta">
+          <a class="btn btn--ghost" href="admin/login.php">Inicia sesión para dejar tu testimonio</a>
+        </p>
 
         <div class="testimonials" id="testimonials" aria-roledescription="carrusel" aria-label="Testimonios de clientes">
           <div class="testimonials__viewport">
             <ul class="testimonials__track" data-content-list="testimonio">
               <li class="testimonial" aria-hidden="false">
                 <blockquote class="testimonial__quote">
-                  <p>"Nos renovaron la web y automatizaron los presupuestos. Ahora ahorramos varias horas cada semana y todo es mucho más claro."</p>
+                  <div class="testimonial__top">
+                    <span class="testimonial__rating" role="img" aria-label="Valoración: 5 de 5 estrellas">
+                      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="m12 2 3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="m12 2 3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="m12 2 3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="m12 2 3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="m12 2 3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                    </span>
+                    <span class="testimonial__badge">
+                      <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="m5 12 5 5L20 6"/></svg>
+                      Cliente verificado
+                    </span>
+                  </div>
+                  <p class="testimonial__text">&laquo;Nos renovaron la web y automatizaron los presupuestos. Ahora ahorramos varias horas cada semana y todo es mucho más claro.&raquo;</p>
+                  <p class="testimonial__result"><strong>+40%</strong> de solicitudes online en 3 meses</p>
                 </blockquote>
                 <footer class="testimonial__author">
-                  <img class="testimonial__avatar" src="assets/img/testimonios/marta-lopez.jpg" alt="Foto de Marta López" width="96" height="96" loading="lazy" decoding="async">
-                  <cite><strong>Marta Lopez</strong><span>Gerente, Distribuciones ML</span></cite>
+                  <picture>
+                    <source type="image/avif" srcset="assets/img/testimonios/marta-lopez.avif">
+                    <source type="image/webp" srcset="assets/img/testimonios/marta-lopez.webp">
+                    <img class="testimonial__avatar" src="assets/img/testimonios/marta-lopez.jpg" alt="Foto de Marta López" width="96" height="96" loading="lazy" decoding="async">
+                  </picture>
+                  <cite><strong>Marta López</strong><span>Gerente · Distribuciones ML</span></cite>
                 </footer>
               </li>
               <li class="testimonial" aria-hidden="true">
                 <blockquote class="testimonial__quote">
-                  <p>"En una semana teníamos la red y las copias de seguridad funcionando. El soporte responde siempre rápido."</p>
+                  <div class="testimonial__top">
+                    <span class="testimonial__rating" role="img" aria-label="Valoración: 5 de 5 estrellas">
+                      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="m12 2 3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="m12 2 3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="m12 2 3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="m12 2 3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="m12 2 3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                    </span>
+                    <span class="testimonial__badge">
+                      <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="m5 12 5 5L20 6"/></svg>
+                      Cliente verificado
+                    </span>
+                  </div>
+                  <p class="testimonial__text">&laquo;En una semana teníamos la red y las copias de seguridad funcionando. El soporte responde siempre rápido.&raquo;</p>
+                  <p class="testimonial__result"><strong>0 incidencias</strong> críticas en 12 meses</p>
                 </blockquote>
                 <footer class="testimonial__author">
-                  <img class="testimonial__avatar" src="assets/img/testimonios/javier-ruiz.jpg" alt="Foto de Javier Ruiz" width="96" height="96" loading="lazy" decoding="async">
-                  <cite><strong>Javier Ruiz</strong><span>Director, Talleres Ruiz</span></cite>
+                  <picture>
+                    <source type="image/avif" srcset="assets/img/testimonios/javier-ruiz.avif">
+                    <source type="image/webp" srcset="assets/img/testimonios/javier-ruiz.webp">
+                    <img class="testimonial__avatar" src="assets/img/testimonios/javier-ruiz.jpg" alt="Foto de Javier Ruiz" width="96" height="96" loading="lazy" decoding="async">
+                  </picture>
+                  <cite><strong>Javier Ruiz</strong><span>Director · Talleres Ruiz</span></cite>
                 </footer>
               </li>
               <li class="testimonial" aria-hidden="true">
                 <blockquote class="testimonial__quote">
-                  <p>"Un asistente de IA atiende nuestras consultas fuera de horario. Ha mejorado la atención al cliente notablemente."</p>
+                  <div class="testimonial__top">
+                    <span class="testimonial__rating" role="img" aria-label="Valoración: 5 de 5 estrellas">
+                      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="m12 2 3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="m12 2 3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="m12 2 3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="m12 2 3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="m12 2 3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                    </span>
+                    <span class="testimonial__badge">
+                      <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="m5 12 5 5L20 6"/></svg>
+                      Cliente verificado
+                    </span>
+                  </div>
+                  <p class="testimonial__text">&laquo;Un asistente de IA atiende nuestras consultas fuera de horario. Ha mejorado la atención al cliente notablemente.&raquo;</p>
+                  <p class="testimonial__result"><strong>70%</strong> de consultas resueltas sin espera</p>
                 </blockquote>
                 <footer class="testimonial__author">
-                  <img class="testimonial__avatar" src="assets/img/testimonios/cristina-serra.jpg" alt="Foto de Cristina Serra" width="96" height="96" loading="lazy" decoding="async">
-                  <cite><strong>Cristina Serra</strong><span>Fundadora, CliniSalud</span></cite>
+                  <picture>
+                    <source type="image/avif" srcset="assets/img/testimonios/cristina-serra.avif">
+                    <source type="image/webp" srcset="assets/img/testimonios/cristina-serra.webp">
+                    <img class="testimonial__avatar" src="assets/img/testimonios/cristina-serra.jpg" alt="Foto de Cristina Serra" width="96" height="96" loading="lazy" decoding="async">
+                  </picture>
+                  <cite><strong>Cristina Serra</strong><span>Fundadora · CliniSalud</span></cite>
                 </footer>
               </li>
             </ul>
@@ -533,31 +617,38 @@
          un enlace «Ver todas en Google». Edita aquí los textos de cada reseña y
          la URL de la ficha (marcador [URL_GOOGLE_REVIEWS], también ajustable en
          el panel: Ajustes · Reseñas · «Enlace a tu ficha en Google»). -->
-    <section class="section section--alt" id="valoraciones">
+    <section class="section section--blue" id="valoraciones">
       <div class="container">
         <header class="section__head">
-          <p class="eyebrow">Opiniones</p>
-          <h2 class="section__title">Lo que opinan de nosotros en Google</h2>
-          <p class="section__lead">Reseñas reales de clientes publicadas en nuestra ficha de Google. Puedes leerlas todas en un clic.</p>
+          <p class="eyebrow" data-site="reviews_eyebrow">Opiniones</p>
+          <h2 class="section__title" data-site="reviews_title">Lo que opinan de nosotros en Google</h2>
+          <p class="section__lead" data-site="reviews_lead">Reseñas reales de clientes publicadas en nuestra ficha de Google. Puedes leerlas todas en un clic.</p>
         </header>
 
-        <!-- Resumen de la ficha de Google (nota media y nº de reseñas editables) -->
+        <!-- Resumen de la ficha de Google. Si hay reseñas en vivo configuradas
+             (Ajustes · Reseñas), js/main.js rellena la nota, las estrellas y el
+             número de reseñas. Si no, se muestran estos valores editables. -->
         <div class="google-reviews__summary">
           <span class="google-reviews__brand">
             <svg viewBox="0 0 48 48" width="22" height="22" aria-hidden="true" focusable="false"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
             Reseñas de Google
           </span>
-          <span class="google-reviews__score">4,9</span>
-          <span class="stars" aria-hidden="true">★★★★★</span>
-          <p class="google-reviews__count">Basado en <strong>37</strong> reseñas</p>
+          <span class="google-reviews__score" data-gr-score>4,9</span>
+          <span class="stars" aria-hidden="true" data-gr-stars>★★★★★</span>
+          <p class="google-reviews__count">Basado en <strong data-gr-count>37</strong> reseñas</p>
           <a class="btn btn--ghost google-reviews__all" data-google-reviews-link href="[URL_GOOGLE_REVIEWS]" target="_blank" rel="noopener">
             Ver todas en Google
             <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M7 17 17 7M9 7h8v8"/></svg>
           </a>
         </div>
+        <!-- Aviso de estado (por ejemplo, cuando se muestran reseñas guardadas
+             sin conexión). Lo gestiona js/main.js. -->
+        <p class="google-reviews__status" data-gr-status role="status" aria-live="polite" hidden></p>
 
-        <!-- Las tres reseñas (nombre + estrellas + texto). Sustituye por las reales. -->
-        <ul class="google-reviews__list">
+        <!-- Las tres reseñas (nombre + estrellas + texto). Si hay reseñas en
+             vivo configuradas, js/main.js reemplaza esta lista por las reales;
+             si no, se mantienen estas de ejemplo, fáciles de editar. -->
+        <ul class="google-reviews__list" data-gr-list>
           <li class="review-card review-card--google">
             <div class="review-card__head">
               <span class="review-card__author">Laura Gómez</span>
@@ -607,126 +698,253 @@
     </section>
 
 
-    <!-- ==================== 8. CONTACTO ==================== -->
-    <section class="section" id="contacto">
+    <!-- ==================== 8. TRUSTPILOT ====================
+         Reseñas verificadas de nuestra ficha en Trustpilot. Igual que con
+         Google: si hay ficha configurada (Ajustes · Reseñas), js/main.js
+         reemplaza estas tarjetas de ejemplo por las reales; si no, se mantienen
+         estos textos, fáciles de editar a mano.
+    ======================================================= -->
+    <section class="section section--soft" id="trustpilot">
       <div class="container">
         <header class="section__head">
-          <p class="eyebrow">Contacto</p>
-          <h2 class="section__title">Cuéntanos tu proyecto</h2>
-          <p class="section__lead">Rellena el formulario y te respondemos en menos de 24 horas laborables.</p>
+          <p class="eyebrow" data-site="trustpilot_eyebrow">Reseñas verificadas</p>
+          <h2 class="section__title" data-site="trustpilot_title">Lo que dicen en Trustpilot</h2>
+          <p class="section__lead" data-site="trustpilot_lead">Opiniones reales de clientes publicadas en nuestra ficha de Trustpilot.</p>
         </header>
 
-        <div class="contact__grid">
-          <!-- FORMULARIO ----------------------------------------------------------
-               El envío usa el backend propio incluido en este proyecto (PHP), que
-               guarda los mensajes en la base de datos y aplica validación, CSRF y
-               límite de envíos. Abierto a cualquier visitante: no requiere cuenta.
-               Si prefieres un servicio externo tipo Formspree, cambia el "action"
-               de aquí y la constante FORM_ENDPOINT en js/main.js.
-          --------------------------------------------------------------------- -->
-          <form class="contact-form" id="contactForm" action="api/contact.php" method="POST" novalidate>
-            <input type="hidden" name="_csrf" value="">
-            <div class="field">
-              <label for="nombre">Nombre y apellidos *</label>
-              <input type="text" id="nombre" name="nombre" autocomplete="name" required minlength="2" maxlength="120">
-              <small class="field__error" data-error-for="nombre" aria-live="polite"></small>
-            </div>
+        <div class="google-reviews__summary">
+          <span class="google-reviews__brand">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="#00B67A" d="m12 2 3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+            Trustpilot
+          </span>
+          <span class="google-reviews__score" data-tp-score>4,8</span>
+          <span class="stars" aria-hidden="true" data-tp-stars>★★★★★</span>
+          <p class="google-reviews__count">Basado en <strong data-tp-count>24</strong> reseñas</p>
+          <a class="btn btn--ghost google-reviews__all" data-trustpilot-link href="[URL_TRUSTPILOT]" target="_blank" rel="noopener">
+            Ver todas en Trustpilot
+            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M7 17 17 7M9 7h8v8"/></svg>
+          </a>
+        </div>
 
-            <div class="field">
-              <label for="correo">Correo electrónico *</label>
-              <input type="email" id="correo" name="correo" autocomplete="email" required maxlength="190">
-              <small class="field__error" data-error-for="correo" aria-live="polite"></small>
-            </div>
+        <!-- Aviso cuando se muestran reseñas guardadas sin conexión. -->
+        <p class="google-reviews__status" data-tp-status role="status" aria-live="polite" hidden></p>
 
-            <div class="field">
-              <label for="telefono">Teléfono *</label>
-              <input type="tel" id="telefono" name="telefono" autocomplete="tel" inputmode="tel" required minlength="6" maxlength="25">
-              <small class="field__error" data-error-for="telefono" aria-live="polite"></small>
+        <!-- Tres reseñas de ejemplo (nombre + estrellas + texto + fecha). -->
+        <ul class="google-reviews__list" data-tp-list>
+          <li class="review-card review-card--tp">
+            <div class="review-card__head">
+              <span class="review-card__author">Sergio Navarro</span>
+              <span class="stars stars--sm" aria-label="5 de 5 estrellas" title="5/5">★★★★★</span>
             </div>
-
-            <div class="field">
-              <label for="servicio">Servicio de interés *</label>
-              <select id="servicio" name="servicio" required>
-                <option value="" selected disabled>Selecciona un servicio</option>
-                <option>Desarrollo web y aplicaciones</option>
-                <option>Automatización y agentes de IA</option>
-                <option>Soporte técnico</option>
-                <option>Redes y ciberseguridad</option>
-                <option>Consultoría tecnológica</option>
-                <option>Mantenimiento integral</option>
-                <option>Otro</option>
-              </select>
-              <small class="field__error" data-error-for="servicio" aria-live="polite"></small>
+            <div class="review-card__meta">
+              <span class="review-card__source review-card__source--tp">
+                <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false"><path fill="#fff" d="m12 2 3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                Trustpilot
+              </span>
+              <span class="review-card__date">Hace 3 semanas</span>
             </div>
+            <p class="review-card__text">Nos acompañaron en todo el proceso de digitalización. Comunicación excelente y plazos cumplidos. Es difícil encontrar un proveedor tan atento.</p>
+          </li>
 
-            <div class="field">
-              <label for="mensaje">Mensaje *</label>
-              <textarea id="mensaje" name="mensaje" rows="5" required minlength="10" maxlength="5000"></textarea>
-              <small class="field__error" data-error-for="mensaje" aria-live="polite"></small>
+          <li class="review-card review-card--tp">
+            <div class="review-card__head">
+              <span class="review-card__author">Beatriz Alarcón</span>
+              <span class="stars stars--sm" aria-label="5 de 5 estrellas" title="5/5">★★★★★</span>
             </div>
+            <div class="review-card__meta">
+              <span class="review-card__source review-card__source--tp">
+                <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false"><path fill="#fff" d="m12 2 3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                Trustpilot
+              </span>
+              <span class="review-card__date">Hace 1 mes</span>
+            </div>
+            <p class="review-card__text">La tienda online funciona perfectamente y por fin podemos gestionar los pedidos sin dolores de cabeza. Muy recomendables para pequeñas empresas.</p>
+          </li>
 
-            <!-- Campo trampa contra spam (oculto para personas) -->
-            <div class="field field--hp" aria-hidden="true">
+          <li class="review-card review-card--tp">
+            <div class="review-card__head">
+              <span class="review-card__author">Óscar Delgado</span>
+              <span class="stars stars--sm" aria-label="4 de 5 estrellas" title="4/5">★★★★☆</span>
+            </div>
+            <div class="review-card__meta">
+              <span class="review-card__source review-card__source--tp">
+                <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false"><path fill="#fff" d="m12 2 3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                Trustpilot
+              </span>
+              <span class="review-card__date">Hace 2 meses</span>
+            </div>
+            <p class="review-card__text">Nos montaron la red y las copias de seguridad en tiempo récord. El soporte posterior responde rápido. Solo echo en falta más formación al principio.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+
+    <!-- ==================== 9. CONTACTO ==================== -->
+    <section class="section section--blue" id="contacto">
+      <div class="container container--narrow">
+        <header class="section__head">
+          <p class="eyebrow" data-site="contact_eyebrow">Contacto</p>
+          <h2 class="section__title" data-site="contact_title">Cu&eacute;ntanos tu proyecto</h2>
+          <p class="section__lead" data-site="contact_lead">Rellena el formulario y te respondemos en menos de 24 horas laborables.</p>
+        </header>
+
+        <!-- FORMULARIO --------------------------------------------------------
+             El envio usa el backend propio incluido en este proyecto (PHP), que
+             guarda los mensajes en la base de datos y aplica validacion, CSRF y
+             limite de envios. Abierto a cualquier visitante: no requiere cuenta.
+             Si prefieres un servicio externo tipo Formspree, cambia el "action"
+             de aqui y la constante FORM_ENDPOINT en js/main.js.
+        -------------------------------------------------------------------- -->
+        <form class="contact-form" id="contactForm" action="api/contact.php" method="POST" novalidate>
+          <input type="hidden" name="_csrf" value="">
+          <div class="field">
+            <label for="nombre">Nombre y apellidos *</label>
+            <input type="text" id="nombre" name="nombre" autocomplete="name" required minlength="2" maxlength="120">
+            <small class="field__error" data-error-for="nombre" aria-live="polite"></small>
+          </div>
+
+          <div class="field">
+            <label for="correo">Correo electrónico *</label>
+            <input type="email" id="correo" name="correo" autocomplete="email" required maxlength="190">
+            <small class="field__error" data-error-for="correo" aria-live="polite"></small>
+          </div>
+
+          <div class="field">
+            <label for="telefono">Teléfono *</label>
+            <input type="tel" id="telefono" name="telefono" autocomplete="tel" inputmode="tel" required minlength="6" maxlength="25">
+            <small class="field__error" data-error-for="telefono" aria-live="polite"></small>
+          </div>
+
+          <div class="field">
+            <label for="servicio">Servicio de interés *</label>
+            <select id="servicio" name="servicio" required>
+              <option value="" selected disabled>Selecciona un servicio</option>
+              <option>Desarrollo web y aplicaciones</option>
+              <option>Automatización y agentes de IA</option>
+              <option>Soporte técnico</option>
+              <option>Redes y ciberseguridad</option>
+              <option>Consultoría tecnológica</option>
+              <option>Mantenimiento integral</option>
+              <option>Otro</option>
+            </select>
+            <small class="field__error" data-error-for="servicio" aria-live="polite"></small>
+          </div>
+
+          <div class="field">
+            <label for="mensaje">Mensaje *</label>
+            <textarea id="mensaje" name="mensaje" rows="5" required minlength="10" maxlength="5000"></textarea>
+            <small class="field__error" data-error-for="mensaje" aria-live="polite"></small>
+          </div>
+
+          <!-- Verificacion anti-spam (captcha propio, accesible y sin dependencias).
+               El reto lo genera el servidor; aqui solo se pinta y se valida. -->
+          <div class="field field--captcha" id="captchaField">
+            <label for="captcha">Verificacion de seguridad *</label>
+            <div class="captcha">
+              <div class="captcha__challenge">
+                <span class="captcha__question" id="captchaQuestion" aria-live="polite">Cargando reto&hellip;</span>
+                <button type="button" class="captcha__refresh" id="captchaRefresh" aria-label="Generar otro reto de seguridad">
+                  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M20 11a8 8 0 1 0-2.3 6.3M20 5v6h-6"/></svg>
+                </button>
+              </div>
+              <input type="text" id="captcha" name="captcha" inputmode="numeric" autocomplete="off"
+                     required aria-describedby="captchaHint">
+            </div>
+            <small class="field__error" data-error-for="captcha" aria-live="polite"></small>
+            <small class="field__hint" id="captchaHint">Resuelve la operacion para demostrar que eres una persona.</small>
+            <!-- Firma del reto (la genera el servidor; no se toca desde el cliente) -->
+            <input type="hidden" name="captcha_token" id="captchaToken" value="">
+            <!-- Campo trampa invisible: si un bot lo rellena, se descarta el envio -->
+            <div class="field--hp" aria-hidden="true">
               <label for="empresa">No rellenar</label>
               <input type="text" id="empresa" name="_gotcha" tabindex="-1" autocomplete="off">
             </div>
+          </div>
 
-            <button class="btn btn--primary btn--block" type="submit">Enviar solicitud</button>
-            <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
-            <p class="form-note">Al enviar aceptas nuestra política de privacidad.</p>
-          </form>
+          <button class="btn btn--primary btn--block" type="submit">Enviar solicitud</button>
+          <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+          <p class="form-note">Al enviar aceptas nuestra política de privacidad.</p>
+        </form>
+      </div>
+    </section>
 
-          <!-- DATOS DE CONTACTO (editables / marcadores) -->
+    <!-- ==================== 10. UBICACION ====================
+         Datos de contacto y mapa. Todos los valores se editan en el panel
+         (Ajustes): telefono, correo, direccion, ciudad, horario y URL del mapa.
+         Los textos con [MAYUSCULAS] son marcadores de ejemplo. -->
+    <section class="section section--soft" id="ubicacion">
+      <div class="container">
+        <header class="section__head">
+          <p class="eyebrow" data-site="location_eyebrow">Ubicaci&oacute;n</p>
+          <h2 class="section__title" data-site="location_title">D&oacute;nde estamos y c&oacute;mo contactarnos</h2>
+          <p class="section__lead" data-site="location_lead">Vis&iacute;tanos, ll&aacute;manos o escr&iacute;benos. Estamos a tu disposici&oacute;n en horario de oficina.</p>
+        </header>
+
+        <div class="ubicacion__grid">
           <aside class="contact-info" aria-label="Datos de contacto">
             <ul class="contact-info__list">
               <li class="contact-info__item">
                 <span class="contact-info__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M4 5h4l2 5-2 1a12 12 0 0 0 5 5l1-2 5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 3 6a1 1 0 0 1 1-1Z"/></svg></span>
                 <div>
-                  <strong>Teléfono</strong>
-                  <a href="tel:+34000000000" data-site="telefono">[TELÉFONO]</a>
+                  <strong>Teléfonos</strong>
+                  <a href="tel:+5359888821" data-site="telefono" data-tel-primary>+53 5988 8821</a>
+                  <a href="tel:+5349368808" data-tel-secondary>+53 4936 8808</a>
                 </div>
               </li>
               <li class="contact-info__item">
                 <span class="contact-info__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M3 6h18v12H3zM3 7l9 6 9-6"/></svg></span>
                 <div>
                   <strong>Correo</strong>
-                  <a href="mailto:info@c-rotulus.example" data-site="correo">[CORREO]</a>
+                  <a href="mailto:crotulus.mipyme@gmail.com" data-site="correo">crotulus.mipyme@gmail.com</a>
                 </div>
               </li>
               <li class="contact-info__item">
                 <span class="contact-info__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M12 21s7-6.5 7-11a7 7 0 1 0-14 0c0 4.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg></span>
                 <div>
                   <strong>Dirección</strong>
-                  <span data-site-direccion>[DIRECCIÓN], [CIUDAD]</span>
+                  <span data-site-direccion>Calle 29 #5408 e/ 54 y 56, Artemisa</span>
                 </div>
               </li>
               <li class="contact-info__item">
                 <span class="contact-info__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="9"/><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M12 7v5l3 2"/></svg></span>
                 <div>
                   <strong>Horario</strong>
-                  <span data-site="horario">Lunes a viernes, 9:00 - 18:00</span>
+                  <span data-site="horario">Lunes a Viernes de 9:00 am a 5:00 pm</span>
                 </div>
               </li>
             </ul>
-
-            <!-- MAPA: si configuras una URL de embed en el panel de administración
-                 (Ajustes), la web la carga aquí automáticamente. Si no, se muestra
-                 la imagen por defecto de assets/img/mapa.svg. -->
-            <div class="contact-map" id="contactMap">
-              <img src="assets/img/mapa.svg" alt="Mapa con la ubicación de C-ROTULUS" width="640" height="360" loading="lazy" decoding="async">
-            </div>
-            <p class="contact-map__link"><a href="https://www.google.com/maps" data-maps-link target="_blank" rel="noopener">Ver en Google Maps / Cómo llegar</a></p>
           </aside>
+
+          <!-- MAPA: Google Maps incrustado y funcional. La URL de embed está
+               guardada en el panel (Ajustes · Mapa) y se puede cambiar sin tocar
+               este archivo; el valor de abajo es el respaldo. -->
+          <div class="ubicacion__map">
+            <div class="contact-map" id="contactMap">
+              <iframe
+                src="https://www.google.com/maps?q=Calle%2029%20%235408%20e%2F%2054%20y%2056%2C%20Artemisa%2C%20Cuba&output=embed"
+                title="Mapa con la ubicación de C-ROTULUS S.U.R.L. en Artemisa"
+                width="100%" height="100%" style="border:0" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+            </div>
+            <p class="contact-map__link">
+              <a href="https://www.google.com/maps/dir/?api=1&destination=Calle%2029%20%235408%20e%2F%2054%20y%2056%2C%20Artemisa%2C%20Cuba" data-maps-link target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 21s7-6.5 7-11a7 7 0 1 0-14 0c0 4.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg>
+                Cómo llegar en Google Maps
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </section>
-    <!-- ==================== 9. PREGUNTAS FRECUENTES ==================== -->
-    <section class="section section--alt" id="faq">
+
+    <!-- ==================== 11. PREGUNTAS FRECUENTES ==================== -->
+    <section class="section section--blue" id="faq">
       <div class="container container--narrow">
         <header class="section__head">
-          <p class="eyebrow">Preguntas frecuentes</p>
-          <h2 class="section__title">Resolvemos tus dudas</h2>
-          <p class="section__lead">Mostramos las preguntas más relevantes, ordenadas automáticamente por su importancia.</p>
+          <p class="eyebrow" data-site="faq_eyebrow">Preguntas frecuentes</p>
+          <h2 class="section__title" data-site="faq_title">Resolvemos tus dudas</h2>
+          <p class="section__lead" data-site="faq_lead">Mostramos las preguntas más relevantes, ordenadas automáticamente por su importancia.</p>
         </header>
 
         <!-- El orden y las preguntas destacadas los fija el algoritmo de importancia
@@ -805,57 +1023,45 @@
           </div>
         </div>
 
-        <!-- Propón una pregunta (abierto a cualquier visitante) -->
-        <form class="user-submit" id="questionForm" action="api/submissions.php" method="post" novalidate>
-          <h3 class="user-submit__title">Propón una pregunta</h3>
-          <input type="hidden" name="_csrf" value="">
-          <input type="hidden" name="tipo" value="pregunta">
-          <div class="field">
-            <label for="qTitle">Tu pregunta</label>
-            <input type="text" id="qTitle" name="titulo" required minlength="8" maxlength="200"
-                   placeholder="Ej.: ¿Podéis migrar mi web actual sin perder posicionamiento?">
-            <small class="field__error" data-error-for="titulo"></small>
-          </div>
-          <div class="field">
-            <label for="qText">Detalle <span class="muted">(opcional)</span></label>
-            <textarea id="qText" name="texto" rows="3" maxlength="1500"></textarea>
-            <small class="field__error" data-error-for="texto"></small>
-          </div>
-          <div class="field--hp" aria-hidden="true">
-            <label for="qGotcha">No rellenes este campo</label>
-            <input type="text" id="qGotcha" name="_gotcha" tabindex="-1" autocomplete="off">
-          </div>
-          <button class="btn btn--primary" type="submit">Enviar pregunta</button>
-          <p class="form-status" data-submit-status role="status" aria-live="polite"></p>
-        </form>
+        <!-- Aportaciones: los formularios para enviar testimonios y proponer
+             preguntas están en el área privada, accesible con tu cuenta
+             (admin/account.php). Así se evita el spam y se publica solo
+             contenido de personas identificadas. -->
+        <p class="section__cta">
+          <a class="btn btn--ghost" href="admin/login.php">Inicia sesión para proponer una pregunta</a>
+        </p>
       </div>
     </section>
 
   </main>
 
-  <!-- ==================== 10. PIE DE PÁGINA ==================== -->
+  <!-- ==================== 12. PIE DE PÁGINA ==================== -->
   <footer class="site-footer">
     <div class="container site-footer__grid">
       <div class="site-footer__brand">
-        <!-- Logo con fondo blanco y colores originales (azul + gris) -->
+        <!-- Logo del pie: MISMO tratamiento que en la cabecera y en la pagina de
+             acceso (logo azul + "ROTULUS" gris) sobre una placa blanca redondeada
+             con sombra suave (.logo-plate). Asi el pie es coherente con el resto. -->
         <span class="logo-plate">
           <picture>
             <source type="image/avif" srcset="assets/img/logo-header.avif">
             <source type="image/webp" srcset="assets/img/logo-header.webp">
-            <img src="assets/img/logo-header.png" alt="Logotipo de C-ROTULUS S.U.R.L." width="160" height="60" loading="lazy" decoding="async">
+            <img src="assets/img/logo-header.png" alt="Logotipo de C-ROTULUS S.U.R.L." width="170" height="64" loading="lazy" decoding="async">
           </picture>
         </span>
-        <p>Servicios tecnológicos para empresas. Desarrollo, automatización, redes y soporte con trato cercano.</p>
+        <p data-site="footer_tagline">Servicios tecnológicos para empresas. Desarrollo, automatización, redes y soporte con trato cercano.</p>
       </div>
 
       <nav class="site-footer__col" aria-label="Enlaces rápidos">
         <h3>Enlaces rápidos</h3>
         <ul>
           <li><a href="#inicio">Inicio</a></li>
-          <li><a href="#sobre-nosotros">Sobre nosotros</a></li>
+          <li><a href="empresa.html">Empresa</a></li>
           <li><a href="#servicios">Servicios</a></li>
           <li><a href="#proyectos">Proyectos</a></li>
+          <li><a href="#blog">Blog</a></li>
           <li><a href="#contacto">Contacto</a></li>
+          <li><a href="#ubicacion">Ubicación</a></li>
           <li><a href="#faq">Preguntas frecuentes</a></li>
           <li><a href="admin/login.php">Acceder</a></li>
         </ul>
@@ -864,9 +1070,11 @@
       <div class="site-footer__col">
         <h3>Contacto</h3>
         <ul>
-          <li><a href="tel:+34000000000" data-site="telefono">[TELÉFONO]</a></li>
-          <li><a href="mailto:info@c-rotulus.example" data-site="correo">[CORREO]</a></li>
-          <li><span data-site-direccion>[DIRECCIÓN], [CIUDAD]</span></li>
+          <li><a href="tel:+5359888821" data-site="telefono" data-tel-primary>+53 5988 8821</a></li>
+          <li><a href="tel:+5349368808" data-tel-secondary>+53 4936 8808</a></li>
+          <li><a href="mailto:crotulus.mipyme@gmail.com" data-site="correo">crotulus.mipyme@gmail.com</a></li>
+          <li><span data-site-direccion>Calle 29 #5408 e/ 54 y 56, Artemisa</span></li>
+          <li><span data-site="horario">Lunes a Viernes de 9:00 am a 5:00 pm</span></li>
         </ul>
       </div>
 
@@ -875,25 +1083,28 @@
         <!-- Redes sociales: los enlaces se toman del panel de administración.
              Los valores entre corchetes son marcadores de ejemplo. -->
         <ul class="social" aria-label="Redes sociales de C-ROTULUS">
-          <li><a href="[URL_FACEBOOK]" data-social="facebook" aria-label="Facebook" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M13 22v-8h3l1-4h-4V8c0-1 .3-1.6 1.7-1.6H17V3.1C16.4 3 15.4 3 14.3 3 11.8 3 10 4.4 10 7.3V10H7v4h3v8h3Z"/></svg></a></li>
-          <li><a href="[URL_INSTAGRAM]" data-social="instagram" aria-label="Instagram" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 7.5A4.5 4.5 0 1 0 12 16.5 4.5 4.5 0 0 0 12 7.5Zm0 7.4a2.9 2.9 0 1 1 0-5.8 2.9 2.9 0 0 1 0 5.8Zm4.7-7.6a1.05 1.05 0 1 0 0 2.1 1.05 1.05 0 0 0 0-2.1ZM12 4.6c2.4 0 2.7 0 3.6.1.9 0 1.4.2 1.7.3.4.2.7.4 1 .7.3.3.5.6.7 1 .1.3.3.8.3 1.7 0 .9.1 1.2.1 3.6s0 2.7-.1 3.6c0 .9-.2 1.4-.3 1.7-.2.4-.4.7-.7 1-.3.3-.6.5-1 .7-.3.1-.8.3-1.7.3-.9 0-1.2.1-3.6.1s-2.7 0-3.6-.1c-.9 0-1.4-.2-1.7-.3-.4-.2-.7-.4-1-.7-.3-.3-.5-.6-.7-1-.1-.3-.3-.8-.3-1.7 0-.9-.1-1.2-.1-3.6s0-2.7.1-3.6c0-.9.2-1.4.3-1.7.2-.4.4-.7.7-1 .3-.3.6-.5 1-.7.3-.1.8-.3 1.7-.3.9 0 1.2-.1 3.6-.1Zm0-1.6c-2.5 0-2.8 0-3.7.1-1 0-1.6.2-2.2.4-.6.2-1.1.5-1.6 1-.5.5-.8 1-1 1.6-.2.6-.4 1.2-.4 2.2 0 .9-.1 1.2-.1 3.7s0 2.8.1 3.7c0 1 .2 1.6.4 2.2.2.6.5 1.1 1 1.6.5.5 1 .8 1.6 1 .6.2 1.2.4 2.2.4.9 0 1.2.1 3.7.1s2.8 0 3.7-.1c1 0 1.6-.2 2.2-.4.6-.2 1.1-.5 1.6-1 .5-.5.8-1 1-1.6.2-.6.4-1.2.4-2.2 0-.9.1-1.2.1-3.7s0-2.8-.1-3.7c0-1-.2-1.6-.4-2.2-.2-.6-.5-1.1-1-1.6-.5-.5-1-.8-1.6-1-.6-.2-1.2-.4-2.2-.4-.9 0-1.2-.1-3.7-.1Z"/></svg></a></li>
-          <li><a href="[URL_LINKEDIN]" data-social="linkedin" aria-label="LinkedIn" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0 0-5ZM3 9h4v12H3zM10 9h3.8v1.7h.1c.5-.9 1.8-1.9 3.6-1.9 3.9 0 4.6 2.4 4.6 5.6V21h-4v-5.3c0-1.3 0-2.9-1.8-2.9s-2 1.4-2 2.8V21h-4z"/></svg></a></li>
-          <li><a href="[URL_GITHUB]" data-social="github" aria-label="GitHub" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.6.4-1.1.6-1.3-2.2-.2-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.6 0 0 .8-.3 2.8 1a9.6 9.6 0 0 1 5 0c2-1.3 2.8-1 2.8-1 .5 1.3.2 2.3.1 2.6.6.7 1 1.6 1 2.7 0 3.9-2.4 4.8-4.6 5 .4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10 10 0 0 0 12 2Z"/></svg></a></li>
+          <li><a href="https://www.facebook.com/com.rotulus.surl" data-social="facebook" aria-label="Facebook" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M13 22v-8h3l1-4h-4V8c0-1 .3-1.6 1.7-1.6H17V3.1C16.4 3 15.4 3 14.3 3 11.8 3 10 4.4 10 7.3V10H7v4h3v8h3Z"/></svg></a></li>
+          <li><a href="#" data-social="instagram" aria-label="Instagram" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 7.5A4.5 4.5 0 1 0 12 16.5 4.5 4.5 0 0 0 12 7.5Zm0 7.4a2.9 2.9 0 1 1 0-5.8 2.9 2.9 0 0 1 0 5.8Zm4.7-7.6a1.05 1.05 0 1 0 0 2.1 1.05 1.05 0 0 0 0-2.1ZM12 4.6c2.4 0 2.7 0 3.6.1.9 0 1.4.2 1.7.3.4.2.7.4 1 .7.3.3.5.6.7 1 .1.3.3.8.3 1.7 0 .9.1 1.2.1 3.6s0 2.7-.1 3.6c0 .9-.2 1.4-.3 1.7-.2.4-.4.7-.7 1-.3.3-.6.5-1 .7-.3.1-.8.3-1.7.3-.9 0-1.2.1-3.6.1s-2.7 0-3.6-.1c-.9 0-1.4-.2-1.7-.3-.4-.2-.7-.4-1-.7-.3-.3-.5-.6-.7-1-.1-.3-.3-.8-.3-1.7 0-.9-.1-1.2-.1-3.6s0-2.7.1-3.6c0-.9.2-1.4.3-1.7.2-.4.4-.7.7-1 .3-.3.6-.5 1-.7.3-.1.8-.3 1.7-.3.9 0 1.2-.1 3.6-.1Zm0-1.6c-2.5 0-2.8 0-3.7.1-1 0-1.6.2-2.2.4-.6.2-1.1.5-1.6 1-.5.5-.8 1-1 1.6-.2.6-.4 1.2-.4 2.2 0 .9-.1 1.2-.1 3.7s0 2.8.1 3.7c0 1 .2 1.6.4 2.2.2.6.5 1.1 1 1.6.5.5 1 .8 1.6 1 .6.2 1.2.4 2.2.4.9 0 1.2.1 3.7.1s2.8 0 3.7-.1c1 0 1.6-.2 2.2-.4.6-.2 1.1-.5 1.6-1 .5-.5.8-1 1-1.6.2-.6.4-1.2.4-2.2 0-.9.1-1.2.1-3.7s0-2.8-.1-3.7c0-1-.2-1.6-.4-2.2-.2-.6-.5-1.1-1-1.6-.5-.5-1-.8-1.6-1-.6-.2-1.2-.4-2.2-.4-.9 0-1.2-.1-3.7-.1Z"/></svg></a></li>
+          <li><a href="#" data-social="linkedin" aria-label="LinkedIn" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0 0-5ZM3 9h4v12H3zM10 9h3.8v1.7h.1c.5-.9 1.8-1.9 3.6-1.9 3.9 0 4.6 2.4 4.6 5.6V21h-4v-5.3c0-1.3 0-2.9-1.8-2.9s-2 1.4-2 2.8V21h-4z"/></svg></a></li>
+          <li><a href="#" data-social="github" aria-label="GitHub" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.6.4-1.1.6-1.3-2.2-.2-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.6 0 0 .8-.3 2.8 1a9.6 9.6 0 0 1 5 0c2-1.3 2.8-1 2.8-1 .5 1.3.2 2.3.1 2.6.6.7 1 1.6 1 2.7 0 3.9-2.4 4.8-4.6 5 .4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10 10 0 0 0 12 2Z"/></svg></a></li>
         </ul>
       </div>
     </div>
 
     <div class="container site-footer__bottom">
       <p>&copy; <span id="year">2026</span> C-ROTULUS S.U.R.L. Todos los derechos reservados.</p>
-      <p class="site-footer__legal"><a href="#contacto">Aviso legal</a> &middot; <a href="#contacto">Privacidad</a> &middot; <a href="#contacto">Cookies</a></p>
+      <p class="site-footer__legal" data-footer-legal>Aviso legal &middot; Privacidad &middot; Cookies</p>
     </div>
   </footer>
 
   <!-- ==================== BOTONES FLOTANTES ==================== -->
-  <!-- WhatsApp: cita flotante con mensaje prellenado (href se genera en js/main.js) -->
-  <a class="float-wa" href="#contacto" data-whatsapp-link aria-label="Escríbenos por WhatsApp (se abre en una pestana nueva)" target="_blank" rel="noopener">
+  <!-- Botón flotante de WhatsApp: SUSTITUIDO por el widget de chat de CreatuAgente.
+       Para recuperarlo, descomenta el enlace y borra el script del widget (abajo). -->
+  <!--
+  <a class="float-wa" href="https://wa.me/5359888821?text=Hola%20C-ROTULUS%2C%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n%20sobre%20sus%20servicios%20tecnol%C3%B3gicos." data-whatsapp-link aria-label="Escríbenos por WhatsApp (se abre en una pestana nueva)" target="_blank" rel="noopener">
     <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="M12.04 2a9.9 9.9 0 0 0-8.5 15l-1.3 4.7 4.82-1.26A9.9 9.9 0 1 0 12.04 2Zm5.77 14.06c-.24.68-1.4 1.3-1.93 1.34-.5.05-.98.24-3.3-.7-2.77-1.1-4.53-3.94-4.67-4.12-.14-.19-1.12-1.5-1.12-2.86 0-1.36.72-2.03.97-2.3.24-.28.53-.35.71-.35l.51.01c.16 0 .39-.06.6.46.24.57.8 1.98.87 2.13.07.14.12.31.02.5-.09.19-.14.3-.28.47l-.42.49c-.14.14-.29.29-.12.57.16.28.73 1.2 1.57 1.95 1.08.96 1.98 1.26 2.26 1.4.28.14.44.12.6-.07.17-.19.7-.82.89-1.1.19-.28.37-.23.63-.14.26.1 1.66.78 1.94.92.28.14.47.21.54.33.07.12.07.68-.17 1.36Z"/></svg>
   </a>
+  -->
 
   <!-- Volver arriba -->
   <button class="back-top" id="backTop" type="button" aria-label="Volver arriba" hidden>
@@ -901,6 +1112,12 @@
   </button>
 
   <!-- ==================== SCRIPTS ==================== -->
-  <script src="js/main.js?v=20261015i" defer></script>
+  <script src="js/main.js?v=20261017b" defer></script>
+
+  <!-- Widget de CreatuAgente (chat de atención al cliente).
+       Inyecta su propio botón flotante abajo a la derecha; por eso el botón
+       verde de WhatsApp queda desactivado arriba. Para quitarlo, borra esta
+       línea y vuelve a descomentar el enlace de WhatsApp. -->
+  <script src="https://api.creatuagente.io/widget/cmv8ia68j0f3j0bs6190merf8/widget-profile.js" async></script>
 </body>
 </html>

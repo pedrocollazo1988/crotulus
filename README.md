@@ -1,15 +1,39 @@
 # C-ROTULUS S.U.R.L. — Sitio web corporativo
 
-Landing page 100 % estática (HTML5, CSS3 y JavaScript vanilla) para C-ROTULUS S.U.R.L.,
-empresa de servicios tecnológicos. Sin frameworks, sin Node, sin backend y sin paso de
-compilación: se sube tal cual a `public_html` de cualquier hosting compartido.
+Sitio web 100 % estático (HTML5, CSS3 y JavaScript vanilla) para C-ROTULUS S.U.R.L.,
+empresa de servicios tecnológicos. Consta de una **portada** (`index.html`, navegación
+por anclas) y una página **Empresa** (`empresa.html`). El frontend no usa frameworks,
+ni Node, ni paso de compilación: se sube tal cual a `public_html` de cualquier hosting
+compartido. Además incluye un **backend opcional en PHP** (sin dependencias externas)
+para el panel de administración, el formulario y la edición de contenido. Si no se usa
+PHP, la web estática funciona igual.
+
+> **¿Vas a publicarlo?** Sigue la **[Guía de despliegue (DEPLOY.md)](DEPLOY.md)**:
+> desde subir los archivos por FTP hasta un VPS con Nginx, copias automáticas y CDN.
+> Incluye un diagnóstico (`php app/preflight.php`) que comprueba el hosting.
+> Si tu hosting es **Raiola Networks**, hay una guía propia paso a paso:
+> **[DEPLOY-RAIOLA.md](DEPLOY-RAIOLA.md)** (cPanel + LiteSpeed + Cloudflare).
 
 ## Estructura
 
 ```
-index.html               Landing única con navegación por anclas
+index.html               Portada (landing) con navegación por anclas
+empresa.html             Página "Empresa": Sobre nosotros (historia, misión, visión, valores) y Equipo
 css/styles.css           Estilos mobile-first (paleta de marca en :root)
 js/main.js               Interactividad en JS vanilla
+.htaccess                Reglas de Apache (caché, seguridad, protección de carpetas)
+robots.txt / sitemap.xml SEO
+DEPLOY.md                Guía de despliegue (básico → avanzado)
+DEPLOY-RAIOLA.md         Guía específica para Raiola Networks (cPanel + LiteSpeed)
+404.html                 Página de error personalizada (activa en .htaccess)
+app/preflight.php        Diagnóstico previo al despliegue (CLI o web con clave)
+deploy/
+  config.local.example.php  Plantilla de config de producción (cópiala a app/config.local.php)
+  deploy.sh                 Despliegue por SSH/rsync (nivel avanzado)
+  cron/backup.php           Copia de seguridad de la BD (MySQL/SQLite)
+  nginx/nginx.conf.example  Config de Nginx para VPS
+  raiola/                   Kit específico de Raiola (.htaccess, config de ejemplo)
+tools/build_zip.py       Regenera el paquete limpio para subir al hosting
 assets/img/
   logo.png               Logo original (referencia)
   logo-header.png        Logo para cabecera (fondo transparente)
@@ -46,6 +70,13 @@ Los datos reales están marcados con corchetes y hay que sustituirlos antes de p
 `[TELÉFONO]`, `[CORREO]`, `[DIRECCIÓN]`, `[CIUDAD]`, `[URL_...]`, `[AÑO DE FUNDACIÓN]`
 (también en el JSON-LD `LocalBusiness` de la cabecera).
 
+Aun así, **casi todo el texto del sitio se puede cambiar sin tocar el código**
+desde el panel (`admin/settings.php`, pestaña **Textos**): portada, cifras de
+confianza, cuerpo de «Sobre nosotros», cabeceras de cada sección y pie. La web
+lee esos valores de la base de datos al cargar (vía `api/index.php?resource=settings`)
+y, si el backend no responde, se queda con lo escrito en `index.html`.
+Los valores por defecto viven en `app/config.php` (bloque `defaults`).
+
 ## Formulario
 
 Envía al **backend propio incluido** (`api/contact.php`), que valida los datos en
@@ -63,6 +94,20 @@ sitios: el atributo `action` del `<form>` en `index.html` y la constante
 php -S localhost:8000 -t .
 # abre http://localhost:8000
 ```
+
+### Servidor de vista previa en este entorno (solo desarrollo)
+
+Este sandbox se **recrea entre sesiones** y solo persiste `/workspace`, así que PHP
+puede desaparecer. Para que la web no deje de mostrarse hay un **PHP portátil** en
+`/workspace/.php-runtime` y un script que lo sirve y lo vigila:
+
+```bash
+bash tools/serve.sh --ensure   # arranca en :12000 + vigilante en segundo plano
+bash tools/serve.sh --watch    # vigilante en primer plano (revive cada 15 s)
+```
+
+Es idempotente y no crea servidores duplicados. `tools/` queda excluido del ZIP de
+despliegue. En un hosting real **no hace falta**: PHP está siempre activo.
 
 Sin configurar nada, el proyecto arranca con **SQLite** (archivo en `app/data/`)
 y el correo en modo **log** (`app/data/mail.log`), ideal para probar.
@@ -122,6 +167,12 @@ Las tablas se crean **solas** la primera vez que se abre el sitio:
 
 ## Correo real (envío de verificación y avisos)
 
+El formulario de contacto **envía el aviso a `crotulus.mipyme@gmail.com`**
+(ajuste «Correo que recibe los avisos»). Ese destino ya viene puesto por
+defecto. Para que el envío salga de verdad solo falta la **contraseña de
+aplicación de Gmail**: el resto (SMTP de Gmail, puerto 587, usuario y destino)
+ya está configurado.
+
 El modo de envío se elige en `app/config.php`, apartado `mail`:
 
 | `transport` | Qué hace | Cuándo usarlo |
@@ -138,11 +189,12 @@ funciona sin esperar a un registro real. Ejemplo con Gmail:
 ```php
 'mail' => [
     'transport'   => 'smtp',
-    'from_email'  => 'no-reply@tudominio.com',
+    'from_email'  => 'crotulus.mipyme@gmail.com', // o vacío = usa smtp_user
     'from_name'   => 'C-ROTULUS',
+    'to_email'    => 'crotulus.mipyme@gmail.com', // quién recibe los avisos
     'smtp_host'   => 'smtp.gmail.com',
     'smtp_port'   => 587,
-    'smtp_user'   => 'tucuenta@gmail.com',
+    'smtp_user'   => 'crotulus.mipyme@gmail.com',
     'smtp_pass'   => 'contrasena-de-aplicacion', // Contraseña de aplicación de Google
     'smtp_secure' => 'tls',
 ],
@@ -151,6 +203,40 @@ funciona sin esperar a un registro real. Ejemplo con Gmail:
 > En Gmail/Google Workspace necesitas una **contraseña de aplicación** (no la de
 > tu cuenta). Otros proveedores (IONOS, Hostinger, Outlook...) dan datos SMTP
 > equivalentes en su panel.
+
+> Nota técnica: el aviso se envía como HTML con el `<style>` en una sola línea.
+> El mailer pliega las líneas largas al límite de 1000 bytes de SMTP
+> (`mailer_fold_lines()`), porque servidores estrictos rechazan el mensaje con
+> `500 Line too long` y el formulario diría «ok» sin que llegue el correo.
+
+### Poner el correo a punto con Gmail (paso a paso)
+
+1. En la cuenta de Gmail, activa la **verificación en dos pasos**:
+   `myaccount.google.com/security`.
+2. Crea una **contraseña de aplicación** en `myaccount.google.com/apppasswords`
+   (16 caracteres). Cópiala; solo se muestra una vez.
+3. Entra en el panel (`/admin/`), pestaña **Ajustes · Correo** y rellena:
+   - Método de envío: **SMTP (recomendado)**
+   - Servidor: `smtp.gmail.com` · Puerto `587` · Seguridad `STARTTLS`
+   - Usuario SMTP: tu dirección completa de Gmail
+   - Contraseña SMTP: la **contraseña de aplicación**
+   - Correo que recibe los avisos: la dirección donde quieres los mensajes
+     (por ejemplo, la misma de Gmail)
+   - Correo del remitente (From): déjalo **vacío** o pon el mismo Gmail
+     (Gmail exige que el remitente coincida con la cuenta autenticada)
+4. Pulsa **«Guardar correo»** y luego **«Enviar correo de prueba»**. Verás
+   *«Correo de prueba enviado…»* o el **motivo exacto** del fallo.
+5. Haz una prueba real: envía el formulario de contacto de la web y comprueba
+   que el aviso llega a la bandeja (revisa también *Spam* la primera vez).
+
+**Errores frecuentes y qué significan**
+
+| Mensaje | Causa | Solución |
+|---|---|---|
+| `535-5.7.8 Username and Password not accepted` | Se usó la contraseña normal, no la de aplicación | Genera una contraseña de aplicación |
+| `550`/`553 From address not allowed` | El remitente no coincide con la cuenta Gmail | Deja «From» vacío o pon tu Gmail |
+| `No se pudo conectar a smtp.gmail.com:587` | El hosting bloquea la salida SMTP | Usa el correo del propio hosting (`mail()`) o pide que abran el puerto |
+| El aviso no llega aunque diga «enviado» | Fue a *Spam* o el destinatario está mal | Revisa Spam y el «Correo que recibe los avisos» |
 
 ## Valoraciones y reseñas de servicios y proyectos
 
@@ -213,6 +299,7 @@ visual del sitio (mismas tipografias, azul de marca y tarjetas).
 | Contenido | CRUD de servicios, proyectos, testimonios, FAQ y proceso |
 | Valoraciones | Modera las reseñas de servicios y proyectos (aprobar/rechazar/borrar) |
 | Ajustes | Datos de contacto, mapa, redes, correo de prueba, valoraciones y Google |
+| Textos | Portada, cifras, «Sobre nosotros», cabeceras de sección y pie (editables sin código) |
 | Usuarios | Cuentas: activar, desactivar, cambiar rol y borrar |
 
 **Acceso y contraseñas:**

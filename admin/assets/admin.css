@@ -2,7 +2,7 @@
    PANEL Y AUTENTICACION · C-ROTULUS
    --------------------------------------------------------------------------
    Misma identidad visual que la web publica (css/styles.css): paleta anclada
-   al logo (azul #0050A0 + gris), mismas tipografias (Space Grotesk en
+   al logo (azul petroleo + azul hielo + gris), mismas tipografias (Plus Jakarta Sans en
    titulares, Inter en texto), tarjetas redondeadas y sombras suaves. Las
    variables de marca son identicas a las de la web: si cambias una, cambiala
    tambien alli.
@@ -20,47 +20,49 @@
   font-weight: 100 900; font-style: normal; font-display: swap;
 }
 @font-face {
-  font-family: "Space Grotesk";
-  src: url("../../assets/fonts/SpaceGrotesk-latin.woff2") format("woff2");
-  font-weight: 300 700; font-style: normal; font-display: swap;
+  font-family: "Plus Jakarta Sans";
+  src: url("../../assets/fonts/PlusJakartaSans-latin.woff2") format("woff2");
+  font-weight: 400 800; font-style: normal; font-display: swap;
 }
 @font-face {
-  font-family: "Space Grotesk";
-  src: url("../../assets/fonts/SpaceGrotesk-latin-ext.woff2") format("woff2");
-  font-weight: 300 700; font-style: normal; font-display: swap;
+  font-family: "Plus Jakarta Sans";
+  src: url("../../assets/fonts/PlusJakartaSans-latin-ext.woff2") format("woff2");
+  font-weight: 400 800; font-style: normal; font-display: swap;
 }
 
 :root {
   /* --- Paleta de marca (igual que la web, anclada al logo) --- */
-  --color-primary:      #0050A0;
-  --color-primary-dark: #003D7A;
-  --color-primary-soft: #E6EEF8;
-  --color-accent:       #1E6FBF;
-  --color-accent-soft:  #8FB4DE;
-  --color-ink:          #12212F;
-  --color-heading:      #6B6B6B;
-  --color-ink-soft:     #5B6B7B;
-  --color-line:         #D6E0EC;
+  --color-primary:      #136493;
+  --color-primary-dark: #0E4E75;
+  --color-primary-soft: #E7F1F8;
+  --color-accent:       #2E86B8;
+  --color-accent-soft:  #5FA8C9;
+  --color-ice:          #C5E2F2;
+  --color-steel:        #BDBDBD;
+  --color-ink:          #17303F;
+  --color-heading:      #136493;
+  --color-ink-soft:     #4F6474;
+  --color-line:         #DDE7EE;
   --color-bg:           #FFFFFF;
-  --color-bg-alt:       #F2F6FB;
+  --color-bg-alt:       #F4F8FB;
   --color-success:      #12805C;
   --color-error:        #C0392B;
   --color-warning:      #B54708;
-  --color-footer:       #062A52;
+  --color-footer:       #0B2E45;
 
   /* --- Tipografia (mismas familias que la web) --- */
   --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
-  --font-head: "Space Grotesk", "Inter", var(--font-body);
-  --font-alt:  "Space Grotesk", var(--font-body);
+  --font-head: "Plus Jakarta Sans", "Inter", var(--font-body);
+  --font-alt:  "Plus Jakarta Sans", var(--font-body);
 
   /* --- Medidas --- */
   --container: 1140px;
   --radius: 16px;
   --radius-sm: 10px;
   --radius-pill: 999px;
-  --shadow-sm: 0 4px 14px rgba(6, 42, 82, .07);
-  --shadow-md: 0 12px 32px rgba(6, 42, 82, .10);
-  --shadow-lg: 0 20px 60px rgba(6, 42, 82, .14);
+  --shadow-sm: 0 4px 14px rgba(11,46,69, .07);
+  --shadow-md: 0 12px 32px rgba(11,46,69, .10);
+  --shadow-lg: 0 20px 60px rgba(11,46,69, .14);
   --header-h: 68px;
   --transition: .28s cubic-bezier(.2, .7, .3, 1);
 }
@@ -76,7 +78,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3, h4 { font-family: var(--font-head); font-weight: 400; line-height: 1.1; letter-spacing: .01em; color: var(--color-primary-dark); margin: 0 0 .6em; }
+h1, h2, h3, h4 { font-family: var(--font-head); font-weight: 600; line-height: 1.1; letter-spacing: .01em; color: var(--color-primary-dark); margin: 0 0 .6em; }
 h1 { font-size: clamp(1.5rem, 1.2rem + 1.6vw, 2rem); }
 h2 { font-size: 1.25rem; margin-top: 2rem; }
 p { margin: 0 0 1rem; }
@@ -161,7 +163,7 @@ img { max-width: 100%; display: block; }
   padding: 1.75rem 1rem;
   background: var(--color-footer);
 }
-.foot a { color: #cfe4f7; }
+.foot a { color: #CFE3F0; }
 
 /* ==========================================================================
    TARJETAS DE ESTADISTICA
@@ -192,7 +194,7 @@ table { width: 100%; border-collapse: collapse; }
 th, td { text-align: left; padding: .8rem .95rem; border-bottom: 1px solid var(--color-line); font-size: .93rem; vertical-align: top; }
 th { background: var(--color-primary-soft); color: var(--color-primary-dark); font-weight: 600; white-space: nowrap; }
 tr:last-child td { border-bottom: 0; }
-tbody tr:hover { background: #f9fbfe; }
+tbody tr:hover { background: #F4F8FB; }
 
 /* ==========================================================================
    FORMULARIOS
@@ -208,7 +210,7 @@ input[type="text"], input[type="email"], input[type="password"], input[type="tel
 input::placeholder, textarea::placeholder { color: #9aa7b8; }
 input:focus, select:focus, textarea:focus {
   outline: none; border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(0, 90, 165, .15);
+  box-shadow: 0 0 0 3px rgba(19,100,147,.15);
 }
 input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="true"] {
   border-color: var(--color-error);
@@ -275,13 +277,30 @@ input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="
   content: "";
   position: absolute; inset: 0; opacity: .55;
   background-image:
-    radial-gradient(circle at 18% 22%, rgba(143,180,222,.55) 0 3px, transparent 4px),
+    radial-gradient(circle at 18% 22%, rgba(95,168,201,.55) 0 3px, transparent 4px),
     radial-gradient(circle at 72% 40%, rgba(255,255,255,.35) 0 2px, transparent 3px),
-    radial-gradient(circle at 40% 78%, rgba(143,180,222,.4) 0 2px, transparent 3px),
+    radial-gradient(circle at 40% 78%, rgba(95,168,201,.4) 0 2px, transparent 3px),
     radial-gradient(circle at 88% 82%, rgba(255,255,255,.25) 0 2px, transparent 3px);
   background-size: 240px 240px, 300px 300px, 360px 360px, 420px 420px;
 }
 .auth-aside__inner { position: relative; z-index: 1; max-width: 380px; margin: 0 auto; align-self: center; }
+
+/* Puntos tipo "estrellas" del panel de acceso: la capa ::before de .auth-aside
+   lleva cuatro tramas de puntos; aquí se les da un centelleo y una deriva muy
+   suaves (solo transform y opacity, capas de la GPU). */
+.auth-aside::before {
+  will-change: transform, opacity;
+  animation: stars-drift 26s ease-in-out infinite;
+}
+@keyframes stars-drift {
+  0%   { transform: translate3d(0, 0, 0) scale(1);            opacity: .35; }
+  50%  { transform: translate3d(-2.5%, -2.5%, 0) scale(1.04); opacity: .7; }
+  100% { transform: translate3d(0, 0, 0) scale(1);            opacity: .35; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .auth-aside::before { animation: none !important; }
+}
+
 .auth-aside__logo {
   display: inline-block; margin-bottom: 1.6rem;
   padding: .6rem .75rem; background: #fff; border-radius: 12px;
@@ -289,16 +308,16 @@ input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="
 }
 .auth-aside__logo img { height: 40px; width: auto; display: block; }
 .auth-aside h2 { color: #fff; font-size: 1.9rem; line-height: 1.25; }
-.auth-aside p { color: #d7e7f7; }
+.auth-aside p { color: #CFE3F0; }
 .auth-aside ul { list-style: none; margin: 1.5rem 0 0; padding: 0; display: grid; gap: .7rem; }
-.auth-aside li { position: relative; padding-left: 1.9rem; color: #eaf3fb; }
+.auth-aside li { position: relative; padding-left: 1.9rem; color: #E7F1F8; }
 .auth-aside li::before {
   content: "\2713";
   position: absolute; left: 0; top: 0;
   color: var(--color-accent); font-weight: 700;
 }
 .auth-aside__back { margin-top: 2rem; }
-.auth-aside__back a { color: #cfe4f7; font-weight: 600; }
+.auth-aside__back a { color: #CFE3F0; font-weight: 600; }
 
 .auth-main { display: flex; align-items: center; justify-content: center; padding: 1.5rem 1.25rem; }
 .auth-card { width: 100%; max-width: 460px; background: #fff; border: 1px solid var(--color-line); border-radius: var(--radius); box-shadow: var(--shadow-lg); padding: 2rem 1.75rem; }
@@ -316,7 +335,7 @@ input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="
   padding: .72rem; border-radius: var(--radius-pill); font-weight: 600; text-decoration: none;
   transition: background var(--transition), border-color var(--transition);
 }
-.btn-google:hover { background: #f8fbff; border-color: var(--color-primary); text-decoration: none; }
+.btn-google:hover { background: #F4F8FB; border-color: var(--color-primary); text-decoration: none; }
 .btn-google img { width: 18px; height: 18px; }
 .btn-google.is-disabled { opacity: .55; cursor: not-allowed; background: #fff; }
 .btn-google.is-disabled:hover { border-color: var(--color-line); }
@@ -357,7 +376,7 @@ input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="
   flex-wrap: wrap;
   gap: .35rem;
   padding: .35rem;
-  background: var(--color-bg-alt, #F4F7FC);
+  background: var(--color-bg-alt, #F4F8FB);
   border: 1px solid var(--color-line);
   border-radius: var(--radius-pill);
   margin-bottom: 1.5rem;
@@ -395,4 +414,18 @@ input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="
 .settings-card h2,
 .settings-card h3 { margin-top: 0; }
 .settings-card .field { margin-bottom: .9rem; }
+/* Grupo de campos con leyenda (pestaña Textos: una por sección) */
+.field-group {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  padding: .9rem 1rem .3rem;
+  margin: 0 0 1rem;
+}
+.field-group legend {
+  padding: 0 .4rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  font-size: .92rem;
+}
+.field-group .field { margin-bottom: .7rem; }
 .tabs__panel > .btn { margin-top: .25rem; }

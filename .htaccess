@@ -6,6 +6,12 @@
 # --- Página de inicio ---
 DirectoryIndex index.html
 
+# --- Sin listado de carpetas (evita ver archivos sueltos) ---
+Options -Indexes
+
+# --- Página de error propia (404.html en la raíz) ---
+ErrorDocument 404 /404.html
+
 # --- Compresión para una carga más rápida ---
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml application/json application/javascript application/ld+json image/svg+xml
@@ -54,12 +60,33 @@ DirectoryIndex index.html
   </IfModule>
 </FilesMatch>
 
-# --- Bloquea el acceso directo a las carpetas de backend ---
+# --- Bloquea el acceso directo a las carpetas de backend y herramientas ---
 RedirectMatch 404 ^/app(/|$)
+RedirectMatch 404 ^/deploy(/|$)
+RedirectMatch 404 ^/tools(/|$)
 
-# --- HTTPS obligatorio (descomenta al activar el certificado SSL) ---
+# --- HTTPS obligatorio y dominio con/sin www (descomenta al activar el SSL) ---
+# Elige UNA de las dos redirecciones y descomenta tambien el bloque de abajo.
+#
+# (a) Forzar HTTPS manteniendo el dominio tal cual:
 # <IfModule mod_rewrite.c>
 #   RewriteEngine On
 #   RewriteCond %{HTTPS} !=on
+#   RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+# </IfModule>
+#
+# (b) Forzar HTTPS + www (recomendado para el dominio principal):
+# <IfModule mod_rewrite.c>
+#   RewriteEngine On
+#   RewriteCond %{HTTPS} !=on [OR]
+#   RewriteCond %{HTTP_HOST} !^www\. [NC]
+#   RewriteRule ^(.*)$ https://www.TU-DOMINIO.com/$1 [R=301,L]
+# </IfModule>
+
+# --- Forzar HTTPS detras de un proxy/CDN (Cloudflare, etc.) ----------------
+# Descomenta si el sitio va detras de Cloudflare y ves redirecciones en bucle:
+# <IfModule mod_rewrite.c>
+#   RewriteEngine On
+#   RewriteCond %{HTTP:X-Forwarded-Proto} =http
 #   RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
 # </IfModule>

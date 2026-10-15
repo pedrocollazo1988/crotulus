@@ -34,6 +34,11 @@ if ($action === 'csrf') {
     json_ok(['csrf_token' => csrf_token()]);
 }
 
+/* --- Reto anti-spam (captcha propio) para el formulario de contacto -------- */
+if ($action === 'captcha') {
+    json_ok(captcha_issue());
+}
+
 switch ($resource) {
 
     case 'settings':
@@ -63,6 +68,29 @@ switch ($resource) {
         json_ok(['items' => $rows]);
         // no break
 
+    /* --- Blog: articulos publicados --------------------------------------- */
+    case 'blog':
+        $limit  = isset($_GET['limit']) ? (int) $_GET['limit'] : 9;
+        $slug   = isset($_GET['slug']) ? clean_text((string) $_GET['slug']) : '';
+        if ($slug !== '') {
+            // Articulo concreto por slug (incluye el cuerpo completo).
+            foreach (blog_posts(0, true, true) as $row) {
+                if ((string) $row['slug'] === $slug) {
+                    json_ok(['items' => [blog_post_public($row)]]);
+                }
+            }
+            json_error('Articulo no encontrado.', 404);
+        }
+        $items = array_map('blog_post_public', blog_posts($limit, true, false));
+        json_ok(['items' => $items]);
+        // no break;
+
+    /* --- Equipo: miembros visibles --------------------------------------- */
+    case 'team':
+        $items = array_map('team_member_public', team_members(true));
+        json_ok(['items' => $items]);
+        // no break;
+
     case 'health':
         json_ok(['status' => 'ok', 'driver' => db_driver()]);
         // no break;
@@ -78,6 +106,12 @@ switch ($resource) {
             'summary' => reviews_summary($type !== '' ? $type : null),
             'items'   => reviews_published($type, $limit),
         ]);
+        // no break;
+
+    /* --- Reseñas de Google en vivo (con caché en base de datos) ------------ */
+    case 'google_reviews':
+        $force = isset($_GET['force']) && $_GET['force'] === '1';
+        json_ok(google_reviews_fetch($force));
         // no break;
 
     case 'trustpilot':
@@ -121,6 +155,7 @@ switch ($resource) {
             'user'      => [
                 'id'   => (int) $user['id'],
                 'name' => (string) $user['name'],
+                'role' => (string) $user['role'],
             ],
             'submissions' => submissions_for_user((int) $user['id'], 10),
             'settings'    => [

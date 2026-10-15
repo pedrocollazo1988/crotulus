@@ -19,9 +19,9 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     } else {
         $do = (string) ($_POST['do'] ?? '');
         if ($do === 'test_mail') {
-            $to = (string) setting('correo', config('defaults.correo'));
-            if (!filter_var($to, FILTER_VALIDATE_EMAIL)) {
-                $flash = ['error', 'Configura antes un correo de contacto válido.'];
+            $to = mail_notify_to();
+            if ($to === '') {
+                $flash = ['error', 'Configura antes un correo válido en «Correo que recibe los avisos» o en «Correo de contacto».'];
             } else {
                 $ok = send_mail(
                     $to,
@@ -29,21 +29,39 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     mailer_template('Prueba de envío de correo', '<p>Si lees este mensaje, tu correo está bien configurado.</p>')
                 );
                 $transport = (string) config('mail.transport', 'log');
-                $flash = $ok
-                    ? ['ok', "Correo de prueba enviado a $to (transporte: $transport)."]
-                    : ['error', "No se pudo enviar el correo (transporte: $transport). Revisa la configuración en app/config.php."];
+                if ($ok) {
+                    $extra = $transport === 'log' ? ' (transporte «log»: no sale de verdad, se guarda en app/data/mail.log)' : '';
+                    $flash = ['ok', "Correo de prueba enviado a $to (transporte: $transport)$extra."];
+                } else {
+                    $motivo = mailer_last_error();
+                    $flash = ['error', "No se pudo enviar el correo (transporte: $transport)." . ($motivo !== '' ? ' Motivo: ' . $motivo : ' Revisa la configuración en el panel · Correo.')];
+                }
             }
         } elseif ($do === 'refresh_trustpilot') {
             $tp = trustpilot_fetch(true);
             $flash = $tp['ok']
                 ? ['ok', 'Trustpilot actualizado: ' . (int) $tp['summary']['total'] . ' reseñas, nota ' . number_format((float) $tp['summary']['average'], 1) . '/5.']
                 : ['error', 'Trustpilot no permite leer la ficha directamente (bloquea las peticiones del servidor). Usa el widget de abajo: rellena el «ID de Trustpilot (TrustBox)» y la web mostrará tus reseñas reales automáticamente.'];
+        } elseif ($do === 'refresh_google_reviews') {
+            if (!google_reviews_enabled()) {
+                $flash = ['error', 'Configura antes el «Place ID de Google» y la «Clave de la API de Google Places».'];
+            } else {
+                $gr = google_reviews_refresh();
+                if ($gr['live']) {
+                    $flash = ['ok', 'Reseñas de Google actualizadas: ' . count($gr['items']) . ' reseñas guardadas, nota ' . number_format((float) $gr['summary']['average'], 1) . '/5.'];
+                } elseif ($gr['stale'] || !empty($gr['items'])) {
+                    $flash = ['error', 'No se pudo conectar con Google (' . e((string) ($gr['error'] ?? 'sin_conexion')) . '). Se mantienen las últimas ' . count($gr['items']) . ' reseñas guardadas.'];
+                } else {
+                    $flash = ['error', 'No se pudo leer la ficha de Google. Revisa el place_id y la clave de la API.'];
+                }
+            }
         } else {
             $fields     = settings_editable();
             $checkboxes = settings_checkboxes();
             $secrets    = settings_secret_keys();
             $numerics   = [
-                'faq_portal_count', 'mail_smtp_port',
+                'faq_portal_count', 'mail_smtp_port', 'google_reviews_cache_ttl',
+                'stat1_value', 'stat2_value', 'stat3_value', 'stat4_value',
                 'security_password_min', 'security_session_lifetime',
                 'security_contact_rate_max', 'security_contact_rate_window',
                 'security_login_rate_max', 'security_login_rate_window',
@@ -51,6 +69,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 'security_submission_rate_max', 'security_submission_rate_window',
             ];
             $urlFields  = ['facebook', 'instagram', 'linkedin', 'github', 'google_maps_url', 'trustpilot_url', 'google_reviews_url', 'google_redirect_uri', 'og_image'];
+            $imageFields = ['hero_image', 'about_image'];
             $selects    = ['mail_transport' => ['log', 'mail', 'smtp'], 'mail_smtp_secure' => ['tls', 'ssl', 'none'], 'reviews_provider' => ['trustpilot', 'google', 'custom']];
             // Cada formulario declara qué casillas controla (campo _checkboxes),
             // así guardar una pestaña no desactiva las casillas de otras.
@@ -83,9 +102,11 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     $value = preg_replace('/[^A-Za-z0-9_\-]/', '', $value) ?? '';
                 } elseif (isset($selects[$key])) {
                     $value = in_array($value, $selects[$key], true) ? $value : $selects[$key][0];
+                } elseif (in_array($key, $imageFields, true)) {
+                    $value = sanitize_image_path($value);
                 } elseif (in_array($key, $urlFields, true)) {
                     $value = sanitize_url($value);
-                } elseif ($key === 'mail_from_email') {
+                } elseif ($key === 'mail_from_email' || $key === 'mail_to_email') {
                     $value = filter_var($value, FILTER_VALIDATE_EMAIL) ? $value : '';
                 } elseif ($key === 'site_url') {
                     $value = rtrim($value, '/');
@@ -111,6 +132,26 @@ function sanitize_url(string $value): string
         return $value;
     }
     return filter_var($value, FILTER_VALIDATE_URL) ? $value : '';
+}
+
+/**
+ * Saneado de la ruta de una imagen: relativa (assets/...) o URL http(s).
+ * Evita rutas absolutas del sistema y esquemas peligrosos.
+ */
+function sanitize_image_path(string $value): string
+{
+    $value = trim($value);
+    if ($value === '') {
+        return '';
+    }
+    if (preg_match('#^(https?://|//)#i', $value)) {
+        return filter_var($value, FILTER_VALIDATE_URL) ? $value : '';
+    }
+    // Ruta relativa: sin "..", sin protocolo y con una extensión conocida.
+    if (strpos($value, '..') !== false || strpos($value, ':') !== false) {
+        return '';
+    }
+    return preg_match('#^[\w./\-]+\.(svg|png|jpe?g|webp|avif|gif)$#i', $value) ? $value : '';
 }
 
 /**
@@ -158,6 +199,7 @@ admin_header('Ajustes', true, 'Ajustes');
 <div class="tabs" data-tabs>
   <div class="tabs__nav" role="tablist" aria-label="Secciones de ajustes">
     <button type="button" role="tab" class="tabs__btn is-active" data-tab="general" aria-selected="true">General</button>
+    <button type="button" role="tab" class="tabs__btn" data-tab="textos" aria-selected="false">Textos</button>
     <button type="button" role="tab" class="tabs__btn" data-tab="contacto" aria-selected="false">Contacto</button>
     <button type="button" role="tab" class="tabs__btn" data-tab="correo" aria-selected="false">Correo</button>
     <button type="button" role="tab" class="tabs__btn" data-tab="resenas" aria-selected="false">Reseñas</button>
@@ -217,6 +259,146 @@ admin_header('Ajustes', true, 'Ajustes');
       </div>
 
       <button class="btn" type="submit">Guardar ajustes generales</button>
+    </form>
+  </section>
+
+  <!-- ============================ TEXTOS ============================ -->
+  <section class="tabs__panel" data-panel="textos" role="tabpanel">
+    <form method="post" action="<?= e(url('admin/settings.php')) ?>">
+      <input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>">
+
+      <div class="settings-card">
+        <h2>Portada</h2>
+        <p class="muted">Titular, subtítulo, botones e imagen de la portada. El texto destacado del titular se colorea con degradado.</p>
+        <div class="field">
+          <label for="hero_badge">Etiqueta superior</label>
+          <input type="text" id="hero_badge" name="hero_badge" value="<?= e($s['hero_badge'] ?? '') ?>">
+        </div>
+        <div class="field">
+          <label for="hero_title">Titular (h1)</label>
+          <input type="text" id="hero_title" name="hero_title" value="<?= e($s['hero_title'] ?? '') ?>">
+        </div>
+        <div class="field">
+          <label for="hero_title_accent">Palabra destacada del titular</label>
+          <input type="text" id="hero_title_accent" name="hero_title_accent" value="<?= e($s['hero_title_accent'] ?? '') ?>" placeholder="hace crecer">
+          <small class="muted">Debe coincidir literalmente con una parte del titular para que se aplique el color.</small>
+        </div>
+        <div class="field">
+          <label for="hero_subtitle">Subtítulo</label>
+          <textarea id="hero_subtitle" name="hero_subtitle" rows="3"><?= e($s['hero_subtitle'] ?? '') ?></textarea>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label for="hero_cta1_label">Botón principal</label>
+            <input type="text" id="hero_cta1_label" name="hero_cta1_label" value="<?= e($s['hero_cta1_label'] ?? '') ?>">
+          </div>
+          <div class="field">
+            <label for="hero_cta2_label">Botón de WhatsApp</label>
+            <input type="text" id="hero_cta2_label" name="hero_cta2_label" value="<?= e($s['hero_cta2_label'] ?? '') ?>">
+          </div>
+        </div>
+        <div class="field">
+          <label for="hero_image">Imagen de la portada (ruta)</label>
+          <input type="text" id="hero_image" name="hero_image" value="<?= e($s['hero_image'] ?? '') ?>" placeholder="assets/img/hero-tech.svg">
+        </div>
+        <div class="field">
+          <label for="hero_image_alt">Texto alternativo de la imagen (accesibilidad)</label>
+          <input type="text" id="hero_image_alt" name="hero_image_alt" value="<?= e($s['hero_image_alt'] ?? '') ?>">
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <h2>Cifras de confianza</h2>
+        <p class="muted">Cuatro cifras de la portada. El valor debe ser un número (se anima al aparecer).</p>
+        <?php for ($i = 1; $i <= 4; $i++): ?>
+          <div class="grid-2">
+            <div class="field">
+              <label for="stat<?= $i ?>_value">Cifra <?= $i ?></label>
+              <input type="number" min="0" id="stat<?= $i ?>_value" name="stat<?= $i ?>_value" value="<?= e($s["stat{$i}_value"] ?? '') ?>">
+            </div>
+            <div class="field">
+              <label for="stat<?= $i ?>_label">Texto de la cifra <?= $i ?></label>
+              <input type="text" id="stat<?= $i ?>_label" name="stat<?= $i ?>_label" value="<?= e($s["stat{$i}_label"] ?? '') ?>">
+            </div>
+          </div>
+        <?php endfor; ?>
+      </div>
+
+      <div class="settings-card">
+        <h2>Sobre nosotros (página Empresa)</h2>
+        <p class="muted">Texto e imagen de la sección «Sobre nosotros» de la página Empresa.</p>
+        <div class="field">
+          <label for="about_title">Titular de la sección</label>
+          <input type="text" id="about_title" name="about_title" value="<?= e($s['about_title'] ?? '') ?>">
+        </div>
+        <div class="field">
+          <label for="about_lead">Subtítulo de la sección</label>
+          <input type="text" id="about_lead" name="about_lead" value="<?= e($s['about_lead'] ?? '') ?>">
+        </div>
+        <div class="field">
+          <label for="about_body">Nuestra historia</label>
+          <textarea id="about_body" name="about_body" rows="6"><?= e($s['about_body'] ?? '') ?></textarea>
+        </div>
+        <div class="field">
+          <label for="about_image">Imagen del equipo (ruta)</label>
+          <input type="text" id="about_image" name="about_image" value="<?= e($s['about_image'] ?? '') ?>" placeholder="assets/img/equipo.svg">
+        </div>
+        <div class="field">
+          <label for="about_image_alt">Texto alternativo de la imagen</label>
+          <input type="text" id="about_image_alt" name="about_image_alt" value="<?= e($s['about_image_alt'] ?? '') ?>">
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <h2>Cabeceras de las secciones</h2>
+        <p class="muted">Titular y subtítulo de cada sección. La etiqueta superior solo cambia si escribes un valor.</p>
+        <?php
+          $secs = [
+            'team'         => 'Equipo',
+            'services'     => 'Servicios',
+            'projects'     => 'Proyectos',
+            'blog'         => 'Blog',
+            'process'      => 'Cómo trabajamos',
+            'testimonials' => 'Testimonios',
+            'reviews'      => 'Opiniones (Google)',
+            'trustpilot'   => 'Reseñas verificadas (Trustpilot)',
+            'contact'      => 'Contacto',
+            'location'     => 'Ubicación',
+            'faq'          => 'Preguntas frecuentes',
+          ];
+          foreach ($secs as $key => $label): ?>
+          <fieldset class="field-group">
+            <legend><?= e($label) ?></legend>
+            <div class="field">
+              <label for="<?= $key ?>_eyebrow">Etiqueta superior</label>
+              <input type="text" id="<?= $key ?>_eyebrow" name="<?= $key ?>_eyebrow" value="<?= e($s["{$key}_eyebrow"] ?? '') ?>">
+            </div>
+            <div class="field">
+              <label for="<?= $key ?>_title">Titular</label>
+              <input type="text" id="<?= $key ?>_title" name="<?= $key ?>_title" value="<?= e($s["{$key}_title"] ?? '') ?>">
+            </div>
+            <div class="field">
+              <label for="<?= $key ?>_lead">Subtítulo</label>
+              <input type="text" id="<?= $key ?>_lead" name="<?= $key ?>_lead" value="<?= e($s["{$key}_lead"] ?? '') ?>">
+            </div>
+          </fieldset>
+        <?php endforeach; ?>
+      </div>
+
+      <div class="settings-card">
+        <h2>Pie de página</h2>
+        <div class="field">
+          <label for="footer_tagline">Frase de presentación</label>
+          <input type="text" id="footer_tagline" name="footer_tagline" value="<?= e($s['footer_tagline'] ?? '') ?>">
+        </div>
+        <div class="field">
+          <label for="footer_legal">Enlaces legales</label>
+          <input type="text" id="footer_legal" name="footer_legal" value="<?= e($s['footer_legal'] ?? '') ?>">
+          <small class="muted">Separados por « · ». Cada enlace apunta a la sección de contacto.</small>
+        </div>
+      </div>
+
+      <button class="btn" type="submit">Guardar textos</button>
     </form>
   </section>
 
@@ -317,7 +499,13 @@ admin_header('Ajustes', true, 'Ajustes');
           </div>
           <div class="field">
             <label for="mail_from_email">Correo del remitente (From)</label>
-            <input type="email" id="mail_from_email" name="mail_from_email" value="<?= e($s['mail_from_email'] ?? '') ?>" placeholder="no-reply@tu-dominio.com">
+            <input type="email" id="mail_from_email" name="mail_from_email" value="<?= e($s['mail_from_email'] ?? '') ?>" placeholder="crotulus.mipyme@gmail.com">
+            <p class="muted">Con Gmail debe coincidir con la cuenta SMTP (o déjalo vacío para usarla automáticamente).</p>
+          </div>
+          <div class="field">
+            <label for="mail_to_email">Correo que recibe los avisos</label>
+            <input type="email" id="mail_to_email" name="mail_to_email" value="<?= e($s['mail_to_email'] ?? '') ?>" placeholder="crotulus.mipyme@gmail.com">
+            <p class="muted">Dirección donde quieres recibir los mensajes de contacto. Si está vacío se usa el correo de contacto.</p>
           </div>
           <div class="field">
             <label for="mail_smtp_host">Servidor SMTP</label>
@@ -353,21 +541,27 @@ admin_header('Ajustes', true, 'Ajustes');
 
     <div class="settings-card">
       <h3>Probar el envío</h3>
-      <p class="muted">Envía un correo de prueba al correo de contacto configurado.</p>
+      <p class="muted">Envía un correo de prueba al correo de avisos configurado.</p>
       <form method="post" action="<?= e(url('admin/settings.php')) ?>">
         <input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>">
         <input type="hidden" name="do" value="test_mail">
-        <button class="btn btn--ghost" type="submit">Enviar correo de prueba a <?= e($s['correo'] ?? '') ?></button>
+        <button class="btn btn--ghost" type="submit">Enviar correo de prueba a <?= e(mail_notify_to() ?: '—sin configurar—') ?></button>
       </form>
     </div>
 
     <div class="settings-card">
       <h3>Ayuda: Gmail</h3>
-      <ul class="muted" style="margin:0;padding-left:1.1rem;line-height:1.7">
-        <li>Servidor: <code>smtp.gmail.com</code> · Puerto <code>587</code> · Seguridad <code>STARTTLS</code>.</li>
-        <li>Usuario: tu dirección completa de Gmail.</li>
-        <li>Contraseña: una <strong>contraseña de aplicación</strong> de 16 caracteres (requiere verificación en dos pasos). No uses tu contraseña normal.</li>
-      </ul>
+      <ol class="muted" style="margin:0;padding-left:1.1rem;line-height:1.7">
+        <li>Activa la <strong>verificación en dos pasos</strong> en tu cuenta de Google.</li>
+        <li>Crea una <strong>contraseña de aplicación</strong> (16 caracteres) en
+            <code>myaccount.google.com/apppasswords</code>. No uses tu contraseña normal.</li>
+        <li>Rellena aquí: Método <code>SMTP</code> · Servidor <code>smtp.gmail.com</code> ·
+            Puerto <code>587</code> · Seguridad <code>STARTTLS</code>.</li>
+        <li>Usuario = tu dirección completa de Gmail. Contraseña = la contraseña de aplicación.</li>
+        <li>Deja «Correo del remitente» vacío (o pon tu mismo Gmail): Gmail exige que el
+            remitente sea la cuenta que autentica.</li>
+        <li>Pulsa «Enviar correo de prueba». Si falla, verás el motivo exacto del error.</li>
+      </ol>
     </div>
   </section>
 
@@ -418,10 +612,45 @@ admin_header('Ajustes', true, 'Ajustes');
             <input type="text" id="google_reviews_url" name="google_reviews_url" value="<?= e($s['google_reviews_url'] ?? '') ?>" placeholder="https://g.page/r/tu-ficha/review">
             <p class="muted">Botón «Ver todas en Google» de la sección de Opiniones.</p>
           </div>
+          <div class="field">
+            <label for="google_place_id">Place ID de Google (ficha del negocio)</label>
+            <input type="text" id="google_place_id" name="google_place_id" value="<?= e($s['google_place_id'] ?? '') ?>" placeholder="ChIJ... (búscalo en Google Place ID Finder)">
+            <p class="muted">Identificador de tu ficha en Google Maps. Con esto y la clave de API, la sección de Opiniones se rellena sola.</p>
+          </div>
+          <div class="field">
+            <label for="google_places_api_key">Clave de la API de Google Places</label>
+            <input type="password" id="google_places_api_key" name="google_places_api_key" value="<?= $s['google_places_api_key'] ?? '' ? '' : '********' ?>" autocomplete="new-password">
+            <p class="muted">Se guarda en el servidor y nunca se envía al navegador. Crea una clave en Google Cloud (Places API) con plan gratuito.</p>
+          </div>
+          <div class="field">
+            <label for="google_reviews_cache_ttl">Horas de caché de las reseñas</label>
+            <input type="number" min="1" id="google_reviews_cache_ttl" name="google_reviews_cache_ttl" value="<?= e($s['google_reviews_cache_ttl'] ?? '21600') ?>">
+            <p class="muted">Tiempo (en segundos) antes de volver a consultar a Google. Si falla la conexión, la web muestra las últimas 3 guardadas.</p>
+          </div>
         </div>
       </div>
       <button class="btn" type="submit">Guardar reseñas</button>
     </form>
+
+    <!-- Reseñas de Google en vivo (Google Places API) -->
+    <?php $grFetched = (string) setting('google_reviews_fetched_at', ''); $grCached = count(google_reviews_cached(3)); ?>
+    <div class="settings-card">
+      <h3>Reseñas de Google en vivo</h3>
+      <p class="muted">
+        Se leen de tu ficha de Google (Google Places API) y se guardan en la base de datos.
+        Si en algún momento falla la conexión, la web muestra las últimas 3 guardadas y las
+        actualiza sola cuando vuelve la conexión.
+      </p>
+      <p class="muted">
+        Estado: <?= google_reviews_enabled() ? '<strong>configurado</strong>' : 'sin configurar (faltan place_id o clave)' ?>
+        · <?= (int) $grCached ?> reseñas guardadas<?= $grFetched ? ' · última lectura: ' . e(date('d/m/Y H:i', strtotime($grFetched))) : '' ?>
+      </p>
+      <form method="post" action="<?= e(url('admin/settings.php')) ?>">
+        <input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>">
+        <input type="hidden" name="do" value="refresh_google_reviews">
+        <button class="btn btn--ghost" type="submit">Actualizar reseñas de Google ahora</button>
+      </form>
+    </div>
 
     <?php $tpCache = db_one("SELECT updated_at FROM settings WHERE skey LIKE 'trustpilot_cache_%' ORDER BY updated_at DESC LIMIT 1"); ?>
     <div class="settings-card">

@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Diseño de una web moderna orientada a convertir visitas en clientes">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F6FBFF"/><stop offset="1" stop-color="#CCE5F4"/></linearGradient>
+    <linearGradient id="scr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3E93C4"/><stop offset="1" stop-color="#136493"/></linearGradient>
+    <linearGradient id="cta" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2E86B8"/><stop offset="1" stop-color="#136493"/></linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7FC0E0"/><stop offset="1" stop-color="#2E86B8" stop-opacity="0"/></linearGradient>
+    <filter id="soft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="16"/></filter>
+    <filter id="ds" x="-25%" y="-25%" width="150%" height="150%"><feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#0B2E45" flood-opacity=".18"/></filter>
+    <clipPath id="clip"><rect width="800" height="500" rx="24"/></clipPath>
+    <style>
+      .f{animation:f 7s ease-in-out infinite}
+      .f2{animation:f 8.8s ease-in-out infinite;animation-delay:-2.2s}
+      .f3{animation:f 9.8s ease-in-out infinite;animation-delay:-4.2s}
+      .pulse{animation:pulse 3.4s ease-in-out infinite}
+      @keyframes f{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+      @keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+      @media (prefers-reduced-motion: reduce){.f,.f2,.f3,.pulse{animation:none}}
+    </style>
+  </defs>
+  <g clip-path="url(#clip)">
+    <rect width="800" height="500" fill="url(#bg)"/>
+    <circle cx="620" cy="120" r="150" fill="url(#glow)" opacity=".5" filter="url(#soft)"/>
+
+    <!-- Navegador con una landing moderna -->
+    <g filter="url(#ds)">
+      <rect x="150" y="80" width="470" height="316" rx="18" fill="#FFFFFF"/>
+      <rect x="150" y="80" width="470" height="40" rx="18" fill="url(#scr)"/>
+      <rect x="150" y="104" width="470" height="16" fill="url(#scr)"/>
+      <circle cx="172" cy="100" r="4.5" fill="#EAF4FA"/><circle cx="188" cy="100" r="4.5" fill="#8ECBEA"/><circle cx="204" cy="100" r="4.5" fill="#5FA8C9"/>
+      <rect x="330" y="92" width="140" height="16" rx="8" fill="#0E4E75" opacity=".5"/>
+      <!-- Hero interno -->
+      <rect x="176" y="146" width="220" height="16" rx="8" fill="#136493"/>
+      <rect x="176" y="172" width="160" height="10" rx="5" fill="#9EC6E0"/>
+      <rect x="176" y="190" width="130" height="10" rx="5" fill="#C5E2F2"/>
+      <rect x="176" y="216" width="104" height="30" rx="15" fill="url(#cta)"/>
+      <rect x="196" y="228" width="64" height="7" rx="3.5" fill="#EAF4FA"/>
+      <!-- Imagen hero -->
+      <rect x="420" y="146" width="176" height="116" rx="12" fill="#EAF3FA" stroke="#DCEBF5"/>
+      <path d="M436 250 l40 -46 l30 26 l40 -50 l14 16 V252 H436 Z" fill="#C5E2F2"/>
+      <circle cx="466" cy="176" r="12" fill="#8ECBEA"/>
+      <!-- Tarjetas de servicio -->
+      <g>
+        <rect x="176" y="272" width="128" height="98" rx="12" fill="#F5FAFE" stroke="#DCEBF5"/>
+        <circle cx="204" cy="300" r="14" fill="#C5E2F2"/><rect x="192" y="324" width="90" height="8" rx="4" fill="#136493"/><rect x="192" y="340" width="60" height="8" rx="4" fill="#9EC6E0"/>
+        <rect x="318" y="272" width="128" height="98" rx="12" fill="#F5FAFE" stroke="#DCEBF5"/>
+        <circle cx="346" cy="300" r="14" fill="#C5E2F2"/><rect x="334" y="324" width="90" height="8" rx="4" fill="#136493"/><rect x="334" y="340" width="60" height="8" rx="4" fill="#9EC6E0"/>
+        <rect x="460" y="272" width="128" height="98" rx="12" fill="url(#cta)"/>
+        <circle cx="488" cy="300" r="14" fill="#EAF4FA"/><rect x="476" y="324" width="90" height="8" rx="4" fill="#EAF4FA"/><rect x="476" y="340" width="60" height="8" rx="4" fill="#B9DDF1"/>
+      </g>
+    </g>
+
+    <!-- Burbuja de conversion flotante -->
+    <g class="f2" filter="url(#ds)">
+      <rect x="60" y="300" width="160" height="82" rx="16" fill="#0E4E75"/>
+      <circle cx="94" cy="341" r="18" fill="#2E86B8"/>
+      <path d="M86 341 l5 5 l11 -12" fill="none" stroke="#EAF4FA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="120" y="326" width="82" height="8" rx="4" fill="#8ECBEA"/>
+      <rect x="120" y="342" width="58" height="8" rx="4" fill="#5FA8C9"/>
+    </g>
+
+    <!-- Indicador de clientes (arriba) -->
+    <g class="f3" filter="url(#ds)">
+      <rect x="600" y="60" width="150" height="72" rx="16" fill="#FFFFFF"/>
+      <circle cx="632" cy="96" r="18" fill="#C5E2F2"/>
+      <path d="M632 88 a6 6 0 1 0 0 12 a6 6 0 0 0 0 -12 M622 108 a10 10 0 0 1 20 0" fill="none" stroke="#136493" stroke-width="2.4"/>
+      <rect x="660" y="84" width="72" height="8" rx="4" fill="#136493"/>
+      <rect x="660" y="100" width="50" height="8" rx="4" fill="#C5E2F2"/>
+    </g>
+
+    <rect y="440" width="800" height="60" fill="#C7DEF0" opacity=".8"/>
+  </g>
+</svg>
