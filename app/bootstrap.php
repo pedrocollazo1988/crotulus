@@ -31,6 +31,34 @@ if (is_file(APP_DIR . '/config.local.php')) {
 }
 $GLOBALS['CROTULUS_CONFIG'] = $config;
 
+/* --- Variables de entorno -> configuracion (Vercel, Railway, etc.) --------
+   Si existen DB_* / APP_SITE_URL / MAIL_* en el entorno, mandan sobre el
+   archivo. Permite desplegar sin editar config.php ni versionar credenciales. */
+$env = $config['_env'] ?? [];
+if (is_array($env)) {
+    if (!empty($env['db_driver']))  { $config['db']['driver']   = $env['db_driver']; }
+    if (!empty($env['db_host']))    { $config['db']['host']     = $env['db_host']; }
+    if (!empty($env['db_port']))    { $config['db']['port']     = (int) $env['db_port']; }
+    if (!empty($env['db_name']))    { $config['db']['name']     = $env['db_name']; }
+    if (!empty($env['db_user']))    { $config['db']['user']     = $env['db_user']; }
+    if ($env['db_password'] !== null && $env['db_password'] !== '') {
+        $config['db']['password'] = $env['db_password'];
+    }
+    if (!empty($env['site_url']))   { $config['site_url']       = rtrim($env['site_url'], '/'); }
+    if (!empty($env['mail_user']))  { $config['mail']['smtp_user'] = $env['mail_user']; }
+    if ($env['mail_pass'] !== null && $env['mail_pass'] !== '') {
+        $config['mail']['smtp_pass'] = $env['mail_pass'];
+    }
+    if (!empty($env['mail_to']))    { $config['mail']['to_email'] = $env['mail_to']; }
+    if (!empty($env['session_handler'])) {
+        $config['security']['session_handler'] = $env['session_handler'];
+    }
+    if (!empty($env['app_key'])) {
+        $config['security']['app_key'] = $env['app_key'];
+    }
+}
+$GLOBALS['CROTULUS_CONFIG'] = $config;
+
 /* --- Zona horaria --------------------------------------------------------- */
 date_default_timezone_set($config['timezone'] ?? 'UTC');
 
@@ -62,6 +90,7 @@ if (is_file(APP_DIR . '/.htaccess') === false) {
 require_once APP_DIR . '/lib/helpers.php';
 require_once APP_DIR . '/lib/db.php';
 require_once APP_DIR . '/lib/security.php';
+require_once APP_DIR . '/lib/session_db.php';
 require_once APP_DIR . '/lib/validator.php';
 require_once APP_DIR . '/lib/captcha.php';
 require_once APP_DIR . '/lib/http.php';

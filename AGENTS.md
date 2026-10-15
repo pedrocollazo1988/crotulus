@@ -617,3 +617,33 @@ fallaban (descarga del `.php` o 404).
   todos los `a[href^="admin/"]` del HTML (cabecera, CTA de testimonios/FAQ y pie).
   Con `BACKEND_URL=""` todo queda igual que antes (rutas relativas, válido en Raiola).
 
+
+## PHP real en Vercel: runtime vercel-php + sesiones en BD + variables de entorno (2026-10-12)
+Corrige el diagnóstico anterior: **Vercel sí puede ejecutar PHP** con el runtime
+comunitario `vercel-php` (0.7.4+). Lo que no da es disco persistente, así que la
+BD y las sesiones deben vivir **fuera** del contenedor.
+- **`vercel.json`**: `functions` declara `api/*.php` y `admin/*.php` con
+  `vercel-php@0.7.4`; `rewrites` mapean `/api` y `/admin` a sus `index.php`
+  (el panel hace `header('Location: /admin/')`); cabeceras de caché y seguridad.
+- **`.vercelignore`**: reescrito. Ya **NO** excluye `api/`, `admin/`, `app/`
+  (deben subirse para que el runtime los ejecute). Sigue fuera `config.local.php`,
+  datos, `tools/`, `preview/`, docs internas y ZIP.
+- **Sesiones en BD** (pieza clave para serverless): nuevo `app/lib/session_db.php`
+  con `CroSessionHandler` (SessionHandlerInterface) que guarda la sesión nativa de
+  PHP en la tabla `php_sessions`. Se activa con `security.session_handler =>
+  'database'` o la env `SESSION_HANDLER=database`. En hosting clásico queda en
+  `'files'` (por defecto). Enganchado en `security_start_session()`
+  (`app/lib/security.php`) y cargado en `app/bootstrap.php`.
+- **Esquema**: `app/lib/db.php` añade la tabla `php_sessions`
+  (id PK, data MEDIUMTEXT/TEXT, expires_at INT) + índice `idx_php_sessions_expires`.
+- **Variables de entorno -> config** (`app/config.php` bloque `_env` + aplicación en
+  `app/bootstrap.php`): `DB_DRIVER/HOST/PORT/NAME/USER/PASSWORD`, `APP_SITE_URL`,
+  `APP_KEY`, `SESSION_HANDLER`, `MAIL_SMTP_USER/PASS`, `MAIL_TO`. Permite desplegar
+  sin editar `config.php` ni versionar credenciales.
+- **Verificado**: `php -l` OK en 41 archivos; prueba real con SQLite y servidor
+  `php -S` — la sesión persiste entre procesos/peticiones (`hits` 1→2→3).
+- **`VERCEL.md`**: reescrito con Opción A (todo en Vercel + BD externa) y Opción B
+  (estático en Vercel + panel en Raiola), tabla de env vars y problemas frecuentes.
+- Mailer ya soporta `smtp` (funciona en Vercel); `app_log()` falla en silencio si
+  el disco es de solo lectura.
+

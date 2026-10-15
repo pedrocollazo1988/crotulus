@@ -1,29 +1,24 @@
 # ============================================================================
 #  .vercelignore  —  Qué NO se sube a Vercel
 # ----------------------------------------------------------------------------
-#  Vercel es un hosting estatico + funciones serverless (Node, Python, Go,
-#  Ruby). NO ejecuta PHP y NO tiene disco persistente. Por eso excluimos todo
-#  el backend PHP, los datos y los archivos de desarrollo: en Vercel solo
-#  tiene sentido publicar la parte estatica del sitio web.
+#  Dejamos FUERA solo lo que no debe publicarse: datos con credenciales, la
+#  base de datos local, las herramientas y la documentacion interna.
+#  El backend PHP (api/, admin/, app/) SI se sube: lo ejecuta el runtime
+#  vercel-php declarado en vercel.json (ver VERCEL.md).
 # ============================================================================
 
-# --- Backend PHP (no se ejecuta en Vercel) ---------------------------------
-api/
-admin/
-app/
-deploy/
-
-# --- Configuracion y datos sensibles / generados ---------------------------
+# --- NUNCA subir credenciales ni datos locales -----------------------------
 app/config.local.php
-*.sqlite
-*.log
+app/data/*.sqlite
+app/data/*.sqlite-*
+app/data/*.log
 
 # --- Herramientas y artefactos de desarrollo -------------------------------
 tools/
 preview/
 .agent_tmp/
 c-rotulus-sitio.zip
-*.sh
+deploy/
 
 # --- Documentacion interna (no hace falta publicarla) ----------------------
 AGENTS.md

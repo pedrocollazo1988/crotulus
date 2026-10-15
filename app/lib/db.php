@@ -151,6 +151,7 @@ function db_init(): void
     $serial = $mysql ? 'INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY' : 'INTEGER PRIMARY KEY AUTOINCREMENT';
     $str    = $mysql ? 'VARCHAR(255)' : 'TEXT';
     $text   = 'TEXT';
+    $ltext  = $mysql ? 'MEDIUMTEXT' : 'TEXT';  // para datos de sesion (mas grandes)
     $dt     = 'DATETIME';
     $engine = $mysql ? ' ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci' : '';
 
@@ -180,6 +181,15 @@ function db_init(): void
             created_at $dt DEFAULT NULL,
             expires_at $dt DEFAULT NULL,
             revoked_at $dt DEFAULT NULL
+        ) $engine",
+
+        // Datos de la sesion nativa de PHP (equivalente a un archivo de sesion).
+        // Permite que el login funcione en serverless (Vercel), donde el disco
+        // es efimero y no se pueden guardar sesiones en archivos.
+        'php_sessions' => "CREATE TABLE IF NOT EXISTS php_sessions (
+            id $str NOT NULL PRIMARY KEY,
+            data $ltext NOT NULL,
+            expires_at INT NOT NULL
         ) $engine",
 
         'tokens' => "CREATE TABLE IF NOT EXISTS tokens (
@@ -318,6 +328,7 @@ function db_init(): void
         'CREATE UNIQUE INDEX idx_users_google ON users (google_id)',
         'CREATE INDEX idx_sessions_token ON sessions (token_hash)',
         'CREATE INDEX idx_sessions_user ON sessions (user_id)',
+        'CREATE INDEX idx_php_sessions_expires ON php_sessions (expires_at)',
         'CREATE INDEX idx_tokens_hash ON tokens (token_hash)',
         'CREATE UNIQUE INDEX idx_rate_unique ON rate_limits (bucket, ip)',
         'CREATE INDEX idx_content_type ON content_items (ctype)',

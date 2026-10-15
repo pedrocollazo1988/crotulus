@@ -1,32 +1,28 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+
+  "functions": {
+    "api/*.php":   { "runtime": "vercel-php@0.7.4", "memory": 1024, "maxDuration": 30 },
+    "admin/*.php": { "runtime": "vercel-php@0.7.4", "memory": 1024, "maxDuration": 30 }
+  },
+
+  "rewrites": [
+    { "source": "/api",     "destination": "/api/index.php" },
+    { "source": "/api/",    "destination": "/api/index.php" },
+    { "source": "/admin",   "destination": "/admin/index.php" },
+    { "source": "/admin/",  "destination": "/admin/index.php" }
+  ],
+
   "cleanUrls": true,
   "trailingSlash": false,
+
   "headers": [
-    {
-      "source": "/assets/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
-      ]
-    },
-    {
-      "source": "/css/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=604800" }
-      ]
-    },
-    {
-      "source": "/js/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=604800" }
-      ]
-    },
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
-      ]
-    }
+    { "source": "/assets/(.*)", "headers": [ { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" } ] },
+    { "source": "/css/(.*)",    "headers": [ { "key": "Cache-Control", "value": "public, max-age=604800" } ] },
+    { "source": "/js/(.*)",     "headers": [ { "key": "Cache-Control", "value": "public, max-age=604800" } ] },
+    { "source": "/(.*)", "headers": [
+      { "key": "X-Content-Type-Options", "value": "nosniff" },
+      { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+    ] }
   ]
 }

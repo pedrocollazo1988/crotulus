@@ -1,167 +1,162 @@
-# Caso de uso · Despliegue GRATIS en Vercel (C-ROTULUS)
+# Caso de uso · Despliegue en Vercel (C-ROTULUS)
 
-Esta guía explica cómo publicar la web de C-ROTULUS en **Vercel** (plan Hobby,
-gratis) y por qué **los enlaces a `admin/login.php` no funcionan** allí, con las
-dos soluciones posibles.
+Esta guía explica cómo publicar C-ROTULUS en **Vercel** y cómo hacer que **el panel
+(`admin/`) y la API (`api/`) funcionen allí**, ejecutando PHP de verdad.
 
-> Resumen de una línea: Vercel sirve la web estática perfectamente, pero **no
-> ejecuta PHP ni guarda base de datos**, así que el panel (`admin/`) y la API
-> (`api/`) tienen que vivir en otro hosting con PHP (tu Raiola). Configúralo en
-> una sola línea: `var BACKEND_URL = "https://www.c-rotulus.com";` en `js/main.js`.
+> Resumen: Vercel **sí puede ejecutar PHP** usando el runtime comunitario
+> `vercel-php`. Lo que Vercel **no** da es un disco persistente, así que la base
+> de datos y las sesiones deben vivir **fuera** del contenedor (una base de datos
+> externa). Si no quieres montar eso, usa la Opción B (web estática en Vercel +
+> panel en Raiola). Ambas están detalladas abajo.
 
 ---
 
-## 1. Por qué fallan los enlaces de login en Vercel
+## 1. Qué funciona y qué no en Vercel
 
-Tu proyecto tiene **dos partes**:
-
-| Parte | Archivos | Necesita |
+| Parte | Archivos | En Vercel |
 |---|---|---|
-| Web pública (estática) | `index.html`, `empresa.html`, `css/`, `js/`, `assets/` | Solo servir archivos → **Vercel sí** |
-| Panel + API | `admin/`, `api/`, `app/` (todo `.php`) | **PHP 8** y base de datos → Vercel **NO** |
+| Web pública (estática) | `index.html`, `empresa.html`, `css/`, `js/`, `assets/` | ✅ Perfecto (CDN gratis) |
+| PHP (`api/`, `admin/`) | código PHP | ✅ Con el runtime `vercel-php` |
+| Base de datos | MySQL o SQLite | ⚠️ Debe ser **externa** (ver 2.A) |
+| Sesiones de login | tabla `php_sessions` | ✅ Con `SESSION_HANDLER=database` |
 
-Vercel es una plataforma de **contenido estático + funciones serverless**
-(Node, Python, Go, Ruby). **No incluye un intérprete de PHP** y su sistema de
-archivos es **de solo lectura** (no puede crear ni escribir la base de datos
-SQLite del panel). Por eso, al entrar en `admin/login.php`:
+Dos limitaciones reales de Vercel (serverless), ya resueltas en el código:
 
-- Si **sí** subiste la carpeta `admin/`, Vercel ve un `.php` como archivo
-  cualquiera y el navegador **lo descarga** en vez de mostrar la página → "no
-  funciona el login".
-- Si **no** subiste `admin/` (con `.vercelignore`), el enlace da **404**.
-
-En ninguno de los dos casos hay sesión, contraseñas ni base de datos: el login
-es materialmente imposible dentro de Vercel.
+1. **Disco de solo lectura / efímero.** No se puede crear ni conservar la base
+   SQLite en el proyecto. Solución: base de datos externa (PlanetScale, Railway,
+   Aiven, Clever Cloud… casi todas con plan gratis) y **sesiones en la base de
+   datos** (`SESSION_HANDLER=database`, ya implementado).
+2. **Sin correo `mail()` local.** Ya resuelto: el mailer usa **SMTP** (Gmail), que
+   sí funciona desde Vercel. Configura `MAIL_SMTP_USER` y `MAIL_SMTP_PASS`.
 
 ---
 
-## 2. Decisión: ¿qué quieres hacer?
+## 2. Dos formas de usar Vercel
 
-### Opción A — Web estática en Vercel + panel en tu hosting con PHP  *(recomendada)*
+### Opción A — Todo en Vercel (PHP incluido) + base de datos externa
 
-Es la que aprovecha lo mejor de cada plataforma: Vercel (CDN global, gratis,
-HTTPS, dominio propio) para la web pública, y **Raiola** para el panel PHP.
+Con esta opción el **login y la API funcionan en el propio dominio de Vercel**.
 
-1. **Sitio estático en Vercel** (paso 4).
-2. **Panel PHP en Raiola** (clona el repo completo en `public_html`, según
-   `DEPLOY-RAIOLA.md`).
-3. **Conecta ambos**: en `js/main.js` escribe la URL de tu hosting con PHP:
+Requisitos:
+- El proyecto ya trae `vercel.json` con el runtime PHP declarado:
+  ```json
+  "functions": {
+    "api/*.php":   { "runtime": "vercel-php@0.7.4" },
+    "admin/*.php": { "runtime": "vercel-php@0.7.4" }
+  }
+  ```
+- Una **base de datos externa** accesible por red (MySQL recomendado).
+
+Pasos:
+
+1. Sube el proyecto a Vercel (sección 3).
+2. En **Settings → Environment Variables** define las credenciales. El código las
+   lee del entorno (no hace falta editar `config.php`):
+
+   | Variable | Valor de ejemplo |
+   |---|---|
+   | `DB_DRIVER` | `mysql` |
+   | `DB_HOST` | `tu-host.db-provider.com` |
+   | `DB_PORT` | `3306` |
+   | `DB_NAME` | `crotulus` |
+   | `DB_USER` | `crotulus_user` |
+   | `DB_PASSWORD` | *(tu contraseña)* |
+   | `SESSION_HANDLER` | `database` |
+   | `APP_KEY` | *(cadena larga y aleatoria)* |
+   | `APP_SITE_URL` | `https://tu-proyecto.vercel.app` |
+   | `MAIL_SMTP_USER` | `crotulus.mipyme@gmail.com` |
+   | `MAIL_SMTP_PASS` | *(contraseña de aplicación de Gmail)* |
+
+3. La primera visita a `admin/login.php` crea las tablas y el usuario inicial
+   (revisa el aviso de arranque que muestra el propio panel).
+
+> 💡 **Consejo**: si el proveedor de BD **no está en la misma región** que la
+> función de Vercel, cada consulta paga latencia de red. Elige una región cercana
+> (p. ej. `fra1` / Frankfurt) tanto en Vercel como en la base de datos.
+
+### Opción B — Web estática en Vercel + panel en tu hosting con PHP  *(la más simple)*
+
+Aprovecha lo mejor de cada sitio: Vercel (CDN global, gratis) para la web pública
+y **Raiola** (o cualquier hosting con PHP) para el panel.
+
+1. **Sitio estático en Vercel** (sección 3).
+2. **Panel PHP en Raiola** (`DEPLOY-RAIOLA.md`, clonando el repo en `public_html`).
+3. **Conecta ambos** en `js/main.js`:
 
    ```js
-   var BACKEND_URL = "https://www.c-rotulus.com";   // tu dominio con PHP, SIN barra final
+   var BACKEND_URL = "https://www.c-rotulus.com";   // tu hosting con PHP, SIN barra final
    ```
 
-   Con eso, el enlace **"Acceder"** y **"Mi cuenta"** de la cabecera, y las
-   llamadas a la API (datos, reseñas, blog…), apuntarán a tu backend real. La
-   web seguirá viéndose en Vercel; el panel lo sirve Raiola.
-
-   > Si prefieres NO mezclar: deja `BACKEND_URL = ""` y elimina el enlace
-   > "Acceder" del `index.html`/`empresa.html` (así no habrá enlaces rotos).
-
-### Opción B — Todo el sitio en un hosting con PHP (sin Vercel)
-
-Sube **todo** a Raiola (o cualquier hosting con PHP) y olvídate de Vercel.
-Es lo más simple: el panel, la API y la web funcionan en el mismo dominio.
-Sigue `DEPLOY.md` o `DEPLOY-RAIOLA.md`.
+   Con eso, los enlaces **"Acceder" / "Mi cuenta"** y las llamadas a la API
+   apuntan a tu backend real. Si prefieres no mezclar dominios, deja
+   `BACKEND_URL = ""` y quita esos enlaces de `index.html` / `empresa.html`.
 
 ---
 
-## 3. Qué sube y qué NO sube a Vercel
+## 3. Desplegar en Vercel
 
-El archivo **`.vercelignore`** (en la raíz del proyecto) ya está preparado:
-excluye `api/`, `admin/`, `app/`, `deploy/`, los datos (`*.sqlite`, `*.log`),
-`tools/`, `preview/`, la documentación interna y el ZIP.
-
-Resultado: en Vercel solo se publican los archivos estáticos. Así **no hay
-descargas raras de `.php`** ni archivos internos expuestos.
-
-El archivo **`vercel.json`** ya añade caché de largo plazo para `assets/`,
-`css/` y `js/`, `cleanUrls` (URLs sin `.html`) y cabeceras de seguridad.
-
----
-
-## 4. Pasos para desplegar gratis en Vercel
-
-### Opción rápida — con la CLI
+### Con la CLI
 
 ```bash
-# 1. Instala la CLI (una sola vez)
-npm i -g vercel
-
-# 2. Entra en la carpeta del proyecto y accede con tu cuenta
-cd /ruta/al/proyecto
-vercel login
-
-# 3. Despliegue de prueba (preview). Acepta los valores por defecto.
-vercel
-
-# 4. Despliegue de producción (tu dominio .vercel.app)
-vercel --prod
+npm i -g vercel        # una sola vez
+vercel login           # abre el navegador para autorizar
+vercel                 # despliegue de prueba (preview)
+vercel --prod          # despliegue de producción
 ```
 
-### Opción desde el panel de Vercel (con GitHub)
+### Desde el panel (con GitHub)
 
 1. Entra en https://vercel.com/new
-2. **Import Git Repository** → elige `pedrocollazo1988/crotulus`.
-3. Framework Preset: **Other**. Build Command: *(vacío)*. Output Directory: *(vacío)*.
-4. **Deploy**. A partir de ahí, cada `git push` redepliega solo.
+2. **Import Git Repository** → `pedrocollazo1988/crotulus`.
+3. Framework Preset: **Other**. Build/Output: *(vacío)*.
+4. **Deploy**. Cada `git push` redepliega solo.
+
+> ⚠️ Si vas a usar la **Opción B**, añade `api/`, `admin/`, `app/` a
+> `.vercelignore` para no publicar el PHP como archivos estáticos (Vercel los
+> descargaría en vez de ejecutarlos). Para la **Opción A**, déjalos incluidos.
 
 ### Dominio propio (gratis)
 
-En el proyecto de Vercel → **Settings → Domains** → añade tu dominio y sigue las
-instrucciones de DNS. El certificado HTTPS se genera automáticamente.
+Vercel → **Settings → Domains** → añade tu dominio y sigue las instrucciones DNS.
+El certificado HTTPS se genera solo.
 
 ---
 
-## 5. Formulario de contacto en Vercel (importante)
+## 4. Formulario de contacto
 
-El formulario, tal cual, usa el **backend PHP** (`api/contact.php`) para
-captcha y CSRF. En Vercel ese backend no existe. Para que el formulario
-funcione en el sitio estático tienes dos caminos:
-
-- **Usar el backend de Raiola** (Opción A): deja `BACKEND_URL` configurado y el
-  formulario enviará a `https://www.c-rotulus.com/api/contact.php`. *(El captcha
-  y el CSRF viven en PHP; para uso cruzado entre dominios puede requerir ajustar
-  CORS/sesión. Lo más limpio es la opción siguiente.)*
-- **Usar un servicio externo (Formspree, gratis)** — recomendado para Vercel:
-
+- **Opción A** (PHP en Vercel): funciona `api/contact.php` con captcha y CSRF.
+- **Opción B** (solo estático): usa un servicio externo, p. ej. Formspree:
   1. Crea un formulario gratis en https://formspree.io y copia tu ID.
-  2. En `js/main.js`:
-
-     ```js
-     var FORM_ENDPOINT = "https://formspree.io/f/TU_ID";
-     ```
-
-  3. En `index.html`, cambia también el `action` del `<form>` por la misma URL.
-  4. Con `BACKEND_URL` vacío, el aviso "Formulario no configurado" desaparece y
-     los mensajes llegan a tu correo.
+  2. En `js/main.js`: `var FORM_ENDPOINT = "https://formspree.io/f/TU_ID";`
+  3. En `index.html`, pon el mismo valor en el `action` del `<form>`.
 
 ---
 
-## 6. Comprobación rápida tras desplegar
+## 5. Comprobación rápida tras desplegar
 
-- [ ] `https://TU-PROYECTO.vercel.app/` carga la portada con imágenes y estilos.
+- [ ] `https://TU-PROYECTO.vercel.app/` carga portada, estilos e imágenes.
 - [ ] Navegación por anclas y menú móvil funcionan.
 - [ ] `https://TU-PROYECTO.vercel.app/empresa` carga la página de empresa.
-- [ ] El enlace **"Acceder"** abre tu panel real (si configuraste `BACKEND_URL`)
-      o ya no existe (si lo quitaste).
-- [ ] El formulario muestra "Gracias, hemos recibido tu mensaje" (con Formspree).
+- [ ] (Opción A) `admin/login.php` muestra el formulario de acceso y permite
+      iniciar sesión; la sesión se mantiene al navegar.
+- [ ] El formulario muestra "Gracias, hemos recibido tu mensaje".
 
 ---
 
-## 7. Problemas frecuentes
+## 6. Problemas frecuentes
 
 | Síntoma | Causa | Solución |
 |---|---|---|
-| Al pulsar "Acceder" **se descarga un archivo `.php`** | Vercel sirve el `.php` como estático | Añade `admin/` a `.vercelignore` y usa `BACKEND_URL` |
-| "Acceder" da **404** | `admin/` está excluido y no hay backend | Configura `BACKEND_URL` o elimina el enlace |
-| El **formulario no envía** | No hay PHP/captcha en Vercel | Usa Formspree (sección 5) |
-| La web no carga estilos | `vercel.json`/rutas | Revisa que `css/` y `js/` no estén en `.vercelignore` |
-| El dominio propio no resuelve | DNS | Espera la propagación (hasta 24-48 h) y revisa los registros |
+| Al abrir `admin/login.php` **se descarga un `.php`** | `admin/` está excluido en `.vercelignore` pero el enlace sigue ahí | Opción A: quita `admin/` de `.vercelignore`. Opción B: configura `BACKEND_URL` |
+| Error **"No se pudo conectar con la base de datos"** | Faltan las variables `DB_*` o la BD no es accesible | Revisa las Environment Variables y el firewall del proveedor |
+| **El login no se mantiene** (vuelve a pedir acceso) | Faltó `SESSION_HANDLER=database` | Añade esa variable de entorno |
+| El **correo de contacto no llega** | Sin SMTP | Define `MAIL_SMTP_USER` y `MAIL_SMTP_PASS` (contraseña de aplicación) |
+| La web no carga estilos | `css/` o `js/` excluidos | Quítalos de `.vercelignore` |
+| El dominio propio no resuelve | DNS | Espera la propagación (hasta 24-48 h) |
 
 ---
 
-## 8. Editar textos, colores e imágenes
+## 7. Editar textos, colores e imágenes
 
 1. **Textos**: en `index.html` y `empresa.html` (teléfono, correo, dirección,
    servicios, FAQ…). En el JS, bloque `0. DATOS EDITABLES` de `js/main.js`.

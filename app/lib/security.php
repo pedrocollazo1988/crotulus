@@ -23,6 +23,14 @@ function security_start_session(): void
     $secure   = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
         || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
 
+    // En un hosting serverless (Vercel) no hay disco persistente: guardamos la
+    // sesion en la base de datos para que el login funcione. En hosting clasico
+    // con PHP se usa el manejador de archivos por defecto.
+    // Se controla con 'security.session_handler' => 'database' | 'files'.
+    if (config('security.session_handler', 'files') === 'database') {
+        security_use_db_sessions($lifetime);
+    }
+
     session_name($name);
     session_set_cookie_params([
         'lifetime' => $lifetime,

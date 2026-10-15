@@ -13,6 +13,28 @@ declare(strict_types=1);
 
 return [
 
+    /* --- Soporte de variables de entorno (para Vercel u otros PaaS) ---------
+       Si defines estas variables en Vercel (Settings > Environment Variables),
+       mandan sobre los valores de abajo. Asi no hace falta editar el codigo ni
+       subir una base de datos al repositorio. Nombres exactos:
+         DB_DRIVER, DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD
+         APP_SITE_URL, MAIL_SMTP_USER, MAIL_SMTP_PASS, MAIL_TO
+       Si no defines ninguna, se usan los valores de este archivo (Raiola). */
+    '_env' => [
+        'db_driver'   => getenv('DB_DRIVER')   ?: null,
+        'db_host'     => getenv('DB_HOST')     ?: null,
+        'db_port'     => getenv('DB_PORT')     ?: null,
+        'db_name'     => getenv('DB_NAME')     ?: null,
+        'db_user'     => getenv('DB_USER')     ?: null,
+        'db_password' => getenv('DB_PASSWORD') ?: null,
+        'site_url'    => getenv('APP_SITE_URL')?: null,
+        'mail_user'   => getenv('MAIL_SMTP_USER') ?: null,
+        'mail_pass'   => getenv('MAIL_SMTP_PASS') ?: null,
+        'mail_to'     => getenv('MAIL_TO')     ?: null,
+        'session_handler' => getenv('SESSION_HANDLER') ?: null,
+        'app_key'     => getenv('APP_KEY') ?: null,
+    ],
+
     /* --- Identidad del sitio ------------------------------------------------ */
     'site_name' => 'C-ROTULUS S.U.R.L.',
     'site_url'  => 'https://www.c-rotulus.com',   // sin barra final
@@ -69,6 +91,10 @@ return [
         // Cambiala por una cadena larga y aleatoria (32+ caracteres).
         'app_key'             => 'cambia-esta-clave-por-una-larga-y-aleatoria-000',
         'session_name'        => 'crotulus_sid',
+        // 'files'    = sesiones en archivos (hosting clasico con PHP, Raiola).
+        // 'database' = sesiones en la tabla php_sessions (serverless: Vercel).
+        // También se puede forzar con la variable de entorno SESSION_HANDLER.
+        'session_handler'     => 'files',
         'session_lifetime'    => 60 * 60 * 24 * 30, // 30 dias
         'contact_rate_max'    => 5,                 // max. envios de contacto...
         'contact_rate_window' => 3600,              // ...por hora y por IP
