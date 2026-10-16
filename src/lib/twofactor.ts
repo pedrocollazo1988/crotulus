@@ -52,6 +52,11 @@ export { CHALLENGE_COOKIE, DEVICE_COOKIE };
 
 /** true si este usuario debe pasar por la verificacion en dos pasos. */
 export function twoFactorRequiredFor(user: TwoFactorUser): boolean {
+  // Interruptor de emergencia: si la variable de entorno lo desactiva, gana
+  // sobre el ajuste guardado en la BD. Sirve para recuperar el acceso si el
+  // envio de codigos falla (p. ej. SMTP sin contrasena) y el panel queda
+  // inaccesible. Se retira la variable cuando el correo vuelva a funcionar.
+  if ((process.env.TWO_FACTOR_MODE || "").trim().toLowerCase() === "disabled") return false;
   const mode = getConfig().security.twoFactorMode;
   if (mode === "disabled") return false;
   if (user.twoFactorRequired) return true;

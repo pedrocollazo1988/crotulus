@@ -146,7 +146,7 @@ export function loadConfig(): SiteConfig {
         .split(",")
         .map((s) => s.trim())
         .filter(Boolean),
-      twoFactorMode: env("TWO_FACTOR_MODE", "optional"),
+      twoFactorMode: env("TWO_FACTOR_MODE", "required"),
       twoFactorChannelDefault: env("TWO_FACTOR_CHANNEL_DEFAULT", "email"),
       twoFactorCodeTtl: envInt("TWO_FACTOR_CODE_TTL", 600),
       twoFactorMaxAttempts: envInt("TWO_FACTOR_MAX_ATTEMPTS", 5),
