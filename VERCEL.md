@@ -116,6 +116,27 @@ vercel env add APP_KEY production
 vercel env pull .env.local   # para desarrollo local
 ```
 
+### Subirlas todas de una vez (recomendado)
+
+En lugar de anadirlas una a una en el panel, hay un script que las sube en bloque:
+
+```bash
+cp deploy/vercel.env.example deploy/vercel.env   # 1. plantilla (no se versiona)
+# 2. rellena los valores en deploy/vercel.env (APP_KEY vacia = se genera sola)
+npx vercel login                                 # 3. inicia sesion
+bash tools/setup-vercel-env.sh --dry-run         # 4. revisa QUE va a subir
+bash tools/setup-vercel-env.sh                   # 5. sube a Production y Preview
+```
+
+El script sube a **Production y Preview** a la vez, omite las variables vacias,
+genera la `APP_KEY` si no la pones y, al terminar, **verifica** cada valor con
+`vercel env pull` (algunas versiones del CLI reportan exito y guardan cadena
+vacia). `--only prod` / `--only preview` limita el destino; `--branch` cambia la
+rama de Preview (por defecto, la rama actual).
+
+> Las variables nuevas **no se aplican** a despliegues ya hechos: hay que
+> **Redeploy** en el panel o hacer un push.
+
 > `.gitignore` protege `.env` y `.env.local`: **nunca** se suben al repositorio.
 
 ---

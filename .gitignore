@@ -8,6 +8,7 @@
 !.env.example
 config.local.php
 app/config.local.php
+deploy/vercel.env
 
 # --- Backend PHP antiguo: datos y configuracion -----------------------------
 legacy/app/data/*
