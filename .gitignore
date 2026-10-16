@@ -10,6 +10,9 @@ config.local.php
 app/config.local.php
 deploy/vercel.env
 
+# --- Vercel (creado por "vercel link": contiene el id del proyecto) ----------
+.vercel/
+
 # --- Backend PHP antiguo: datos y configuracion -----------------------------
 legacy/app/data/*
 !legacy/app/data/.gitignore
