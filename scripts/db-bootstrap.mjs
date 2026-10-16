@@ -59,4 +59,7 @@ if (existsSync(tsx)) {
   console.log("[db-bootstrap] tsx no disponible: se omite la semilla.");
 }
 
+// Administrador designado por variable de entorno (ver scripts/admin-bootstrap.mjs).
+run("admin-bootstrap", process.execPath, ["scripts/admin-bootstrap.mjs"]);
+
 console.log("[db-bootstrap] Base de datos lista.");

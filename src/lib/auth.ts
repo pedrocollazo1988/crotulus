@@ -52,9 +52,14 @@ export async function isAdmin(): Promise<boolean> {
   return user !== null && user.role === "admin";
 }
 
-/** true si es el primer usuario del sistema. */
+/**
+ * true si todavia no existe ningun administrador en el sistema. Se usa para
+ * elegir el rol al crear una cuenta: el primero en llegar es admin. Se cuenta
+ * por rol (no el total de usuarios) para que una cuenta sin verificar, o el
+ * administrador designado por ADMIN_EMAIL, no consuman la promocion por error.
+ */
 export async function authIsFirstUser(): Promise<boolean> {
-  return (await prisma.user.count()) === 0;
+  return (await prisma.user.count({ where: { role: "admin" } })) === 0;
 }
 
 /** Crea la sesion del usuario y guarda la cookie. */
