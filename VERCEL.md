@@ -178,14 +178,14 @@ DATABASE_URL="..." DIRECT_URL="..." npm run db:migrate-sqlite -- legacy/app/data
 > Si no tienes el SQLite original, salta el paso 3: el paso 2 crea contenido de
 > ejemplo y el panel permite editarlo.
 
-> **Primer administrador:** en Vercel define las variables `ADMIN_EMAIL` (y
-> `ADMIN_PASSWORD` si quieres fijar la contraseña). El build crea esa cuenta como
-> administrador activo y **degrada a usuario cualquier admin que nunca verificó
-> su correo** (no podrían iniciar sesión). Si no defines `ADMIN_PASSWORD`, el
-> build genera una **contraseña temporal y la imprime en el registro** (cámbiala
-> al entrar). Si no defines `ADMIN_EMAIL`, se mantiene el comportamiento clásico:
-> **el primer usuario registrado en `/admin/register` se convierte en admin**.
-> (Para cambiar una contraseña: `NEW_PASSWORD='...' npm run user:password -- correo@dominio.com`.)
+> **Primer administrador:** el build crea un administrador automáticamente
+> usando `ADMIN_EMAIL` o, si no la defines, **el correo que ya recibe los avisos**
+> del sitio (`MAIL_TO` o el ajuste «Correo que recibe los avisos»). La cuenta se
+> crea activa y verificada; si no defines `ADMIN_PASSWORD`, el build genera una
+> **contraseña temporal y la imprime en el registro** (cámbiala al entrar).
+> Además **degrada a usuario cualquier admin que nunca verificó su correo** (no
+> podrían iniciar sesión). (Para cambiar una contraseña:
+> `NEW_PASSWORD='...' npm run user:password -- correo@dominio.com`.)
 
 ### Aplicarlo todo de una vez (recomendado)
 

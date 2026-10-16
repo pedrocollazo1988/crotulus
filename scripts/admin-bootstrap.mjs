@@ -7,7 +7,8 @@
  *  base de datos. Para garantizar el acceso al panel sin depender de la carrera
  *  "el primer usuario registrado es admin", se designa el administrador con:
  *
- *      ADMIN_EMAIL     (obligatorio para activar esta funcion)
+ *      ADMIN_EMAIL     (opcional; si falta se usa el correo de avisos del sitio
+ *                       —MAIL_TO o el ajuste "mail_to_email"—)
  *      ADMIN_PASSWORD  (opcional; si falta se genera una TEMPORAL y se imprime
  *                       una sola vez en el registro del build)
  *      ADMIN_NAME      (opcional, por defecto "Administrador")
@@ -37,9 +38,28 @@ const name = process.env.ADMIN_NAME || "Administrador";
 
 const prisma = new PrismaClient();
 
+/**
+ * Correo del administrador designado. Si no se define ADMIN_EMAIL, se usa el
+ * correo que ya recibe los avisos del sitio (variable MAIL_TO o el ajuste
+ * "mail_to_email"), que en este proyecto ya es el del propietario. Asi el
+ * despliegue crea el admin sin configurar nada a mano.
+ */
+async function adminTargetEmail() {
+  if (email) return email;
+  const fromEnv = (process.env.MAIL_TO || "").trim().toLowerCase();
+  if (fromEnv) return fromEnv;
+  try {
+    const row = await prisma.setting.findUnique({ where: { skey: "mail_to_email" } });
+    return (row?.svalue || "").trim().toLowerCase();
+  } catch {
+    return "";
+  }
+}
+
 try {
-  if (email) {
-    const existing = await prisma.user.findUnique({ where: { email } });
+  const target = await adminTargetEmail();
+  if (target) {
+    const existing = await prisma.user.findUnique({ where: { email: target } });
 
     // Sin ADMIN_PASSWORD: si la cuenta es nueva (o no tiene contrasena) se
     // genera una temporal y se imprime UNA vez en el registro del build. Asi el
@@ -61,11 +81,11 @@ try {
           updatedAt: new Date(),
         },
       });
-      console.log(`[admin-bootstrap] Administrador actualizado: ${email}`);
+      console.log(`[admin-bootstrap] Administrador actualizado: ${target}`);
     } else {
       await prisma.user.create({
         data: {
-          email,
+          email: target,
           name,
           passwordHash,
           role: "admin",
@@ -75,14 +95,14 @@ try {
           updatedAt: new Date(),
         },
       });
-      console.log(`[admin-bootstrap] Administrador creado: ${email}`);
+      console.log(`[admin-bootstrap] Administrador creado: ${target}`);
     }
 
     if (plain && !password) {
       console.log(`[admin-bootstrap] CONTRASENA TEMPORAL (cambiala al entrar): ${plain}`);
     }
   } else {
-    console.log("[admin-bootstrap] Sin ADMIN_EMAIL: el primer registrado sera admin.");
+    console.log("[admin-bootstrap] Sin correo de admin: el primer registrado sera admin.");
   }
 
   // Limpieza: un admin que nunca verifico el correo no puede iniciar sesion y
@@ -97,7 +117,7 @@ try {
       where: {
         role: "admin",
         emailVerifiedAt: null,
-        ...(email ? { NOT: { email } } : {}),
+        ...(target ? { NOT: { email: target } } : {}),
       },
       data: { role: "user", updatedAt: new Date() },
     });

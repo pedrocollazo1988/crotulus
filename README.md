@@ -184,10 +184,9 @@ configuración `MAIL_*`.
 - **Captcha:** reto aritmético firmado con HMAC (`APP_KEY`) y caducidad.
 - **Entradas:** validación y saneado en servidor; el contenido dinámico se escapa
   (defensa XSS). El campo del mapa solo admite URLs `https://`.
-- **Acceso al panel:** solo usuarios con `role = admin`. Se designa con la
-  variable de entorno `ADMIN_EMAIL` (el build crea/promueve esa cuenta y degrada
-  a usuario los admin sin verificar). Si no se define, el **primer usuario**
-  registrado se convierte en administrador automáticamente.
+- **Acceso al panel:** solo usuarios con `role = admin`. El build designa el
+  administrador con `ADMIN_EMAIL` o, si no se define, con el correo que recibe
+  los avisos del sitio; además degrada a usuario los admin sin verificar.
 - **Cabeceras:** `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`,
   `Permissions-Policy` y `Cross-Origin-Opener-Policy` (en `next.config.mjs`).
 
