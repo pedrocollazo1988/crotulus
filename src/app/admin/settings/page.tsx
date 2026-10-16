@@ -493,7 +493,7 @@ export default async function SettingsPage({
               </p>
               <div className="grid-2">
                 <div className="field"><label htmlFor="two_factor_mode">Política de 2FA</label>
-                  <select id="two_factor_mode" name="two_factor_mode" defaultValue={s["two_factor_mode"] ?? "required"}>
+                  <select id="two_factor_mode" name="two_factor_mode" defaultValue={s["two_factor_mode"] ?? "optional"}>
                     <option value="optional">Opcional (cada usuario decide)</option>
                     <option value="required">Obligatoria para todos</option>
                     <option value="disabled">Desactivada por completo</option>

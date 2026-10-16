@@ -136,7 +136,7 @@ const DEFAULTS: Dict = {
   security_submission_rate_window: "3600",
 
   // Verificacion en dos pasos (2FA)
-  two_factor_mode: "required",
+  two_factor_mode: "optional",
   two_factor_channel_default: "email",
   two_factor_code_ttl: "600",
   two_factor_max_attempts: "5",
