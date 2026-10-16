@@ -31,6 +31,24 @@ Salvaguardas de buenas practicas (no son "pedir permiso", son no hacerlo sin
 avisar): no empujar a `main`, no borrar ramas/repositorios, no reescribir historia
 publicada (`push --force`).
 
+## ⚠️ Flujo de trabajo: SIEMPRE por Pull Request (LEER PRIMERO)
+
+El repositorio tiene **proteccion de rama en `main`** ("Changes must be made
+through a pull request"). Regla del propietario (2026-10-15):
+
+- **Nunca empujar directamente a `main`.** Ni por avance directo ni por merge.
+- El trabajo se hace en una rama (`dev_plca` u otra de trabajo) y se sube ahi.
+- Para llevar cambios a `main`, **abrir un Pull Request** y fusionarlo desde
+  GitHub. Verificar que pasa la CI antes de fusionar.
+- Si hay cambios pendientes en la rama de trabajo, abrir/actualizar la PR; no
+  sincronizar `main` a mano aunque sea un avance directo sin conflictos.
+- El propietario fusiona (o autoriza) la PR. No fusionar sin su visto bueno.
+
+Motivo: el push directo funcionaba solo porque el token del entorno tiene permisos
+de administrador y se salta la proteccion; desde una cuenta normal seria
+rechazado. Ademas, una PR deja constancia revisable de cada cambio que llega a
+produccion.
+
 
 ## ⚠️ Arranque automatico del servidor de vista previa (LEER PRIMERO)
 
