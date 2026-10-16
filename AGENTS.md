@@ -8,28 +8,25 @@ Sitio corporativo de C-ROTULUS S.U.R.L.
 > nada. El backend PHP antiguo vive intacto en `legacy/` solo como referencia y
 > **no se ejecuta**.
 
-## ⚠️ Commits y aprobaciones: solo lo importante (LEER PRIMERO)
+## ✅ Commits y aprobaciones: NO pedir permiso (LEER PRIMERO)
 
-**No hacer `git commit` ni `git push` sin la aprobacion explicita del usuario.**
-Regla del propietario del repositorio: antes de confirmar cambios en git, mostrar
-el resumen/`git diff` y **esperar a que el usuario diga que sí**. Se pueden hacer
-ediciones y pruebas libremente; lo que requiere permiso es **consolidar en git**.
+**A peticion expresa del propietario (2026-10-15), la opcion de pedir permisos
+esta DESACTIVADA.** No detenerse a pedir aprobacion para nada: ni para el plan,
+ni para fases criticas, ni para `git commit` / `git push`.
 
-**Granularidad de la aprobacion (preferencia del usuario):** pedir aprobacion
-**solo para el PLAN GENERAL y para las FASES mas importantes o criticas**. Todo lo
-demas (subfases, ajustes menores, correcciones, pruebas, tareas rutinarias) se
-hace de forma autonoma, sin pedir permiso en cada paso. Detenerse y consultar
-unicamente cuando:
-- se presenta o cambia el **plan general**,
-- se abre o cierra una **fase critica** (migracion de datos, seguridad/autenticacion,
-  despliegue en produccion, borrado/movimiento de datos o archivos, cambios que
-  rompen compatibilidad),
-- se va a **consolidar en git** (commit/push),
-- hay una **decision irreversible** o una duda real de criterio.
+Trabajar de forma autonoma y continua:
 
-Nunca pedir permiso para: editar codigo, probar, corregir errores, ajustar estilos,
-leer/inspeccionar archivos, ejecutar el servidor de vista previa o tareas menores
-dentro de una fase ya aprobada. Ante la duda, avanzar y reportar al cerrar la fase.
+- Editar, probar, corregir y desplegar sin pedir permiso.
+- **Consolidar en git (commit/push) forma parte del flujo normal**: hacerlo cuando
+  el trabajo este verificado, sin esperar confirmacion.
+- Reportar al final lo hecho (que se cambio, que se probo, en que commit quedo),
+  en vez de preguntar antes de cada paso.
+
+Unicas excepciones (por buenas practicas, no por la regla de aprobacion):
+- **No** empujar a `main` ni borrar ramas/repositorios sin avisar antes.
+- **No** reescribir historia ya publicada (`push --force` sobre ramas compartidas).
+- Operaciones destructivas irreversibles (borrado masivo de datos en produccion):
+  avisar despues, y si hay duda real, preguntar solo eso.
 
 
 ## ⚠️ Arranque automatico del servidor de vista previa (LEER PRIMERO)
