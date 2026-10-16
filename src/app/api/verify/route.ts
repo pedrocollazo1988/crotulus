@@ -35,14 +35,7 @@ export async function GET(req: NextRequest) {
     });
     const fresh = await prisma.user.findUnique({ where: { id: user.id } });
     if (fresh) {
-      await authLogin(
-        {
-          id: fresh.id, email: fresh.email, name: fresh.name, passwordHash: fresh.passwordHash,
-          role: fresh.role, status: fresh.status, emailVerifiedAt: fresh.emailVerifiedAt,
-          googleId: fresh.googleId, avatarUrl: fresh.avatarUrl,
-        },
-        clientIp(req), userAgent(req),
-      );
+      await authLogin(fresh, clientIp(req), userAgent(req));
     }
     title = "Correo verificado";
     message = "Tu cuenta ya está activa. Te hemos iniciado la sesión.";

@@ -77,6 +77,9 @@
       var target = input.form.querySelector('input[data-validate="password"]');
       if (target && value !== target.value) return "Las contraseñas no coinciden.";
     }
+    if (kind === "otp") {
+      if (!/^\d{6}$/.test(value)) return "Escribe el código de 6 dígitos.";
+    }
     return "";
   }
 
@@ -230,6 +233,11 @@
         ev.preventDefault();
         if (!validateAll(login)) return;
         submitForm(login, null, "loginError", function (data) {
+          // Segundo factor: redirigir a la pantalla de verificacion.
+          if (data && data.two_factor) {
+            window.location.href = data.next || "/admin/verify-2fa";
+            return;
+          }
           // Según el rol: administradores al panel; el resto, a su área privada.
           var role = data && data.user && data.user.role;
           window.location.href = (role === "admin")
@@ -237,6 +245,52 @@
             : (login.getAttribute("data-success-url") || "admin/account");
         });
       });
+    }
+
+    /* --- Verificacion en dos pasos --- */
+    var verify2fa = document.getElementById("verify2faForm");
+    if (verify2fa) {
+      setupValidation(verify2fa);
+      verify2fa.addEventListener("submit", function (ev) {
+        ev.preventDefault();
+        if (!validateAll(verify2fa)) return;
+        submitForm(verify2fa, null, "verify2faError", function (data) {
+          window.location.href = (data && data.next) || "/admin/account";
+        });
+      });
+
+      var resend = document.getElementById("resend2fa");
+      if (resend) {
+        resend.addEventListener("click", function () {
+          var errBox = document.getElementById("verify2faError");
+          var okBox = document.getElementById("verify2faOk");
+          if (errBox) errBox.hidden = true;
+          if (okBox) okBox.hidden = true;
+          resend.disabled = true;
+          var csrfField = verify2fa.querySelector('input[name="_csrf"]');
+          var body = new FormData();
+          if (csrfField) body.append("_csrf", csrfField.value);
+          fetch(verify2fa.getAttribute("data-resend-url") || "/api/auth?action=resend_2fa", {
+            method: "POST",
+            body: body,
+            headers: { "X-Requested-With": "XMLHttpRequest" },
+          })
+            .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
+            .then(function (data) {
+              resend.disabled = false;
+              if (data && data.ok) {
+                if (okBox) { okBox.textContent = "Código reenviado."; okBox.hidden = false; }
+              } else if (errBox) {
+                errBox.textContent = (data && data.error) || "No se pudo reenviar el código.";
+                errBox.hidden = false;
+              }
+            })
+            .catch(function () {
+              resend.disabled = false;
+              if (errBox) { errBox.textContent = "Error de conexión. Inténtalo de nuevo."; errBox.hidden = false; }
+            });
+        });
+      }
     }
 
     /* --- Registro --- */

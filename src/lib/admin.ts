@@ -45,7 +45,11 @@ const NUMERIC_KEYS = [
   "security_login_rate_max", "security_login_rate_window",
   "security_review_rate_max", "security_review_rate_window",
   "security_submission_rate_max", "security_submission_rate_window",
+  "two_factor_code_ttl", "two_factor_max_attempts",
+  "two_factor_resend_cooldown", "two_factor_trust_device_days",
 ];
+
+const PHONE_KEYS = ["sms_twilio_from", "sms_default_country_code"];
 
 const URL_KEYS = [
   "facebook", "instagram", "linkedin", "github", "google_maps_url",
@@ -58,7 +62,18 @@ const SELECT_KEYS: Record<string, string[]> = {
   mail_transport: ["log", "mail", "smtp"],
   mail_smtp_secure: ["tls", "ssl", "none"],
   reviews_provider: ["trustpilot", "google", "custom"],
+  two_factor_mode: ["optional", "required", "disabled"],
+  two_factor_channel_default: ["email", "sms"],
+  sms_provider: ["disabled", "twilio"],
 };
+
+/** Limpia un numero de telefono para SMS (deja + y digitos). */
+export function sanitizePhone(value: string): string {
+  const v = value.trim();
+  if (v === "") return "";
+  const cleaned = v.replace(/[^\d+]/g, "");
+  return /^\+?\d{6,20}$/.test(cleaned) ? cleaned : "";
+}
 
 const PLACEHOLDERS = [
   "[URL_FACEBOOK]", "[URL_INSTAGRAM]", "[URL_LINKEDIN]", "[URL_GITHUB]",
@@ -119,6 +134,8 @@ export async function adminSaveSettings(
       value = SELECT_KEYS[key].includes(value) ? value : SELECT_KEYS[key][0];
     } else if (IMAGE_KEYS.includes(key)) {
       value = sanitizeImagePath(value);
+    } else if (PHONE_KEYS.includes(key)) {
+      value = sanitizePhone(value);
     } else if (URL_KEYS.includes(key)) {
       value = sanitizeUrl(value);
     } else if (key === "mail_from_email" || key === "mail_to_email") {

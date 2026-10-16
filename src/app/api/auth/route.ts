@@ -9,7 +9,12 @@ import {
   authLogout, currentUser, googleAuthUrl, googleEnabled, googleExchangeCode,
   googleFindOrCreate, googleUserinfo, publicUser, authCreateToken,
 } from "@/lib/auth";
-import { generateToken } from "@/lib/session";
+import {
+  startTwoFactorChallenge, verifyTwoFactorChallenge, twoFactorRequiredFor,
+  isTrustedDevice, trustDevice, toTwoFactorUser, challengeUser,
+  CHALLENGE_COOKIE, DEVICE_COOKIE,
+} from "@/lib/twofactor";
+import { generateToken, setScopedCookie, readScopedCookie, clearScopedCookie } from "@/lib/session";
 import { getConfig } from "@/lib/config";
 import { prisma } from "@/lib/db";
 import { mailerTemplate, sendMail } from "@/lib/mailer";
@@ -66,14 +71,19 @@ export async function GET(req: NextRequest) {
       const userId = await googleFindOrCreate(info);
       const user = await prisma.user.findUnique({ where: { id: userId } });
       if (user) {
-        await authLogin(
-          {
-            id: user.id, email: user.email, name: user.name, passwordHash: user.passwordHash,
-            role: user.role, status: user.status, emailVerifiedAt: user.emailVerifiedAt,
-            googleId: user.googleId, avatarUrl: user.avatarUrl,
-          },
-          clientIp(req), userAgent(req),
-        );
+        const tfUser = toTwoFactorUser(user);
+        // Google ya verifica la identidad, pero si la cuenta exige 2FA propia
+        // (p. ej. un administrador), pedimos tambien el codigo.
+        if (twoFactorRequiredFor(tfUser) && !(await isTrustedDevice(user.id, await readScopedCookie(DEVICE_COOKIE)))) {
+          const started = await startTwoFactorChallenge(tfUser, clientIp(req), "login");
+          if (started.ok && started.challenge) {
+            await setScopedCookie(CHALLENGE_COOKIE, started.challenge, getConfig().security.twoFactorCodeTtl);
+            return NextResponse.redirect(url("admin/verify-2fa"));
+          }
+          // Si no se puede enviar el codigo, no bloqueamos un login de Google valido.
+          await appLog(`google_2fa_envio_fallido user=${user.id}`);
+        }
+        await authLogin(user, clientIp(req), userAgent(req));
       }
       return NextResponse.redirect(url("admin/"));
     }
@@ -148,9 +158,69 @@ export async function POST(req: NextRequest) {
         return jsonError("Esta cuenta está deshabilitada.", 403);
       }
 
+      // Verificacion en dos pasos: no abrir sesion hasta validar el codigo.
+      if (twoFactorRequiredFor(user) && !(await isTrustedDevice(user.id, await readScopedCookie(DEVICE_COOKIE)))) {
+        const started = await startTwoFactorChallenge(toTwoFactorUser(user), clientIp(req), "login");
+        if (!started.ok || !started.challenge) {
+          return jsonError(started.error ?? "No se pudo iniciar la verificación en dos pasos.", 502);
+        }
+        await setScopedCookie(CHALLENGE_COOKIE, started.challenge, getConfig().security.twoFactorCodeTtl);
+        await appLog(`login_2fa_challenge ${user.id} channel=${started.channel}`);
+        return jsonOk({
+          two_factor: true,
+          channel: started.channel,
+          masked: started.masked,
+          next: "/admin/verify-2fa",
+        });
+      }
+
       await authLogin(user, clientIp(req), userAgent(req));
       await appLog(`login_ok ${user.id}`);
       return jsonOk({ user: publicUser(user) });
+    }
+
+    case "verify_2fa": {
+      const csrf = csrfRequire(req, data);
+      if (csrf) return csrf;
+      if (!(await rateLimit("verify_2fa", clientIp(req), 20, 900))) {
+        return jsonError("Demasiados intentos. Espera unos minutos.", 429);
+      }
+      const challenge = await readScopedCookie(CHALLENGE_COOKIE);
+      const result = await verifyTwoFactorChallenge(challenge, input(data, "code"), "login");
+      if (!result.ok || !result.user) {
+        if (result.lockedOut) await clearScopedCookie(CHALLENGE_COOKIE);
+        await appLog(`two_factor_failed ip=${clientIp(req)}`);
+        return jsonError(result.error ?? "Código incorrecto.", 401);
+      }
+      await clearScopedCookie(CHALLENGE_COOKIE);
+      await authLogin(result.user, clientIp(req), userAgent(req));
+      // "Recordar este dispositivo": token de confianza con caducidad.
+      if (getConfig().security.twoFactorRememberDevice && input(data, "remember") === "1") {
+        const deviceToken = await trustDevice(result.user.id, clientIp(req), userAgent(req));
+        await setScopedCookie(DEVICE_COOKIE, deviceToken, getConfig().security.twoFactorTrustDeviceDays * 86400);
+      }
+      await appLog(`login_2fa_ok ${result.user.id}`);
+      return jsonOk({ user: publicUser(result.user), next: result.user.role === "admin" ? "/admin/" : "/admin/account" });
+    }
+
+    case "resend_2fa": {
+      const csrf = csrfRequire(req, data);
+      if (csrf) return csrf;
+      if (!(await rateLimit("resend_2fa", clientIp(req), 5, 900))) {
+        return jsonError("Demasiados reenvíos. Espera unos minutos.", 429);
+      }
+      const challenge = await readScopedCookie(CHALLENGE_COOKIE);
+      if (!challenge) return jsonError("La sesión de verificación ha caducado. Vuelve a iniciar sesión.", 401);
+      const challengeUserRow = await challengeUser(challenge, "login");
+      if (!challengeUserRow) {
+        return jsonError("La verificación ha caducado. Vuelve a iniciar sesión.", 401);
+      }
+      const started = await startTwoFactorChallenge(challengeUserRow, clientIp(req), "login");
+      if (!started.ok || !started.challenge) {
+        return jsonError(started.error ?? "No se pudo reenviar el código.", 502);
+      }
+      await setScopedCookie(CHALLENGE_COOKIE, started.challenge, getConfig().security.twoFactorCodeTtl);
+      return jsonOk({ two_factor: true, channel: started.channel, masked: started.masked });
     }
 
     case "logout": {

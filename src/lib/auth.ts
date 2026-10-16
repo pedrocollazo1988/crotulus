@@ -21,11 +21,16 @@ export interface User {
   emailVerifiedAt: Date | null;
   googleId: string | null;
   avatarUrl: string | null;
+  twoFactorEnabled: boolean;
+  twoFactorChannel: string;
+  twoFactorPhone: string | null;
+  twoFactorRequired: boolean;
 }
 
 const USER_SELECT = {
   id: true, email: true, name: true, passwordHash: true, role: true,
   status: true, emailVerifiedAt: true, googleId: true, avatarUrl: true,
+  twoFactorEnabled: true, twoFactorChannel: true, twoFactorPhone: true, twoFactorRequired: true,
 } as const;
 
 /** Usuario autenticado actual (o null). */
@@ -63,7 +68,7 @@ export async function authIsFirstUser(): Promise<boolean> {
 }
 
 /** Crea la sesion del usuario y guarda la cookie. */
-export async function authLogin(user: User, ip: string, ua: string): Promise<void> {
+export async function authLogin(user: { id: number }, ip: string, ua: string): Promise<void> {
   const { token } = await createSession(user.id, ip, ua);
   await prisma.user.update({ where: { id: user.id }, data: { lastLoginAt: new Date() } });
   await setSessionCookie(token);
@@ -145,14 +150,17 @@ export async function authConsumeToken(type: string, token: string): Promise<Use
 }
 
 /** Datos publicos del usuario (nunca el hash). */
-export function publicUser(user: User) {
+export function publicUser(user: {
+  id: number; email: string; name: string; role: string;
+  status?: string; avatarUrl?: string | null;
+}) {
   return {
     id: user.id,
     email: user.email,
     name: user.name,
     role: user.role,
-    status: user.status,
-    avatar: user.avatarUrl,
+    status: user.status ?? "active",
+    avatar: user.avatarUrl ?? null,
   };
 }
 

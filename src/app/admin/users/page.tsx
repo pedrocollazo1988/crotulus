@@ -70,6 +70,25 @@ export default async function UsersPage({
         redirect(`/admin/users?ok=${encodeURIComponent("Rol actualizado.")}`);
       }
     }
+    if (doAct === "tfa_require") {
+      await prisma.user.update({
+        where: { id },
+        data: { twoFactorRequired: data["value"] === "1", updatedAt: new Date() },
+      });
+      await audit("user_2fa_required", { id, value: data["value"] === "1" });
+      revalidatePath("/admin/users");
+      redirect(`/admin/users?ok=${encodeURIComponent("Política de 2FA actualizada para la cuenta.")}`);
+    }
+    if (doAct === "tfa_reset") {
+      await prisma.user.update({
+        where: { id },
+        data: { twoFactorEnabled: false, twoFactorPending: false, updatedAt: new Date() },
+      });
+      await prisma.trustedDevice.deleteMany({ where: { userId: id } });
+      await audit("user_2fa_reset", { id });
+      revalidatePath("/admin/users");
+      redirect(`/admin/users?ok=${encodeURIComponent("2FA restablecida: la cuenta volverá a configurarla.")}`);
+    }
     if (doAct === "borrar") {
       await prisma.user.delete({ where: { id } });
       await audit("user_deleted", { id });
@@ -107,7 +126,7 @@ export default async function UsersPage({
         <div className="table-wrap">
           <table>
             <thead>
-              <tr><th>Alta</th><th>Nombre</th><th>Correo</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr>
+              <tr><th>Alta</th><th>Nombre</th><th>Correo</th><th>Rol</th><th>Estado</th><th>2FA</th><th>Acciones</th></tr>
             </thead>
             <tbody>
               {usuarios.map((u) => {
@@ -119,6 +138,11 @@ export default async function UsersPage({
                     <td><a href={`mailto:${u.email}`}>{u.email}</a></td>
                     <td><Badge tone={u.role === "admin" ? "nuevo" : "leido"}>{u.role}</Badge></td>
                     <td><Badge tone={statusTone(u.status)}>{u.status}</Badge></td>
+                    <td>
+                      <Badge tone={u.twoFactorEnabled || u.twoFactorRequired ? "archivado" : "leido"}>
+                        {u.twoFactorRequired ? "obligatoria" : u.twoFactorEnabled ? "activa" : "no"}
+                      </Badge>
+                    </td>
                     <td>
                       <div className="actions">
                         {u.status !== "active" ? (
@@ -147,6 +171,23 @@ export default async function UsersPage({
                                 <input type="hidden" name="id" value={u.id} />
                                 <input type="hidden" name="do" value="ban" />
                                 <button className="btn btn--ghost btn--sm" type="submit">Desactivar</button>
+                              </form>
+                            ) : null}
+                            <form method="post" className="inline" action={action}>
+                              <input type="hidden" name="_csrf" value={csrf} />
+                              <input type="hidden" name="id" value={u.id} />
+                              <input type="hidden" name="do" value="tfa_require" />
+                              <input type="hidden" name="value" value={u.twoFactorRequired ? "0" : "1"} />
+                              <button className="btn btn--ghost btn--sm" type="submit">
+                                {u.twoFactorRequired ? "Quitar 2FA obligatoria" : "Exigir 2FA"}
+                              </button>
+                            </form>
+                            {u.twoFactorEnabled ? (
+                              <form method="post" className="inline" action={action}>
+                                <input type="hidden" name="_csrf" value={csrf} />
+                                <input type="hidden" name="id" value={u.id} />
+                                <input type="hidden" name="do" value="tfa_reset" />
+                                <button className="btn btn--ghost btn--sm" type="submit">Restablecer 2FA</button>
                               </form>
                             ) : null}
                             <form method="post" className="inline" action={action}>

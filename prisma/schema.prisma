@@ -30,14 +30,64 @@ model User {
   googleId        String?   @unique @map("google_id")
   avatarUrl       String?   @map("avatar_url")
   lastLoginAt     DateTime? @map("last_login_at")
+
+  // Verificacion en dos pasos (2FA)
+  twoFactorEnabled  Boolean   @default(false) @map("two_factor_enabled")
+  twoFactorChannel  String    @default("email") @map("two_factor_channel")
+  twoFactorPhone    String?   @default("") @map("two_factor_phone")
+  twoFactorRequired Boolean   @default(false) @map("two_factor_required")
+  twoFactorPending  Boolean   @default(false) @map("two_factor_pending")
+
   createdAt       DateTime? @map("created_at")
   updatedAt       DateTime? @map("updated_at")
 
   sessions    Session[]
   tokens      Token[]
   submissions UserSubmission[]
+  otpCodes    OtpCode[]
+  devices     TrustedDevice[]
 
   @@map("users")
+}
+
+model OtpCode {
+  id           Int       @id @default(autoincrement())
+  userId       Int       @map("user_id")
+  purpose      String    @default("login")
+  codeHash     String    @map("code_hash")
+  challengeHash String   @map("challenge_hash")
+  channel      String    @default("email")
+  destination  String    @default("")
+  attempts     Int       @default(0)
+  maxAttempts  Int       @default(5) @map("max_attempts")
+  usedAt       DateTime? @map("used_at")
+  expiresAt    DateTime? @map("expires_at")
+  ip           String?   @default("")
+  createdAt    DateTime? @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([challengeHash])
+  @@index([userId, purpose])
+  @@index([expiresAt])
+  @@map("otp_codes")
+}
+
+model TrustedDevice {
+  id        Int       @id @default(autoincrement())
+  userId    Int       @map("user_id")
+  tokenHash String    @map("token_hash")
+  label     String?   @default("")
+  ip        String?   @default("")
+  userAgent String?   @default("") @map("user_agent")
+  expiresAt DateTime? @map("expires_at")
+  createdAt DateTime? @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([tokenHash])
+  @@index([userId])
+  @@map("trusted_devices")
 }
 
 model Session {
