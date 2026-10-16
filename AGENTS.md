@@ -8,25 +8,28 @@ Sitio corporativo de C-ROTULUS S.U.R.L.
 > nada. El backend PHP antiguo vive intacto en `legacy/` solo como referencia y
 > **no se ejecuta**.
 
-## ✅ Commits y aprobaciones: NO pedir permiso (LEER PRIMERO)
+## ⚠️ Aprobaciones: solo DOS casos (LEER PRIMERO)
 
-**A peticion expresa del propietario (2026-10-15), la opcion de pedir permisos
-esta DESACTIVADA.** No detenerse a pedir aprobacion para nada: ni para el plan,
-ni para fases criticas, ni para `git commit` / `git push`.
+A peticion del propietario (2026-10-15), la aprobacion se limita a **dos unicos
+casos**. Todo lo demas se hace de forma autonoma, sin pedir permiso.
 
-Trabajar de forma autonoma y continua:
+**1. Plan general por fases, antes de ejecutar.**
+Al empezar un trabajo de cierta envergadura, presentar primero el **plan general
+dividido en fases** y esperar el visto bueno. No empezar a ejecutar hasta que el
+usuario lo apruebe. Dentro de una fase ya aprobada, no volver a preguntar por
+subfases, ajustes, correcciones ni pruebas.
 
-- Editar, probar, corregir y desplegar sin pedir permiso.
-- **Consolidar en git (commit/push) forma parte del flujo normal**: hacerlo cuando
-  el trabajo este verificado, sin esperar confirmacion.
-- Reportar al final lo hecho (que se cambio, que se probo, en que commit quedo),
-  en vez de preguntar antes de cada paso.
+**2. Antes de cada `git commit` en la rama.**
+Mostrar el resumen / `git diff` de lo que se va a confirmar y **esperar el si del
+usuario** antes de commitear. Igual para `git push`.
 
-Unicas excepciones (por buenas practicas, no por la regla de aprobacion):
-- **No** empujar a `main` ni borrar ramas/repositorios sin avisar antes.
-- **No** reescribir historia ya publicada (`push --force` sobre ramas compartidas).
-- Operaciones destructivas irreversibles (borrado masivo de datos en produccion):
-  avisar despues, y si hay duda real, preguntar solo eso.
+Nunca pedir permiso para: editar codigo, probar, corregir errores, ajustar
+estilos, leer/inspeccionar archivos, ejecutar el servidor de vista previa, ni
+tareas menores dentro de una fase ya aprobada.
+
+Salvaguardas de buenas practicas (no son "pedir permiso", son no hacerlo sin
+avisar): no empujar a `main`, no borrar ramas/repositorios, no reescribir historia
+publicada (`push --force`).
 
 
 ## ⚠️ Arranque automatico del servidor de vista previa (LEER PRIMERO)
