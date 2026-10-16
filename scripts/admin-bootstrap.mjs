@@ -7,11 +7,14 @@
  *  base de datos. Para garantizar el acceso al panel sin depender de la carrera
  *  "el primer usuario registrado es admin", se designa el administrador con:
  *
- *      ADMIN_EMAIL     (opcional; si falta se usa el correo de avisos del sitio
- *                       —MAIL_TO o el ajuste "mail_to_email"—)
- *      ADMIN_PASSWORD  (opcional; si falta se genera una TEMPORAL y se imprime
- *                       una sola vez en el registro del build)
- *      ADMIN_NAME      (opcional, por defecto "Administrador")
+ *      ADMIN_EMAIL          (opcional; si falta se usa el correo de avisos del
+ *                            sitio —MAIL_TO o el ajuste "mail_to_email"—)
+ *      ADMIN_PASSWORD       (opcional; se aplica al CREAR la cuenta o si aun no
+ *                            tiene contrasena; si falta se genera una TEMPORAL
+ *                            y se imprime una sola vez en el registro del build)
+ *      ADMIN_RESET_PASSWORD (opcional; fuerza el cambio de contrasena en el
+ *                            siguiente build, solo si difiere de la actual)
+ *      ADMIN_NAME           (opcional, por defecto "Administrador")
  *
  *  Se ejecuta en el build (via scripts/db-bootstrap.mjs). Es idempotente:
  *  crea el admin si no existe, o lo promueve/activa si ya existe.
@@ -25,7 +28,7 @@ import { randomBytes } from "node:crypto";
 
 const require = createRequire(import.meta.url);
 const { PrismaClient } = require("@prisma/client");
-const { hash } = require("bcryptjs");
+const { hash, compare } = require("bcryptjs");
 
 if (!process.env.DATABASE_URL && !process.env.DATABASE_URL_UNPOOLED) {
   console.log("[admin-bootstrap] Sin base de datos: se omite.");
@@ -61,14 +64,28 @@ try {
   if (target) {
     const existing = await prisma.user.findUnique({ where: { email: target } });
 
-    // Sin ADMIN_PASSWORD: si la cuenta es nueva (o no tiene contrasena) se
-    // genera una temporal y se imprime UNA vez en el registro del build. Asi el
-    // administrador puede entrar sin depender del correo de recuperacion.
-    let plain = password;
-    if (!plain && (!existing || !existing.passwordHash)) {
-      plain = `Cr-${randomBytes(9).toString("base64url")}`;
+    // Contrasena:
+    //  - Al CREAR (o si la cuenta aun no tiene contrasena) se usa ADMIN_PASSWORD
+    //    o, si falta, una temporal que se imprime una vez en el registro.
+    //  - Si la cuenta ya tiene contrasena, NO se toca (asi un despliegue no pisa
+    //    la que hayas cambiado en el panel). Para forzar un cambio puntual,
+    //    define ADMIN_RESET_PASSWORD; se aplica solo si difiere de la actual.
+    let plain = "";
+    if (!existing || !existing.passwordHash) {
+      plain = password || `Cr-${randomBytes(9).toString("base64url")}`;
     }
-    const passwordHash = plain ? await hash(plain, 10) : null;
+
+    const reset = process.env.ADMIN_RESET_PASSWORD || "";
+    let newHash = plain ? await hash(plain, 10) : null;
+    if (reset && existing?.passwordHash) {
+      if (!(await compare(reset, existing.passwordHash))) {
+        newHash = await hash(reset, 10);
+        plain = reset;
+        console.log("[admin-bootstrap] Contrasena restablecida por ADMIN_RESET_PASSWORD.");
+      } else {
+        newHash = null;
+      }
+    }
 
     if (existing) {
       await prisma.user.update({
@@ -77,7 +94,7 @@ try {
           role: "admin",
           status: "active",
           emailVerifiedAt: existing.emailVerifiedAt ?? new Date(),
-          ...(passwordHash ? { passwordHash } : {}),
+          ...(newHash ? { passwordHash: newHash } : {}),
           updatedAt: new Date(),
         },
       });
@@ -87,7 +104,7 @@ try {
         data: {
           email: target,
           name,
-          passwordHash,
+          passwordHash: newHash,
           role: "admin",
           status: "active",
           emailVerifiedAt: new Date(),
@@ -98,7 +115,8 @@ try {
       console.log(`[admin-bootstrap] Administrador creado: ${target}`);
     }
 
-    if (plain && !password) {
+    // Solo se imprime cuando la contrasena la genero el propio script (temporal).
+    if (plain && !password && !reset) {
       console.log(`[admin-bootstrap] CONTRASENA TEMPORAL (cambiala al entrar): ${plain}`);
     }
   } else {

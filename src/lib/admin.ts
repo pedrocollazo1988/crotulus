@@ -1,7 +1,7 @@
 import "server-only";
 import { prisma } from "./db";
 import { getConfig } from "./config";
-import { setting, settingSet, settingsEditable, settingsCheckboxes, settingsSecretKeys } from "./settings";
+import { setting, settingSet, settingsEditable, settingsCheckboxes, settingsSecretKeys, settingsIsMask } from "./settings";
 import { cleanText, sanitizeImagePath, limitText } from "./validator";
 
 /**
@@ -120,8 +120,9 @@ export async function adminSaveSettings(
     if (!(key in form)) continue;
     let value = form[key];
 
-    // Secretos enmascarados: si el campo no se ha cambiado, se conserva.
-    if (secrets.includes(key) && value === "********") continue;
+    // Secretos: la mascara o un campo vacio conservan el valor guardado, para
+    // que vaciar el campo (o que lo vacie el gestor de contrasenas) no lo borre.
+    if (secrets.includes(key) && (value === "" || settingsIsMask(value))) continue;
 
     value = cleanText(value);
     if (NUMERIC_KEYS.includes(key)) {

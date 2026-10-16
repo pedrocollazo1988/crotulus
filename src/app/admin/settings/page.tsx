@@ -9,7 +9,7 @@ import { adminSaveSettings, adminSystemInfo, audit } from "@/lib/admin";
 import { googleReviewsEnabled, googleReviewsCached, googleReviewsRefresh } from "@/lib/google-reviews";
 import { trustpilotFetch } from "@/lib/trustpilot";
 import { mailNotifyTo, mailerTemplate, sendMail, mailerLastError } from "@/lib/mailer";
-import { googleEnabled, googleRedirectUri } from "@/lib/auth";
+import { googleEnabled, googleRedirectUri, googleConfigIssues } from "@/lib/auth";
 import { getConfig } from "@/lib/config";
 
 /**
@@ -112,6 +112,7 @@ export default async function SettingsPage({
   const s = await settingsAll();
   const info = await adminSystemInfo();
   const googleOn = await googleEnabled();
+  const googleIssues = await googleConfigIssues();
   const redirectUri = await googleRedirectUri();
   const grEnabled = await googleReviewsEnabled();
   const grCached = (await googleReviewsCached(3)).length;
@@ -341,9 +342,11 @@ export default async function SettingsPage({
                 <div className="field"><label htmlFor="mail_smtp_user">Usuario SMTP</label>
                   <input type="text" id="mail_smtp_user" name="mail_smtp_user" autoComplete="off" defaultValue={s["mail_smtp_user"] ?? ""} placeholder="tu-cuenta@gmail.com" /></div>
                 <div className="field"><label htmlFor="mail_smtp_pass">Contraseña SMTP</label>
-                  <input type="password" id="mail_smtp_pass" name="mail_smtp_pass" autoComplete="new-password"
-                    defaultValue={(s["mail_smtp_pass"] ?? "") !== "" ? "********" : ""} placeholder="contraseña de aplicación" />
-                  <p className="muted">Deja el valor enmascarado para no cambiarla. Con Gmail usa una «contraseña de aplicación».</p></div>
+                  <input type="password" id="mail_smtp_pass" name="mail_smtp_pass" autoComplete="off"
+                    defaultValue="" placeholder={(s["mail_smtp_pass"] ?? "") !== "" ? "•••••••• (guardada)" : "contraseña de aplicación"} />
+                  <p className="muted">{(s["mail_smtp_pass"] ?? "") !== ""
+                    ? "Ya hay una contraseña guardada. Déjala vacía para conservarla o escribe una nueva. Con Gmail usa una «contraseña de aplicación»."
+                    : "Con Gmail usa una «contraseña de aplicación»."}</p></div>
               </div>
             </div>
             <button className="btn" type="submit">Guardar correo</button>
@@ -392,8 +395,11 @@ export default async function SettingsPage({
                 <div className="field"><label htmlFor="google_place_id">Place ID de Google</label>
                   <input type="text" id="google_place_id" name="google_place_id" defaultValue={s["google_place_id"] ?? ""} /></div>
                 <div className="field"><label htmlFor="google_places_api_key">Clave de la API de Google Places</label>
-                  <input type="password" id="google_places_api_key" name="google_places_api_key" autoComplete="new-password"
-                    defaultValue={(s["google_places_api_key"] ?? "") !== "" ? "********" : ""} /></div>
+                  <input type="password" id="google_places_api_key" name="google_places_api_key" autoComplete="off"
+                    defaultValue="" placeholder={(s["google_places_api_key"] ?? "") !== "" ? "•••••••• (guardada)" : "Clave de la API"} />
+                  <p className="muted">{(s["google_places_api_key"] ?? "") !== ""
+                    ? "Ya hay una clave guardada. Déjala vacía para conservarla o escribe una nueva."
+                    : "Se obtiene en Google Cloud · Places API."}</p></div>
                 <div className="field"><label htmlFor="google_reviews_cache_ttl">Segundos de caché de las reseñas</label>
                   <input type="number" min={1} id="google_reviews_cache_ttl" name="google_reviews_cache_ttl" defaultValue={s["google_reviews_cache_ttl"] ?? "21600"} /></div>
               </div>
@@ -548,28 +554,42 @@ export default async function SettingsPage({
 
         {/* ============================ GOOGLE ============================ */}
         <section className="tabs__panel" data-panel="google" role="tabpanel">
-          {googleOn ? (
+          {googleOn && googleIssues.length === 0 ? (
             <Alert kind="ok">El acceso con Google está <strong>activado</strong>.</Alert>
-          ) : (
+          ) : null}
+          {!googleOn ? (
             <Alert kind="info">
               El acceso con Google está <strong>desactivado</strong>. Rellena el Client ID y el
               Client secret para activarlo.
             </Alert>
-          )}
+          ) : null}
+          {googleIssues.length > 0 ? (
+            <Alert kind="error">
+              El acceso con Google está <strong>mal configurado</strong> y Google lo rechazará.
+              <ul style={{ margin: ".4rem 0 0 1rem" }}>
+                {googleIssues.map((msg) => <li key={msg}>{msg}</li>)}
+              </ul>
+            </Alert>
+          ) : null}
           <form method="post" action={save}>
             <input type="hidden" name="_csrf" value={csrf} />
             <div className="settings-card">
               <h2>Acceso con Google (OAuth 2.0)</h2>
               <div className="grid-2">
                 <div className="field"><label htmlFor="google_client_id">Client ID de Google</label>
-                  <input type="text" id="google_client_id" name="google_client_id" defaultValue={s["google_client_id"] ?? ""} /></div>
+                  <input type="text" id="google_client_id" name="google_client_id"
+                    defaultValue={s["google_client_id"] ?? ""} placeholder="1234-abc.apps.googleusercontent.com" />
+                  <p className="muted">Termina en <code>.apps.googleusercontent.com</code>.</p></div>
                 <div className="field"><label htmlFor="google_client_secret">Client secret de Google</label>
-                  <input type="password" id="google_client_secret" name="google_client_secret" autoComplete="new-password"
-                    defaultValue={(s["google_client_secret"] ?? "") !== "" ? "********" : ""} /></div>
-                <div className="field"><label>URI de redirección que debes registrar en Google</label>
-                  <input type="text" readOnly defaultValue={redirectUri} /></div>
-                <div className="field"><label htmlFor="google_redirect_uri">URI de redirección (opcional)</label>
-                  <input type="text" id="google_redirect_uri" name="google_redirect_uri" defaultValue={s["google_redirect_uri"] ?? ""} /></div>
+                  <input type="password" id="google_client_secret" name="google_client_secret" autoComplete="off"
+                    defaultValue="" placeholder={(s["google_client_secret"] ?? "") !== "" ? "•••••••• (guardado)" : "Pega aquí el Client secret"} />
+                  <p className="muted">{(s["google_client_secret"] ?? "") !== ""
+                    ? "Ya hay un secreto guardado. Déjalo vacío para conservarlo o escribe uno nuevo para cambiarlo."
+                    : "Empieza por GOCSPX- (no lo confundas con el Client ID)."}</p></div>
+                <div className="field"><label htmlFor="google_redirect_uri">URI de redirección</label>
+                  <input type="text" id="google_redirect_uri" name="google_redirect_uri"
+                    defaultValue={(s["google_redirect_uri"] ?? "") || redirectUri} />
+                  <p className="muted">Es la que debes registrar en Google · «URIs de redirección autorizados». Por defecto se calcula desde la URL del sitio.</p></div>
               </div>
             </div>
             <button className="btn" type="submit">Guardar Google</button>
