@@ -113,7 +113,7 @@ vercel env add DATABASE_URL production
 vercel env add DIRECT_URL production
 vercel env add APP_KEY production
 # ...
-vercel env pull .env.local   # para desarrollo local
+vercel env pull .env.local   # desarrollo local (OJO: Prisma CLI no lo lee)
 ```
 
 ### Subirlas todas de una vez (recomendado)
@@ -162,8 +162,12 @@ DATABASE_URL="..." DIRECT_URL="..." npm run db:migrate-sqlite -- legacy/app/data
 > **Con la integracion Neon del Marketplace no hace falta `DIRECT_URL`.** Vercel
 > solo inyecta `DATABASE_URL` (pooler) y `DATABASE_URL_UNPOOLED` (directa). Los
 > scripts `npm run db:*` pasan por `scripts/prisma.mjs`, que rellena `DIRECT_URL`
-> desde `DATABASE_URL_UNPOOLED` (o `DATABASE_URL`) si falta. Puedes traerte las
-> variables con `vercel env pull .env.local` y ejecutar los comandos tal cual.
+> desde `DATABASE_URL_UNPOOLED` (o `DATABASE_URL`) si falta.
+
+> **Ojo con `vercel env pull .env.local`:** el CLI de Prisma lee `.env`, **no**
+> `.env.local`, asi que volcar ahi y ejecutar `npm run db:deploy` falla con
+> `P1012 Environment variable not found: DIRECT_URL`. Para eso esta el script del
+> apartado siguiente, que no toca tu `.env`.
 
 > Si no tienes el SQLite original, salta el paso 3: el paso 2 crea contenido de
 > ejemplo y el panel permite editarlo.
@@ -172,6 +176,28 @@ DATABASE_URL="..." DIRECT_URL="..." npm run db:migrate-sqlite -- legacy/app/data
 > `/admin/register` en el dominio desplegado: **el primer usuario registrado se
 > convierte en admin**. (Para cambiar su contrasena despues:
 > `NEW_PASSWORD='...' npm run user:password -- correo@dominio.com`.)
+
+### Aplicarlo todo de una vez (recomendado)
+
+Para no copiar cadenas de conexion a mano:
+
+```bash
+npx vercel link                 # 1. enlaza la carpeta con el proyecto (una vez)
+bash tools/setup-neon-db.sh --dry-run   # 2. comprueba la conexion
+bash tools/setup-neon-db.sh             # 3. migra + siembra
+```
+
+El script descarga las variables del proyecto de Vercel, aplica las migraciones,
+siembra el contenido de ejemplo y muestra un resumen final
+(`108 ajustes, 0 usuarios, 22 contenidos`). Opciones:
+
+- `--sqlite legacy/app/data/c-rotulus.sqlite` importa ademas los datos antiguos.
+- `--no-seed` solo crea las tablas.
+- `--env production` (por defecto) o `--env preview`.
+
+> Descarga las variables a un archivo **temporal** y las exporta solo en esa
+> sesion: **no toca tu `.env` local ni deja secretos en el disco**. Y funciona
+> aunque tu `.env` apunte a otra base (las variables descargadas tienen prioridad).
 
 ---
 

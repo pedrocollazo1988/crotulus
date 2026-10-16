@@ -219,5 +219,5 @@ echo "  - Redeploy en el panel de Vercel (Deployments > ... > Redeploy), o"
 echo "  - un push a la rama, que dispara un despliegue nuevo."
 echo
 echo "Y despues, para crear las tablas en Neon (desde tu maquina):"
-echo "    npx vercel env pull .env.local"
-echo "    npm run db:deploy && npm run db:seed"
+echo "    bash tools/setup-neon-db.sh --dry-run   # comprueba la conexion"
+echo "    bash tools/setup-neon-db.sh             # migra + siembra"
