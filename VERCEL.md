@@ -78,8 +78,13 @@ vercel --prod     # despliegue de produccion
 ### Opcion B · Con GitHub
 
 Conecta el repositorio en el panel de Vercel. `vercel.json` ya define:
-`framework: nextjs`, `buildCommand: prisma generate && next build` y la region
-`iad1`.
+`framework: nextjs`, `buildCommand: prisma generate && node scripts/db-bootstrap.mjs && next build`
+y la region `iad1`.
+
+El paso `db-bootstrap` aplica las migraciones pendientes y siembra el contenido de
+ejemplo **durante el build**, asi que un despliegue deja la base lista sin
+intervencion manual. Es best-effort: si la base no responde, avisa y el build
+continua (la app no necesita la BD para compilar).
 
 ---
 
@@ -143,8 +148,9 @@ rama de Preview (por defecto, la rama actual).
 
 ## 4. Aplicar el esquema y sembrar datos
 
-Las migraciones se ejecutan **desde tu maquina** apuntando a Neon (no en el build,
-para no bloquear el despliegue):
+Las migraciones se ejecutan **de forma automatica en el build** de Vercel
+(`scripts/db-bootstrap.mjs`, ver apartado anterior). Si prefieres aplicarlas a mano
+desde tu maquina (p. ej. para inspeccionar la base antes de desplegar):
 
 ```bash
 # 1. Crea las tablas
