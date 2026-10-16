@@ -7,7 +7,7 @@ import { rateLimit } from "@/lib/rate-limit";
 import {
   authCheckCredentials, authCreateUser, authFindByEmail, authIsFirstUser, authLogin,
   authLogout, currentUser, googleAuthUrl, googleEnabled, googleExchangeCode,
-  googleFindOrCreate, googleUserinfo, publicUser, authCreateToken,
+  googleConfigIssues, googleFindOrCreate, googleUserinfo, publicUser, authCreateToken,
 } from "@/lib/auth";
 import { generateToken } from "@/lib/session";
 import { getConfig } from "@/lib/config";
@@ -39,6 +39,10 @@ export async function GET(req: NextRequest) {
     case "google_start": {
       if (!(await googleEnabled())) {
         return NextResponse.redirect(url("admin/login?status=google_off"));
+      }
+      // No enviar a Google con credenciales invalidas: daria un 401 confuso.
+      if ((await googleConfigIssues()).length > 0) {
+        return NextResponse.redirect(url("admin/login?status=google_bad"));
       }
       const state = generateToken(16);
       const store = await cookies();

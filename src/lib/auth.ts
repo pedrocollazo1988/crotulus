@@ -179,6 +179,72 @@ export async function googleEnabled(): Promise<boolean> {
   return (await googleClientId()) !== "";
 }
 
+/**
+ * Diagnostico de la configuracion de Google. Detecta los errores tipicos que
+ * Google rechaza con "invalid_client": un Client ID que en realidad es un
+ * secreto (`GOCSPX-...`) o que no tiene el formato `.apps.googleusercontent.com`,
+ * y una URI de redireccion que no apunta a este sitio. Devuelve la lista de
+ * problemas (vacia = configuracion correcta).
+ */
+export async function googleConfigIssues(): Promise<string[]> {
+  const issues: string[] = [];
+  const clientId = await googleClientId();
+  const secret = await googleClientSecret();
+  if (clientId === "") return issues;
+
+  if (clientId.startsWith("GOCSPX-")) {
+    issues.push(
+      "En «Client ID» hay un Client SECRET (empieza por GOCSPX-). Los dos campos están cambiados: el Client ID es el que termina en .apps.googleusercontent.com.",
+    );
+  } else if (!clientId.endsWith(".apps.googleusercontent.com")) {
+    issues.push(
+      "El Client ID no tiene el formato esperado (debe terminar en .apps.googleusercontent.com).",
+    );
+  }
+  if (secret.startsWith("GOCSPX-") && clientId.endsWith(".apps.googleusercontent.com")) {
+    // Correcto: el secreto empieza por GOCSPX-.
+  } else if (secret !== "" && secret.includes(".apps.googleusercontent.com")) {
+    issues.push(
+      "En «Client secret» parece haber un Client ID (contiene .apps.googleusercontent.com). Revisa que no estén cambiados.",
+    );
+  }
+
+  const redirect = await googleRedirectUri();
+  const redirectHost = hostOf(redirect);
+  const siteHost = await requestHost();
+  if (redirectHost && siteHost && redirectHost !== siteHost && !isLocalHost(siteHost) && !isLocalHost(redirectHost)) {
+    issues.push(
+      `La URI de redirección (${redirect}) apunta a «${redirectHost}», pero el sitio se está sirviendo en «${siteHost}». Google devolverá «redirect_uri_mismatch».`,
+    );
+  }
+  return issues;
+}
+
+/** Host de una URL, o "" si no es válida. */
+function hostOf(value: string): string {
+  try {
+    return new URL(value).host.replace(/:443$/, "");
+  } catch {
+    return "";
+  }
+}
+
+/** Host desde el que se está sirviendo la página (cabeceras reenviadas). */
+async function requestHost(): Promise<string> {
+  try {
+    const { headers } = await import("next/headers");
+    const h = await headers();
+    const raw = h.get("x-forwarded-host") ?? h.get("host") ?? "";
+    return raw.split(",")[0]!.trim().replace(/:443$/, "");
+  } catch {
+    return "";
+  }
+}
+
+function isLocalHost(host: string): boolean {
+  return host === "" || host.startsWith("localhost") || host.startsWith("127.0.0.1");
+}
+
 /** URI de redireccion de Google. */
 export async function googleRedirectUri(): Promise<string> {
   const { setting } = await import("./settings");
