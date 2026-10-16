@@ -8,40 +8,37 @@ Sitio corporativo de C-ROTULUS S.U.R.L.
 > nada. El backend PHP antiguo vive intacto en `legacy/` solo como referencia y
 > **no se ejecuta**.
 
-## ⚠️ Aprobaciones: solo DOS casos (LEER PRIMERO)
+## ⚠️ Aprobaciones y rama de trabajo (LEER PRIMERO)
 
-A peticion del propietario (2026-10-15), la aprobacion se limita a **dos unicos
-casos**. Todo lo demas se hace de forma autonoma, sin pedir permiso.
+Regla vigente del propietario (**2026-10-16, sustituye a la de 2026-10-15**):
 
-**1. Plan general por fases, antes de ejecutar.**
-Al empezar un trabajo de cierta envergadura, presentar primero el **plan general
-dividido en fases** y esperar el visto bueno. No empezar a ejecutar hasta que el
-usuario lo apruebe. Dentro de una fase ya aprobada, no volver a preguntar por
-subfases, ajustes, correcciones ni pruebas.
-
-**2. Antes de cada `git commit` en la rama.**
-Mostrar el resumen / `git diff` de lo que se va a confirmar y **esperar el si del
-usuario** antes de commitear. Igual para `git push`.
+- **No pedir aprobacion en tareas sencillas.** Editar, probar, corregir, ajustar
+  estilos, hacer commits y **push a `dev_plca`** se hacen de forma autonoma.
+- **Rama unica de trabajo: `dev_plca`.** NO crear ramas nuevas ni trabajar en
+  otras. Todo el trabajo se consolida en `dev_plca`; al final, si hace falta, se
+  pasa a `main`.
+- Aprobacion (visto bueno del propietario) solo para acciones que cambian
+  **produccion**: fusionar a `main`, tocar el hosting/base de datos de produccion,
+  borrar ramas o repositorios, o reescribir historia publicada (`push --force`).
+- Vercel previsualiza `dev_plca`: el propietario la revisa y la pasa a produccion.
 
 Nunca pedir permiso para: editar codigo, probar, corregir errores, ajustar
-estilos, leer/inspeccionar archivos, ejecutar el servidor de vista previa, ni
-tareas menores dentro de una fase ya aprobada.
+estilos, leer/inspeccionar archivos, ejecutar el servidor de vista previa,
+commitear, empujar a `dev_plca`, ni tareas menores.
 
 Salvaguardas de buenas practicas (no son "pedir permiso", son no hacerlo sin
 avisar): no empujar a `main`, no borrar ramas/repositorios, no reescribir historia
 publicada (`push --force`).
 
-## ⚠️ Flujo de trabajo: SIEMPRE por Pull Request (LEER PRIMERO)
+## ⚠️ Flujo de trabajo: `dev_plca` -> `main` por Pull Request
 
 El repositorio tiene **proteccion de rama en `main`** ("Changes must be made
-through a pull request"). Regla del propietario (2026-10-15):
+through a pull request").
 
 - **Nunca empujar directamente a `main`.** Ni por avance directo ni por merge.
-- El trabajo se hace en una rama (`dev_plca` u otra de trabajo) y se sube ahi.
+- Todo el trabajo se hace y se sube a **`dev_plca`** (rama unica).
 - Para llevar cambios a `main`, **abrir un Pull Request** y fusionarlo desde
   GitHub. Verificar que pasa la CI antes de fusionar.
-- Si hay cambios pendientes en la rama de trabajo, abrir/actualizar la PR; no
-  sincronizar `main` a mano aunque sea un avance directo sin conflictos.
 - El propietario fusiona (o autoriza) la PR. No fusionar sin su visto bueno.
 
 Motivo: el push directo funcionaba solo porque el token del entorno tiene permisos

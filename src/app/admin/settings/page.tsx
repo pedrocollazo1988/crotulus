@@ -26,7 +26,7 @@ const SCOPE = {
   general: ["maintenance_mode"],
   resenas: ["reviews_enabled", "reviews_auto_approve"],
   aportaciones: ["submissions_enabled", "submissions_auto_approve"],
-  seguridad: ["security_session_bind_ip"],
+  seguridad: ["security_session_bind_ip", "two_factor_remember_device"],
 };
 
 export default async function SettingsPage({
@@ -483,6 +483,69 @@ export default async function SettingsPage({
                     <input type="text" id={key} name={key} inputMode="numeric" defaultValue={s[key] ?? ""} />
                   </div>
                 ))}
+              </div>
+            </div>
+            <div className="settings-card">
+              <h3>Verificación en dos pasos (2FA)</h3>
+              <p className="muted">
+                Añade un segundo factor al iniciar sesión: se envía un código de 6 dígitos por correo o SMS.
+                Cada usuario puede activarlo en «Mi cuenta»; aquí decides la política del sitio.
+              </p>
+              <div className="grid-2">
+                <div className="field"><label htmlFor="two_factor_mode">Política de 2FA</label>
+                  <select id="two_factor_mode" name="two_factor_mode" defaultValue={s["two_factor_mode"] ?? "optional"}>
+                    <option value="optional">Opcional (cada usuario decide)</option>
+                    <option value="required">Obligatoria para todos</option>
+                    <option value="disabled">Desactivada por completo</option>
+                  </select>
+                  <p className="muted">Con «Obligatoria» se pedirá a todas las cuentas, incluidos administradores.</p></div>
+                <div className="field"><label htmlFor="two_factor_channel_default">Canal por defecto</label>
+                  <select id="two_factor_channel_default" name="two_factor_channel_default" defaultValue={s["two_factor_channel_default"] ?? "email"}>
+                    <option value="email">Correo electrónico</option>
+                    <option value="sms">SMS</option>
+                  </select></div>
+                <div className="field"><label htmlFor="two_factor_code_ttl">Caducidad del código (segundos)</label>
+                  <input type="text" id="two_factor_code_ttl" name="two_factor_code_ttl" inputMode="numeric" defaultValue={s["two_factor_code_ttl"] ?? "600"} />
+                  <p className="muted">600 = 10 minutos.</p></div>
+                <div className="field"><label htmlFor="two_factor_max_attempts">Intentos por código</label>
+                  <input type="text" id="two_factor_max_attempts" name="two_factor_max_attempts" inputMode="numeric" defaultValue={s["two_factor_max_attempts"] ?? "5"} />
+                  <p className="muted">Al agotarlos, se invalida el reto.</p></div>
+                <div className="field"><label htmlFor="two_factor_resend_cooldown">Espera entre reenvíos (segundos)</label>
+                  <input type="text" id="two_factor_resend_cooldown" name="two_factor_resend_cooldown" inputMode="numeric" defaultValue={s["two_factor_resend_cooldown"] ?? "60"} /></div>
+                <div className="field"><label htmlFor="two_factor_trust_device_days">Días de confianza del dispositivo</label>
+                  <input type="text" id="two_factor_trust_device_days" name="two_factor_trust_device_days" inputMode="numeric" defaultValue={s["two_factor_trust_device_days"] ?? "30"} /></div>
+                <div className="field"><label>
+                  <input type="checkbox" name="two_factor_remember_device" value="1" defaultChecked={(s["two_factor_remember_device"] ?? "1") === "1"} /> Permitir «recordar este dispositivo»</label>
+                  <p className="muted">Desactívalo para pedir el código siempre.</p></div>
+              </div>
+            </div>
+
+            <div className="settings-card">
+              <h3>Envío de SMS (Twilio)</h3>
+              <p className="muted">
+                Para enviar códigos por SMS. Crea una cuenta en Twilio, consigue el <em>Account SID</em>, el
+                <em> Auth Token</em> y un número emisor. Si no lo configuras, la 2FA por SMS no estará disponible
+                (los usuarios podrán usar el correo).
+              </p>
+              <div className="grid-2">
+                <div className="field"><label htmlFor="sms_provider">Proveedor</label>
+                  <select id="sms_provider" name="sms_provider" defaultValue={s["sms_provider"] ?? "disabled"}>
+                    <option value="disabled">Desactivado</option>
+                    <option value="twilio">Twilio</option>
+                  </select></div>
+                <div className="field"><label htmlFor="sms_twilio_from">Número emisor (From)</label>
+                  <input type="text" id="sms_twilio_from" name="sms_twilio_from" defaultValue={s["sms_twilio_from"] ?? ""} placeholder="+12025550123" /></div>
+                <div className="field"><label htmlFor="sms_twilio_account_sid">Account SID</label>
+                  <input type="text" id="sms_twilio_account_sid" name="sms_twilio_account_sid" defaultValue={s["sms_twilio_account_sid"] ?? ""} placeholder="ACxxxxxxxxxxxxxxxx" /></div>
+                <div className="field"><label htmlFor="sms_twilio_auth_token">Auth Token</label>
+                  <input type="password" id="sms_twilio_auth_token" name="sms_twilio_auth_token" autoComplete="off"
+                    defaultValue="" placeholder={(s["sms_twilio_auth_token"] ?? "") !== "" ? "•••••••• (guardado)" : "Token de Twilio"} />
+                  <p className="muted">{(s["sms_twilio_auth_token"] ?? "") !== ""
+                    ? "Ya hay un token guardado. Déjalo vacío para conservarlo o escribe uno nuevo."
+                    : "Se guarda cifrado con el resto de ajustes."}</p></div>
+                <div className="field"><label htmlFor="sms_default_country_code">Prefijo por defecto</label>
+                  <input type="text" id="sms_default_country_code" name="sms_default_country_code" defaultValue={s["sms_default_country_code"] ?? "+53"} placeholder="+53" />
+                  <p className="muted">Se antepone a los teléfonos que no lleven prefijo internacional.</p></div>
               </div>
             </div>
             <button className="btn" type="submit">Guardar seguridad</button>

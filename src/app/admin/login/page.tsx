@@ -27,6 +27,10 @@ const NOTICES: Record<string, { kind: "ok" | "info"; text: string }> = {
     kind: "info",
     text: "El acceso con Google está mal configurado. Un administrador debe revisar las credenciales en Ajustes · Google.",
   },
+  "2fa_expired": {
+    kind: "info",
+    text: "La verificación en dos pasos ha caducado. Vuelve a iniciar sesión.",
+  },
 };
 
 export default async function LoginPage({

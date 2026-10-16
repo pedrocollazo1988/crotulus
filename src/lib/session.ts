@@ -103,3 +103,31 @@ export async function pruneSessions(): Promise<number> {
   });
   return res.count;
 }
+
+/* ---------------------------------------------------------------------------
+ *  COOKIES AUXILIARES (reto 2FA y dispositivo de confianza)
+ * ------------------------------------------------------------------------- */
+
+/** Guarda una cookie httpOnly con el valor indicado. */
+export async function setScopedCookie(name: string, value: string, maxAge: number): Promise<void> {
+  const store = await cookies();
+  store.set(name, value, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge,
+  });
+}
+
+/** Lee una cookie httpOnly (o ""). */
+export async function readScopedCookie(name: string): Promise<string> {
+  const store = await cookies();
+  return store.get(name)?.value ?? "";
+}
+
+/** Borra una cookie httpOnly. */
+export async function clearScopedCookie(name: string): Promise<void> {
+  const store = await cookies();
+  store.delete(name);
+}

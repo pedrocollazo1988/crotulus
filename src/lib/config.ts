@@ -49,6 +49,13 @@ export interface SiteConfig {
     smtpSecure: string;
   };
   google: { clientId: string; clientSecret: string; redirectUri: string };
+  sms: {
+    provider: string;
+    twilioAccountSid: string;
+    twilioAuthToken: string;
+    twilioFrom: string;
+    defaultCountryCode: string;
+  };
   security: {
     appKey: string;
     sessionName: string;
@@ -65,6 +72,13 @@ export interface SiteConfig {
     passwordMax: number;
     captchaTtl: number;
     trustedProxies: string[];
+    twoFactorMode: string;
+    twoFactorChannelDefault: string;
+    twoFactorCodeTtl: number;
+    twoFactorMaxAttempts: number;
+    twoFactorResendCooldown: number;
+    twoFactorTrustDeviceDays: number;
+    twoFactorRememberDevice: boolean;
   };
   paths: { logDir: string };
   faq: {
@@ -106,6 +120,13 @@ export function loadConfig(): SiteConfig {
       clientSecret: env("GOOGLE_CLIENT_SECRET", ""),
       redirectUri: env("GOOGLE_REDIRECT_URI", ""),
     },
+    sms: {
+      provider: env("SMS_PROVIDER", "disabled"),
+      twilioAccountSid: env("TWILIO_ACCOUNT_SID", ""),
+      twilioAuthToken: env("TWILIO_AUTH_TOKEN", ""),
+      twilioFrom: env("TWILIO_FROM", ""),
+      defaultCountryCode: env("SMS_DEFAULT_COUNTRY_CODE", "+53"),
+    },
     security: {
       appKey: env("APP_KEY", "cambia-esta-clave-por-una-larga-y-aleatoria-000"),
       sessionName: env("SESSION_NAME", "crotulus_sid"),
@@ -125,6 +146,13 @@ export function loadConfig(): SiteConfig {
         .split(",")
         .map((s) => s.trim())
         .filter(Boolean),
+      twoFactorMode: env("TWO_FACTOR_MODE", "optional"),
+      twoFactorChannelDefault: env("TWO_FACTOR_CHANNEL_DEFAULT", "email"),
+      twoFactorCodeTtl: envInt("TWO_FACTOR_CODE_TTL", 600),
+      twoFactorMaxAttempts: envInt("TWO_FACTOR_MAX_ATTEMPTS", 5),
+      twoFactorResendCooldown: envInt("TWO_FACTOR_RESEND_COOLDOWN", 60),
+      twoFactorTrustDeviceDays: envInt("TWO_FACTOR_TRUST_DEVICE_DAYS", 30),
+      twoFactorRememberDevice: envBool("TWO_FACTOR_REMEMBER_DEVICE", true),
     },
     paths: { logDir: env("LOG_DIR", "") },
     faq: {

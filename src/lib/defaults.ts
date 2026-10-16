@@ -135,6 +135,22 @@ const DEFAULTS: Dict = {
   security_submission_rate_max: "8",
   security_submission_rate_window: "3600",
 
+  // Verificacion en dos pasos (2FA)
+  two_factor_mode: "optional",
+  two_factor_channel_default: "email",
+  two_factor_code_ttl: "600",
+  two_factor_max_attempts: "5",
+  two_factor_resend_cooldown: "60",
+  two_factor_trust_device_days: "30",
+  two_factor_remember_device: "1",
+
+  // SMS (Twilio)
+  sms_provider: "disabled",
+  sms_twilio_account_sid: "",
+  sms_twilio_auth_token: "",
+  sms_twilio_from: "",
+  sms_default_country_code: "+53",
+
   // Rutas y mantenimiento
   paths_log_dir: "",
   maintenance_mode: "0",

@@ -12,6 +12,8 @@ import { mailerTemplate, mailNotifyTo, sendMail } from "@/lib/mailer";
 import { getConfig } from "@/lib/config";
 import { prisma } from "@/lib/db";
 import { audit } from "@/lib/admin";
+import { normalizePhone } from "@/lib/sms";
+import { revokeTrustedDevices } from "@/lib/twofactor";
 
 /**
  * ============================================================================
@@ -46,6 +48,8 @@ export default async function AccountPage({
     prisma.userSubmission.count({ where: { userId: user.id, status: "pendiente" } }),
   ]);
   const esAdmin = user.role === "admin";
+  // 2FA efectiva: activada por el usuario o exigida por la politica del sitio.
+  const effectiveOn = user.twoFactorEnabled || user.twoFactorRequired;
 
   /** Server Action: envia una aportacion. */
   async function submit(formData: FormData) {
@@ -97,6 +101,67 @@ export default async function AccountPage({
     redirect(`/admin/account?ok=${encodeURIComponent(msg)}`);
   }
 
+  /** Server Action: gestiona la verificacion en dos pasos del usuario. */
+  async function twoFactor(formData: FormData) {
+    "use server";
+    const me = await requireLogin();
+    const data: Record<string, string> = {};
+    formData.forEach((v, k) => (data[k] = typeof v === "string" ? v : ""));
+    if (!csrfVerify(data["_csrf"])) {
+      redirect(`/admin/account?err=${encodeURIComponent("Token de seguridad inválido.")}`);
+    }
+    const op = data["op"] ?? "";
+    const channel: "email" | "sms" = data["two_factor_channel"] === "sms" ? "sms" : "email";
+    const phoneRaw = (data["two_factor_phone"] ?? "").trim();
+    const phone = phoneRaw === "" ? "" : normalizePhone(phoneRaw, getConfig().sms.defaultCountryCode);
+
+    if (op === "enable") {
+      if (!me.twoFactorEnabled && me.twoFactorRequired) {
+        redirect(`/admin/account?err=${encodeURIComponent("Esta cuenta exige la verificación en dos pasos: no se puede desactivar.")}`);
+      }
+      if (channel === "sms" && phone === "") {
+        redirect(`/admin/account?err=${encodeURIComponent("Escribe un teléfono válido para recibir los SMS (con prefijo internacional, p. ej. +53...).")}`);
+      }
+      await prisma.user.update({
+        where: { id: me.id },
+        data: {
+          twoFactorEnabled: true,
+          twoFactorChannel: channel,
+          twoFactorPhone: phone,
+          twoFactorPending: false,
+          updatedAt: new Date(),
+        },
+      });
+      // Si cambia el canal al correo, los dispositivos de confianza anteriores siguen valiendo.
+      await audit("two_factor_enabled", { user: me.id, channel, phone: channel === "sms" ? phone : "" });
+      revalidatePath("/admin/account");
+      redirect(`/admin/account?ok=${encodeURIComponent("Verificación en dos pasos activada.")}`);
+    }
+
+    if (op === "disable") {
+      if (me.twoFactorRequired) {
+        redirect(`/admin/account?err=${encodeURIComponent("Esta cuenta exige la verificación en dos pasos: no se puede desactivar.")}`);
+      }
+      await prisma.user.update({
+        where: { id: me.id },
+        data: { twoFactorEnabled: false, twoFactorPending: false, updatedAt: new Date() },
+      });
+      await revokeTrustedDevices(me.id);
+      await audit("two_factor_disabled", { user: me.id });
+      revalidatePath("/admin/account");
+      redirect(`/admin/account?ok=${encodeURIComponent("Verificación en dos pasos desactivada.")}`);
+    }
+
+    if (op === "forget_devices") {
+      await revokeTrustedDevices(me.id);
+      await audit("two_factor_devices_revoked", { user: me.id });
+      revalidatePath("/admin/account");
+      redirect(`/admin/account?ok=${encodeURIComponent("Se han olvidado los dispositivos de confianza.")}`);
+    }
+
+    redirect("/admin/account");
+  }
+
   return (
     <>
       <h1>Mi cuenta</h1>
@@ -116,6 +181,58 @@ export default async function AccountPage({
           <>Tienes permisos de administrador: <a href="/admin/">ir al panel de gestión</a>.</>
         ) : null}
       </p>
+
+      {esAdmin ? (
+        <div className="settings-card">
+          <h2>Verificación en dos pasos (2FA)</h2>
+          <p className="muted">
+            Añade un segundo paso al iniciar sesión: además de la contraseña, te pediremos un código de 6 dígitos
+            que recibirás por correo o por SMS. Muy recomendable para cuentas de administrador.
+          </p>
+          <p>
+            Estado actual:{" "}
+            {user.twoFactorRequired || effectiveOn ? (
+              <Badge tone="archivado">Activada</Badge>
+            ) : (
+              <Badge tone="nuevo">Desactivada</Badge>
+            )}
+          </p>
+          {user.twoFactorRequired ? (
+            <Alert kind="info">Esta cuenta exige la verificación en dos pasos por política del sitio.</Alert>
+          ) : null}
+          <form method="post" action={twoFactor}>
+            <input type="hidden" name="_csrf" value={csrf} />
+            <div className="grid-2">
+              <div className="field">
+                <label htmlFor="two_factor_channel">Método de verificación</label>
+                <select id="two_factor_channel" name="two_factor_channel" defaultValue={user.twoFactorChannel === "sms" ? "sms" : "email"}>
+                  <option value="email">Correo electrónico ({user.email})</option>
+                  <option value="sms">Mensaje de texto (SMS) — requiere teléfono</option>
+                </select>
+              </div>
+              <div className="field">
+                <label htmlFor="two_factor_phone">Teléfono (para SMS)</label>
+                <input
+                  type="tel" id="two_factor_phone" name="two_factor_phone" autoComplete="tel"
+                  defaultValue={user.twoFactorPhone ?? ""} placeholder="+5359888821"
+                />
+                <p className="muted">Solo si eliges SMS. Incluye el prefijo internacional.</p>
+              </div>
+            </div>
+            <div className="links" style={{ display: "flex", gap: ".75rem", flexWrap: "wrap" }}>
+              <button className="btn" type="submit" name="op" value="enable">
+                {effectiveOn ? "Guardar cambios" : "Activar 2FA"}
+              </button>
+              {effectiveOn && !user.twoFactorRequired ? (
+                <button className="btn btn--ghost" type="submit" name="op" value="disable">Desactivar</button>
+              ) : null}
+              <button className="btn btn--ghost" type="submit" name="op" value="forget_devices">
+                Olvidar dispositivos de confianza
+              </button>
+            </div>
+          </form>
+        </div>
+      ) : null}
 
       {!enabled ? (
         <Alert kind="info">Las aportaciones están desactivadas en este momento.</Alert>

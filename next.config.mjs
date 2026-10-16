@@ -45,6 +45,23 @@ const nextConfig = {
   },
 
   async headers() {
+    // CSP: el sitio es propio; se permiten el widget de chat (creatuagente),
+    // el iframe de Google Maps y los estilos en linea de los JSON-LD. Se evita
+    // 'unsafe-eval' y los scripts de terceros no declarados.
+    const csp = [
+      "default-src 'self'",
+      "base-uri 'self'",
+      "form-action 'self'",
+      "frame-ancestors 'self'",
+      "object-src 'none'",
+      "img-src 'self' data: https:",
+      "font-src 'self'",
+      "style-src 'self' 'unsafe-inline'",
+      "script-src 'self' 'unsafe-inline' https://api.creatuagente.io" +
+        (process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""),
+      "connect-src 'self' https://api.creatuagente.io",
+      "frame-src 'self' https://www.google.com https://maps.google.com",
+    ].join("; ");
     return [
       {
         source: "/:path*",
@@ -54,6 +71,11 @@ const nextConfig = {
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "Permissions-Policy", value: "geolocation=(), microphone=(), camera=()" },
           { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+          { key: "Content-Security-Policy", value: csp },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload",
+          },
         ],
       },
       {

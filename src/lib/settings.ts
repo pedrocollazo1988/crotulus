@@ -76,6 +76,11 @@ export function settingsEditable(): string[] {
     "security_submission_rate_max", "security_submission_rate_window",
     "security_session_bind_ip",
     "google_client_id", "google_client_secret", "google_redirect_uri",
+    "two_factor_mode", "two_factor_channel_default", "two_factor_code_ttl",
+    "two_factor_max_attempts", "two_factor_resend_cooldown",
+    "two_factor_trust_device_days", "two_factor_remember_device",
+    "sms_provider", "sms_twilio_account_sid", "sms_twilio_auth_token",
+    "sms_twilio_from", "sms_default_country_code",
     "paths_log_dir", "maintenance_mode", "maintenance_message",
   ];
 }
@@ -86,12 +91,13 @@ export function settingsCheckboxes(): string[] {
     "reviews_enabled", "reviews_auto_approve",
     "submissions_enabled", "submissions_auto_approve",
     "security_session_bind_ip", "maintenance_mode",
+    "two_factor_remember_device",
   ];
 }
 
 /** Claves sensibles: se guardan pero se muestran enmascaradas en el panel. */
 export function settingsSecretKeys(): string[] {
-  return ["google_client_secret", "mail_smtp_pass", "google_places_api_key"];
+  return ["google_client_secret", "mail_smtp_pass", "google_places_api_key", "sms_twilio_auth_token"];
 }
 
 /** Claves que NUNCA se exponen en la API publica. */
@@ -143,6 +149,18 @@ export function settingsConfigMap(): Record<string, string> {
     google_client_id: "google.clientId",
     google_client_secret: "google.clientSecret",
     google_redirect_uri: "google.redirectUri",
+    sms_provider: "sms.provider",
+    sms_twilio_account_sid: "sms.twilioAccountSid",
+    sms_twilio_auth_token: "sms.twilioAuthToken",
+    sms_twilio_from: "sms.twilioFrom",
+    sms_default_country_code: "sms.defaultCountryCode",
+    two_factor_mode: "security.twoFactorMode",
+    two_factor_channel_default: "security.twoFactorChannelDefault",
+    two_factor_code_ttl: "security.twoFactorCodeTtl",
+    two_factor_max_attempts: "security.twoFactorMaxAttempts",
+    two_factor_resend_cooldown: "security.twoFactorResendCooldown",
+    two_factor_trust_device_days: "security.twoFactorTrustDeviceDays",
+    two_factor_remember_device: "security.twoFactorRememberDevice",
     paths_log_dir: "paths.logDir",
   };
 }
@@ -165,6 +183,12 @@ const CAST_INT = new Set([
   "security.loginRateMax", "security.loginRateWindow",
   "security.reviewRateMax", "security.reviewRateWindow",
   "security.submissionRateMax", "security.submissionRateWindow",
+  "security.twoFactorCodeTtl", "security.twoFactorMaxAttempts",
+  "security.twoFactorResendCooldown", "security.twoFactorTrustDeviceDays",
+]);
+
+const CAST_BOOL = new Set([
+  "security.sessionBindIp", "security.twoFactorRememberDevice",
 ]);
 
 /**
@@ -184,7 +208,7 @@ export async function settingsApplyOverrides(config: Record<string, unknown>): P
     const path = map[key];
     if (!path) continue;
     const value = row.svalue ?? "";
-    if (path === "security.sessionBindIp") {
+    if (CAST_BOOL.has(path)) {
       setPath(config, path, value === "1");
     } else if (CAST_INT.has(path)) {
       setPath(config, path, Number.parseInt(value, 10) || 0);
