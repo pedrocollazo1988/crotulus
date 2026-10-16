@@ -9,7 +9,7 @@ import { adminSaveSettings, adminSystemInfo, audit } from "@/lib/admin";
 import { googleReviewsEnabled, googleReviewsCached, googleReviewsRefresh } from "@/lib/google-reviews";
 import { trustpilotFetch } from "@/lib/trustpilot";
 import { mailNotifyTo, mailerTemplate, sendMail, mailerLastError } from "@/lib/mailer";
-import { googleEnabled, googleRedirectUri } from "@/lib/auth";
+import { googleEnabled, googleRedirectUri, googleConfigIssues } from "@/lib/auth";
 import { getConfig } from "@/lib/config";
 
 /**
@@ -112,6 +112,7 @@ export default async function SettingsPage({
   const s = await settingsAll();
   const info = await adminSystemInfo();
   const googleOn = await googleEnabled();
+  const googleIssues = await googleConfigIssues();
   const redirectUri = await googleRedirectUri();
   const grEnabled = await googleReviewsEnabled();
   const grCached = (await googleReviewsCached(3)).length;
@@ -485,14 +486,23 @@ export default async function SettingsPage({
 
         {/* ============================ GOOGLE ============================ */}
         <section className="tabs__panel" data-panel="google" role="tabpanel">
-          {googleOn ? (
+          {googleOn && googleIssues.length === 0 ? (
             <Alert kind="ok">El acceso con Google está <strong>activado</strong>.</Alert>
-          ) : (
+          ) : null}
+          {!googleOn ? (
             <Alert kind="info">
               El acceso con Google está <strong>desactivado</strong>. Rellena el Client ID y el
               Client secret para activarlo.
             </Alert>
-          )}
+          ) : null}
+          {googleIssues.length > 0 ? (
+            <Alert kind="error">
+              El acceso con Google está <strong>mal configurado</strong> y Google lo rechazará.
+              <ul style={{ margin: ".4rem 0 0 1rem" }}>
+                {googleIssues.map((msg) => <li key={msg}>{msg}</li>)}
+              </ul>
+            </Alert>
+          ) : null}
           <form method="post" action={save}>
             <input type="hidden" name="_csrf" value={csrf} />
             <div className="settings-card">
