@@ -246,10 +246,32 @@
             ? (login.getAttribute("data-admin-url") || "admin/")
             : (login.getAttribute("data-success-url") || "admin/account");
         }, null, function (data) {
-          // Cuenta sin verificar: ofrecer reenviar el enlace en la propia pantalla.
-          var box = document.getElementById("resendVerify");
+          // Ayuda contextual segun el motivo real del fallo, para no dejar al
+          // usuario en un callejon sin salida (el mensaje crudo no explica nada).
           var code = data && data.error ? String(data.error) : "";
+          var box = document.getElementById("resendVerify");
           if (box && /no está verificada/i.test(code)) box.hidden = false;
+
+          var help = document.getElementById("loginHelp");
+          if (help) {
+            if (/correo o contraseña incorrectos/i.test(code)) {
+              help.innerHTML = "Comprueba el correo y la contraseña. Si no la recuerdas, " +
+                "<a href=\"/admin/forgot\">restablécelas aquí</a>. Si eres el administrador y " +
+                "nunca fijaste una contraseña, se generó una temporal en el registro del " +
+                "despliegue (o defínela con la variable <code>ADMIN_RESET_PASSWORD</code>).";
+              help.hidden = false;
+            } else if (/no se pudo enviar el correo con el c[oó]digo/i.test(code)) {
+              help.innerHTML = "Tu contraseña es correcta, pero no pudimos enviarte el código de " +
+                "verificación en dos pasos. Revisa el correo en <strong>Ajustes · Correo</strong> " +
+                "(contraseña de aplicación de Gmail).";
+              help.hidden = false;
+            } else if (/demasiados intentos/i.test(code)) {
+              help.textContent = "Demasiados intentos seguidos. Espera unos minutos y vuelve a probar.";
+              help.hidden = false;
+            } else {
+              help.hidden = true;
+            }
+          }
         });
       });
 
