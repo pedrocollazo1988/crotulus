@@ -69,6 +69,7 @@ export default async function LoginPage({
       >
         <h1>Iniciar sesión</h1>
         <div className="alert alert--error" id="loginError" role="alert" hidden />
+        <div className="alert alert--info login-help" id="loginHelp" role="status" hidden />
         <input type="hidden" name="_csrf" value={csrf} />
 
         <div className="field">
