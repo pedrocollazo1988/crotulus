@@ -14,6 +14,12 @@
  *                            y se imprime una sola vez en el registro del build)
  *      ADMIN_RESET_PASSWORD (opcional; fuerza el cambio de contrasena en el
  *                            siguiente build, solo si difiere de la actual)
+ *      ADMIN_DISABLE_2FA    (opcional; si es "1"/"true"/"yes"/"on", APAGA la
+ *                            verificacion en dos pasos del administrador. Sirve
+ *                            para recuperar el acceso cuando el envio de codigos
+ *                            no funciona; a diferencia de TWO_FACTOR_MODE=disabled
+ *                            (interruptor global) solo afecta al admin y no deja
+ *                            ningun bypass activo en produccion)
  *      ADMIN_NAME           (opcional, por defecto "Administrador")
  *
  *  Se ejecuta en el build (via scripts/db-bootstrap.mjs). Es idempotente:
@@ -38,6 +44,7 @@ if (!process.env.DATABASE_URL && !process.env.DATABASE_URL_UNPOOLED) {
 const email = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
 const password = process.env.ADMIN_PASSWORD || "";
 const name = process.env.ADMIN_NAME || "Administrador";
+const disable2fa = /^(1|true|yes|on)$/i.test((process.env.ADMIN_DISABLE_2FA || "").trim());
 
 const prisma = new PrismaClient();
 
@@ -95,10 +102,16 @@ try {
           status: "active",
           emailVerifiedAt: existing.emailVerifiedAt ?? new Date(),
           ...(newHash ? { passwordHash: newHash } : {}),
+          ...(disable2fa
+            ? { twoFactorEnabled: false, twoFactorRequired: false, twoFactorPending: false }
+            : {}),
           updatedAt: new Date(),
         },
       });
       console.log(`[admin-bootstrap] Administrador actualizado: ${target}`);
+      if (disable2fa) {
+        console.log("[admin-bootstrap] 2FA del administrador DESACTIVADO (ADMIN_DISABLE_2FA).");
+      }
     } else {
       await prisma.user.create({
         data: {
