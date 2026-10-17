@@ -127,17 +127,43 @@ export async function POST(req: NextRequest) {
         return jsonError("Ya existe una cuenta con este correo.", 409);
       }
 
-      const userId = await authCreateUser(email, name, pass, "pending");
+      // Verificacion por correo: 'required' (por defecto) o 'optional'. La
+      // variable de entorno manda sobre el ajuste guardado (interruptor de
+      // emergencia: si el correo no funciona, EMAIL_VERIFICATION=optional
+      // desbloquea los registros sin tocar la base de datos).
+      const envVerification = (process.env.EMAIL_VERIFICATION || "").trim().toLowerCase();
+      const verificationRequired =
+        (envVerification || (cfg.security.emailVerification ?? "required").trim().toLowerCase()) !==
+        "optional";
+
+      const userId = await authCreateUser(email, name, pass, verificationRequired ? "pending" : "active");
       const user = await prisma.user.findUnique({ where: { id: userId } });
-      const sent = user ? await sendVerificationEmail(user.id, user.email, user.name) : false;
+      if (!user) return jsonError("No se pudo crear la cuenta.", 500);
+
+      if (!verificationRequired) {
+        await prisma.user.update({
+          where: { id: userId },
+          data: { emailVerifiedAt: user.emailVerifiedAt ?? new Date() },
+        });
+        await appLog(`user_registered_active ${userId} ${email}`);
+        return jsonOk({ message: "Cuenta creada. Ya puedes iniciar sesión.", mail_sent: true });
+      }
+
+      const sent = await sendVerificationEmail(user.id, user.email, user.name);
       await appLog(`user_registered ${userId} ${email}`);
-      // Si el correo no sale, decirlo: antes respondia "revisa tu correo" y el
-      // usuario quedaba bloqueado en "cuenta no verificada" sin saber por que.
+      // Si el correo no sale, el usuario quedaria bloqueado para siempre en
+      // "cuenta no verificada". Se activa la cuenta para darle salida y se le
+      // dice con claridad (antes respondia "revisa tu correo" y no llegaba nada).
       if (!sent) {
+        await prisma.user.update({
+          where: { id: userId },
+          data: { status: "active", emailVerifiedAt: user.emailVerifiedAt ?? new Date() },
+        });
+        await appLog(`user_auto_activated_no_mail ${userId} ${email}`);
         return jsonOk({
           message:
-            "Cuenta creada, pero no pudimos enviar el correo de verificación. " +
-            "Pide un enlace nuevo desde la pantalla de acceso o usa «Olvidé mi contraseña».",
+            "Cuenta creada. No pudimos enviar el correo de verificación, así que tu cuenta ya está " +
+            "activa: puedes iniciar sesión con tu correo y contraseña.",
           mail_sent: false,
         });
       }
@@ -273,7 +299,20 @@ export async function POST(req: NextRequest) {
       // se envia a cuentas pendientes de verificar.
       const user = await authFindByEmail(email);
       if (user && user.status === "pending" && user.emailVerifiedAt === null) {
-        await sendVerificationEmail(user.id, user.email, user.name);
+        const sent = await sendVerificationEmail(user.id, user.email, user.name);
+        // Igual que en el registro: si el correo no puede salir, se activa la
+        // cuenta para desbloquear a quien ya esta atrapado en "sin verificar".
+        if (!sent) {
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { status: "active", emailVerifiedAt: new Date() },
+          });
+          await appLog(`user_auto_activated_no_mail ${user.id} ${email}`);
+          return jsonOk({
+            message:
+              "No pudimos enviar el correo, así que hemos activado tu cuenta: ya puedes iniciar sesión con tu correo y contraseña.",
+          });
+        }
       }
       return jsonOk({ message: "Si la cuenta existe y está sin verificar, te hemos reenviado el enlace." });
     }

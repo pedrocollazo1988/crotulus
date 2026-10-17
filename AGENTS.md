@@ -920,3 +920,37 @@ estan en `DEFAULTS` -> se sembraban vacios -> pisaban la env.
 semilla) y tambien quieres configurarla por variable de entorno, la semilla la
 dejara en blanco en la BD; el arreglo de `settingsApplyOverrides()` ya evita que
 pise la env. Nunca quites ese `continue` para secretos.
+
+## Registro con correo/contrasena bloqueado en produccion (2026-10-17)
+
+En produccion el registro "creaba la cuenta" pero el login respondia 403
+"Tu cuenta aun no esta verificada" y el correo nunca llegaba. Causa raiz
+(confirmada en vivo con `curl`): el registro deja la cuenta `pending` y exige
+verificar el correo, pero el envio falla porque falta `MAIL_SMTP_PASS`.
+
+**Bug de fondo (preexistente)**: `src/lib/bootstrap.ts` llamaba a
+`settingsApplyOverrides(config)` sobre un objeto que **descartaba**; `getConfig()`
+devolvia su propia config cacheada (solo variables de entorno). Los ajustes del
+panel (Correo, Google, Seguridad, 2FA) **no tenian efecto en runtime**. Arreglado
+con `setConfig()` (`src/lib/config.ts`): `bootstrap()` publica la config ya
+sobrescrita. Consecuencia: **la BD tiene prioridad sobre el entorno** (los secretos
+vacios siguen sin pisar la env, ver el arreglo de `settingsApplyOverrides`).
+
+**Regla de diseno nueva**: si la verificacion por correo esta activa
+(`email_verification = required`, por defecto) y el correo **no puede salir**, la
+cuenta se **autoactiva** (`status=active`, `email_verified_at=now`), tanto en
+`register` como en `resend_verify`, para que nadie quede bloqueado sin salida.
+El mensaje real se traslada al login con `?msg=` (antes el registro siempre
+redirigia a `?status=registered` = "Revisa tu correo", aunque la cuenta ya
+estuviera activa).
+
+- Ajuste `email_verification` (`required` / `optional`) en Ajustes - Seguridad.
+- Interruptor de emergencia por entorno: `EMAIL_VERIFICATION=optional` manda sobre
+  la BD (mismo patron que `TWO_FACTOR_MODE` / `ADMIN_DISABLE_2FA`).
+- Para que los correos salgan de verdad hace falta `MAIL_SMTP_PASS` (contrasena de
+  aplicacion de Gmail) en Vercel.
+
+**Assets minificados**: `public/**/*.min.{css,js}` son artefactos de
+`scripts/minify-assets.mjs`. El HTML los referencia, asi que los generan
+`npm run build`, `npm run dev` y `tools/serve-next.sh` (modo dev). Estan en
+`.gitignore`.

@@ -368,8 +368,15 @@
       reg.addEventListener("submit", function (ev) {
         ev.preventDefault();
         if (!validateAll(reg)) return;
-        submitForm(reg, null, "regError", function () {
-          window.location.href = reg.getAttribute("data-success-url") || "/admin/login?status=registered";
+        submitForm(reg, null, "regError", function (data) {
+          // El mensaje real puede ser "revisa tu correo" o "tu cuenta ya esta
+          // activa" (cuando el correo no pudo salir). Se traslada al login para
+          // no decirle al usuario algo distinto de lo que ha pasado.
+          var url = reg.getAttribute("data-success-url") || "/admin/login?status=registered";
+          if (data && data.message) {
+            url += (url.indexOf("?") === -1 ? "?" : "&") + "msg=" + encodeURIComponent(data.message);
+          }
+          window.location.href = url;
         });
       });
     }

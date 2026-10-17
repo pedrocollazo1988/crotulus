@@ -43,6 +43,7 @@ export default async function LoginPage({
 
   const sp = await searchParams;
   const status = typeof sp["status"] === "string" ? sp["status"] : "";
+  const msg = typeof sp["msg"] === "string" ? sp["msg"] : "";
   const notice = NOTICES[status];
   const csrf = csrfToken();
   const min = getConfig().security.passwordMin;
@@ -56,7 +57,7 @@ export default async function LoginPage({
         "Disponible para el equipo de C-ROTULUS",
       ]}
     >
-      {notice ? <Alert kind={notice.kind}>{notice.text}</Alert> : null}
+      {msg ? <Alert kind="ok">{msg}</Alert> : notice ? <Alert kind={notice.kind}>{notice.text}</Alert> : null}
 
       <form
         id="loginForm"
