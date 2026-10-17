@@ -88,6 +88,14 @@ export async function sendMail(
 
   // SMTP con Nodemailer.
   try {
+    if (cfg.smtpUser && !cfg.smtpPass) {
+      // Un usuario SMTP sin contrasena siempre falla (Gmail responde 535). Se
+      // avisa con claridad en vez de dejar un error de red opaco: casi siempre
+      // significa que falta MAIL_SMTP_PASS en el entorno.
+      lastError = "Falta la contraseña SMTP (MAIL_SMTP_PASS o Ajustes · Correo).";
+      await appLog(lastError);
+      return false;
+    }
     const transporter = nodemailer.createTransport({
       host: cfg.smtpHost,
       port: cfg.smtpPort,

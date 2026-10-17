@@ -203,11 +203,18 @@ export async function settingsApplyOverrides(config: Record<string, unknown>): P
     return; // Sin tabla de ajustes todavia.
   }
   const map = settingsConfigMap();
+  const secrets = settingsSecretKeys();
   for (const row of rows) {
     const key = row.skey;
     const path = map[key];
     if (!path) continue;
     const value = row.svalue ?? "";
+    // Un secreto vacio en la BD (la semilla siembra "mail_smtp_pass" y
+    // "google_places_api_key" en blanco) NO debe pisar el valor de la variable
+    // de entorno: sin esto, MAIL_SMTP_PASS de Vercel se perdia y el correo
+    // fallaba con 535 BadCredentials. Misma semantica que el panel (vacio =
+    // conservar). Ver tambien adminSaveSettings().
+    if (secrets.includes(key) && value === "") continue;
     if (CAST_BOOL.has(path)) {
       setPath(config, path, value === "1");
     } else if (CAST_INT.has(path)) {
