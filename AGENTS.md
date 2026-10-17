@@ -884,3 +884,39 @@ Vercel o un token):
   `MAIL_SMTP_PASS` y `ADMIN_PASSWORD`; en produccion esas claves estan puestas a
   mano en el dashboard (por eso produccion si activa el boton de Google). Para el
   preview hay que darselas tambien.
+
+
+## Bug resuelto: "me registro pero no puedo iniciar sesion" (2026-10-17)
+
+Sintoma en produccion: el registro respondia "Cuenta creada. Revisa tu correo",
+pero el login devolvia 403 "Tu cuenta aun no esta verificada" y el correo de
+verificacion nunca llegaba (tampoco el de "olvide mi contrasena").
+
+**Causa raiz (no era SMTP de Vercel ni credenciales mal puestas).** La semilla
+`scripts/seed.ts` escribe TODAS las claves de `DEFAULTS` en la tabla `settings`,
+incluida `mail_smtp_pass: ""` (`src/lib/defaults.ts`). En cada peticion,
+`settingsApplyOverrides()` (`src/lib/settings.ts`) copiaba **incondicionalmente**
+todos los ajustes de la BD sobre la config en memoria, asi que esa cadena vacia
+PISABA el `MAIL_SMTP_PASS` definido en Vercel. Nodemailer intentaba autenticar
+con contrasena vacia -> Gmail `535 BadCredentials` -> `sendMail()` devolvia
+`false`, pero el registro lo ignoraba y decia "revisa tu correo". La cuenta
+quedaba `status="pending"` / `email_verified_at=NULL` y el login la bloqueaba.
+
+**Prueba de la asimetria**: `google_client_id`/`google_client_secret` NO estan en
+`DEFAULTS` -> no se siembran -> la env sobrevive -> Google OAuth funciona. En
+cambio `mail_smtp_pass`, `google_places_api_key` y `sms_twilio_auth_token` SI
+estan en `DEFAULTS` -> se sembraban vacios -> pisaban la env.
+
+**Arreglo** (commit `ae2ce97` en `dev_plca`):
+- `src/lib/settings.ts`: un secreto vacio en la BD ya **no** pisa la variable de
+  entorno (misma semantica que el panel: vacio = conservar).
+- `src/lib/mailer.ts`: aviso claro si hay `smtp_user` sin `smtp_pass`.
+- `src/app/api/auth/route.ts`: el registro informa si el correo no pudo salir;
+  nueva accion `resend_verify`.
+- `public/admin/assets/admin-auth.js` + `src/app/admin/login/page.tsx`: boton
+  "Reenviar enlace de verificacion" cuando el login responde "no esta verificada".
+
+**Regla para el futuro**: si anades una clave secreta a `DEFAULTS` (o a la
+semilla) y tambien quieres configurarla por variable de entorno, la semilla la
+dejara en blanco en la BD; el arreglo de `settingsApplyOverrides()` ya evita que
+pise la env. Nunca quites ese `continue` para secretos.
