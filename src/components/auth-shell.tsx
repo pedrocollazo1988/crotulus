@@ -54,7 +54,7 @@ export function AuthShell({
           {children}
         </div>
       </main>
-      <script src="/admin/assets/admin-auth.js" defer />
+      <script src="/admin/assets/admin-auth.min.js" defer />
     </div>
   );
 }

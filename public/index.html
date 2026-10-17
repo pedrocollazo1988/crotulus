@@ -53,7 +53,7 @@
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Inter-latin.woff2" crossorigin>
 
   <!-- ============ ESTILOS ============ -->
-  <link rel="stylesheet" href="css/styles.css?v=20261017b">
+  <link rel="stylesheet" href="css/styles.min.css?v=20261023">
 
   <!-- ============ DATOS ESTRUCTURADOS AutoRepair (JSON-LD) ============
        schema.org/AutoRepair (subtipo de LocalBusiness, ideal para servicios
@@ -259,7 +259,11 @@
 
         <div class="hero__media">
           <!-- Imagen editable: equipo de trabajo real en la portada -->
-          <img src="assets/img/hero-tech.jpg?v=20261022" alt="Equipo de C-ROTULUS trabajando con ordenadores en una oficina" width="640" height="480" fetchpriority="high" decoding="async" data-site-image="hero_image" data-site-alt="hero_image_alt">
+          <picture>
+            <source type="image/avif" srcset="assets/img/hero-tech.avif?v=20261023">
+            <source type="image/webp" srcset="assets/img/hero-tech.webp?v=20261023">
+            <img src="assets/img/hero-tech.jpg?v=20261023" alt="Equipo de C-ROTULUS trabajando con ordenadores en una oficina" width="640" height="480" fetchpriority="high" decoding="async" data-site-image="hero_image" data-site-alt="hero_image_alt">
+          </picture>
         </div>
       </div>
 
@@ -376,7 +380,11 @@
           <!-- PROYECTO 1 -->
           <article class="project reveal">
             <div class="project__media">
-              <img src="assets/img/proyecto-web.jpg?v=20261022" width="800" height="500" alt="Comercio local con tienda online y catálogo de productos" loading="lazy" decoding="async">
+              <picture>
+                <source type="image/avif" srcset="assets/img/proyecto-web.avif?v=20261023">
+                <source type="image/webp" srcset="assets/img/proyecto-web.webp?v=20261023">
+                <img src="assets/img/proyecto-web.jpg?v=20261023" width="800" height="500" alt="Comercio local con tienda online y catálogo de productos" loading="lazy" decoding="async">
+              </picture>
             </div>
             <div class="project__body">
               <span class="project__tag">Desarrollo web</span>
@@ -389,7 +397,11 @@
           <!-- PROYECTO 2 -->
           <article class="project reveal">
             <div class="project__media">
-              <img src="assets/img/proyecto-ia.jpg?v=20261022" width="800" height="500" alt="Asistente virtual de inteligencia artificial atendiendo consultas" loading="lazy" decoding="async">
+              <picture>
+                <source type="image/avif" srcset="assets/img/proyecto-ia.avif?v=20261023">
+                <source type="image/webp" srcset="assets/img/proyecto-ia.webp?v=20261023">
+                <img src="assets/img/proyecto-ia.jpg?v=20261023" width="800" height="500" alt="Asistente virtual de inteligencia artificial atendiendo consultas" loading="lazy" decoding="async">
+              </picture>
             </div>
             <div class="project__body">
               <span class="project__tag">Automatización e IA</span>
@@ -402,7 +414,11 @@
           <!-- PROYECTO 3 -->
           <article class="project reveal">
             <div class="project__media">
-              <img src="assets/img/proyecto-redes.jpg?v=20261022" width="800" height="500" alt="Armario de comunicaciones con cableado de red profesional" loading="lazy" decoding="async">
+              <picture>
+                <source type="image/avif" srcset="assets/img/proyecto-redes.avif?v=20261023">
+                <source type="image/webp" srcset="assets/img/proyecto-redes.webp?v=20261023">
+                <img src="assets/img/proyecto-redes.jpg?v=20261023" width="800" height="500" alt="Armario de comunicaciones con cableado de red profesional" loading="lazy" decoding="async">
+              </picture>
             </div>
             <div class="project__body">
               <span class="project__tag">Redes y seguridad</span>
@@ -429,7 +445,11 @@
           <!-- ARTÍCULO 1 -->
           <article class="post">
             <a class="post__media" href="#blog" aria-label="Leer: Cómo la IA puede ahorrar horas a tu pyme">
-              <img src="assets/img/blog/automatizacion-ia-pymes.jpg?v=20261022" width="800" height="500" alt="Análisis de datos y gráficas para automatizar tareas con IA" loading="lazy" decoding="async">
+              <picture>
+                <source type="image/avif" srcset="assets/img/blog/automatizacion-ia-pymes.avif?v=20261023">
+                <source type="image/webp" srcset="assets/img/blog/automatizacion-ia-pymes.webp?v=20261023">
+                <img src="assets/img/blog/automatizacion-ia-pymes.jpg?v=20261023" width="800" height="500" alt="Análisis de datos y gráficas para automatizar tareas con IA" loading="lazy" decoding="async">
+              </picture>
             </a>
             <div class="post__body">
               <span class="post__tag">Automatización</span>
@@ -442,7 +462,11 @@
           <!-- ARTÍCULO 2 -->
           <article class="post">
             <a class="post__media" href="#blog" aria-label="Leer: Protege tu red: 5 medidas básicas">
-              <img src="assets/img/blog/seguridad-red-pyme.jpg?v=20261022" width="800" height="500" alt="Seguridad informática: candado y datos protegidos" loading="lazy" decoding="async">
+              <picture>
+                <source type="image/avif" srcset="assets/img/blog/seguridad-red-pyme.avif?v=20261023">
+                <source type="image/webp" srcset="assets/img/blog/seguridad-red-pyme.webp?v=20261023">
+                <img src="assets/img/blog/seguridad-red-pyme.jpg?v=20261023" width="800" height="500" alt="Seguridad informática: candado y datos protegidos" loading="lazy" decoding="async">
+              </picture>
             </a>
             <div class="post__body">
               <span class="post__tag">Seguridad</span>
@@ -455,7 +479,11 @@
           <!-- ARTÍCULO 3 -->
           <article class="post">
             <a class="post__media" href="#blog" aria-label="Leer: Una web que convierte visitas en clientes">
-              <img src="assets/img/blog/web-que-convierte.jpg?v=20261022" width="800" height="500" alt="Programador desarrollando una web moderna" loading="lazy" decoding="async">
+              <picture>
+                <source type="image/avif" srcset="assets/img/blog/web-que-convierte.avif?v=20261023">
+                <source type="image/webp" srcset="assets/img/blog/web-que-convierte.webp?v=20261023">
+                <img src="assets/img/blog/web-que-convierte.jpg?v=20261023" width="800" height="500" alt="Programador desarrollando una web moderna" loading="lazy" decoding="async">
+              </picture>
             </a>
             <div class="post__body">
               <span class="post__tag">Desarrollo web</span>
@@ -1112,7 +1140,7 @@
   </button>
 
   <!-- ==================== SCRIPTS ==================== -->
-  <script src="js/main.js?v=20261017b" defer></script>
+  <script src="js/main.min.js?v=20261023" defer></script>
 
   <!-- Widget de CreatuAgente (chat de atención al cliente).
        Inyecta su propio botón flotante abajo a la derecha; por eso el botón

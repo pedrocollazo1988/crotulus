@@ -34,7 +34,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   if (!user) {
     return (
       <>
-        <link rel="stylesheet" href="/admin/assets/admin.css" />
+        <link rel="stylesheet" href="/admin/assets/admin.min.css" />
         {children}
       </>
     );
@@ -47,7 +47,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
 
   return (
     <>
-      <link rel="stylesheet" href="/admin/assets/admin.css" />
+      <link rel="stylesheet" href="/admin/assets/admin.min.css" />
       <header className="topbar">
         <div className="topbar__inner">
           <div className="topbar__row">

@@ -134,6 +134,10 @@ body {
 }
 
 img { max-width: 100%; height: auto; display: block; }
+/* <picture> es inline por defecto y rompe las cajas con aspect-ratio + height:100%
+   (el img pasaria a medirse contra un contenedor sin altura). Haciendolo
+   transparente al flujo, el <img> se comporta como hijo directo del contenedor. */
+picture { display: contents; }
 ul, ol { margin: 0; padding: 0; list-style: none; }
 a { color: var(--color-primary); text-decoration: none; }
 a:hover { text-decoration: underline; }
@@ -1292,7 +1296,7 @@ img.testimonial__avatar {
 
 /* La seccion Ubicacion: datos de contacto + mapa en dos columnas */
 .ubicacion__grid { display: grid; gap: 2rem; }
-.ubicacion__map { display: grid; gap: 0; align-content: start; }
+.ubicacion__map { display: grid; gap: 0; align-content: start; min-width: 0; }
 .ubicacion__map .contact-map { margin-top: 0; }
 
 .contact-form {
@@ -1383,8 +1387,8 @@ img.testimonial__avatar {
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--color-line);
   background: var(--color-primary-soft);
+  width: 100%;
   aspect-ratio: 16 / 10;
-  min-height: 280px;
 }
 .contact-map iframe,
 .contact-map img { width: 100%; height: 100%; display: block; border: 0; }
@@ -1640,16 +1644,20 @@ html.has-reveal-anim .cards .reveal.is-visible:nth-child(6) { transition-delay: 
   .site-header { top: 0; }
 }
 
-/* Menú horizontal: a partir de ~1160 px hay holgura para las 11 secciones
-   (fuente reducida y espaciado ajustado). Por debajo se conserva la
-   navegación móvil (hamburguesa). */
-@media (min-width: 1160px) {
+/* Menú horizontal: el grid "logo | menú | acciones" necesita ~1205 px de
+   contenido (logo 157 + 10 enlaces 789 + acciones 219 + separaciones). Por eso
+   solo se activa a partir de 1260 px y el contenedor de la cabecera se ensancha
+   a 1320 px para darle holgura; con 1140 px el menú desbordaba la página.
+   Por debajo se conserva la navegación móvil (hamburguesa). */
+@media (min-width: 1260px) {
   .site-header__inner {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
     gap: 1.25rem;
+    max-width: 1320px;
   }
+  .topbar__inner { max-width: 1320px; }
   .nav-toggle { display: none; }
   .btn--nav-cta { display: inline-flex; }
   .primary-nav {
