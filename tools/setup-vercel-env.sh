@@ -15,7 +15,11 @@
 #
 # Notas de fiabilidad (bugs conocidos del CLI de Vercel):
 #   - "vercel env add NAME preview" exige rama explicita en algunas versiones.
-#     Aqui se pasa SIEMPRE la rama (por defecto la actual) para evitarlo.
+#     Por eso, si se limita a una rama (--branch), se pasa SIEMPRE la rama.
+#   - OJO: atar las variables de Preview a UNA rama hace que los previews de las
+#     demas ramas se queden sin ellas (500 / boton de Google apagado). Por
+#     defecto se suben a Preview SIN rama, es decir a TODAS las ramas. Usa
+#     --branch <rama> solo si de verdad quieres limitarlas a una.
 #   - Algunas versiones reportan exito pero guardan cadena vacia. Por eso, tras
 #     subir, el script comprueba cada valor con "vercel env pull" y avisa.
 # =============================================================================
@@ -23,7 +27,8 @@ cd "$(dirname "$0")/.." || exit 1
 
 ENV_FILE="${ENV_FILE:-deploy/vercel.env}"
 TMP_ENV="$(mktemp -t vercel-pull.XXXXXX)"
-BRANCH="${BRANCH:-$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo main)}"
+# Vacio = Preview sin rama (todas las ramas). Solo se rellena con --branch.
+BRANCH=""
 ASSUME_YES=0
 DRY_RUN=0
 ONLY=""
@@ -123,7 +128,7 @@ mask() {
 }
 
 echo
-echo "Proyecto : $(basename "$PWD")   Rama: $BRANCH"
+echo "Proyecto : $(basename "$PWD")   Rama (preview): ${BRANCH:-<todas>}"
 echo "Archivo  : $ENV_FILE"
 echo "Entornos : ${TARGETS[*]}"
 echo

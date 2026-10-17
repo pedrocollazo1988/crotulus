@@ -843,3 +843,44 @@ Conserva los IDs originales, convierte `meta` a JSONB y reajusta las secuencias
 - `tools/serve-next.sh` — vista previa Next + PG (`--ensure` / `--watch` / `--prod`).
 - `tools/serve.sh` — servidor PHP antiguo (ya no se usa; se conserva por referencia).
 - `tools/build_zip.py` — empaquetado del sitio estatico (heredado del hosting PHP).
+
+## Vercel: el preview no mostraba los cambios (2026-10-16)
+
+Sintoma: el propietario abre el preview de `dev_plca` y **no ve** los cambios ya
+fusionados (p. ej. las mejoras de Google). No era un problema de codigo.
+
+Diagnostico (comprobado con la API de GitHub y `curl`):
+- El codigo **si estaba** en `dev_plca` y **si estaba desplegado**: los commits de
+  las PR #5/#6 son ancestros de `dev_plca`, los ficheros de Google son identicos a
+  los de `main`, y el deployment del preview termino en `success`.
+- `dev_plca` aparecia "1 por detras" de `main` solo por el commit de **merge**
+  `f96ef50` (vive unicamente en `main` y no aporta contenido). `git diff
+  f96ef50 51fdd51` sale vacio. Se resolvio fusionando `main` en `dev_plca`
+  (merge limpio, sin conflictos) y empujando: ahora `main...dev_plca` = `ahead: 2,
+  behind: 0`.
+
+Causa real: **entorno**, no codigo. Dos motivos, ambos en Vercel:
+1. **Vercel Authentication**: todos los previews devuelven `302` a
+   `vercel.com/sso-api`. Sin iniciar sesion (o sin un *Protection Bypass*) no se ve
+   nada. El alias de produccion `crotulus.vercel.app` si es publico.
+2. **Variables de entorno de Preview atadas a una rama**: `tools/setup-vercel-env.sh`
+   subia Preview con `--git-branch <rama actual>`. Si se ejecuto desde otra rama,
+   el preview de `dev_plca` se queda sin `DATABASE_URL`/`APP_KEY`/Google -> 500 o
+   boton de Google apagado.
+
+Arreglo aplicado (en el repo):
+- `tools/setup-vercel-env.sh`: por defecto **Preview sin rama = todas las ramas**
+  (`BRANCH=""`); `--branch <rama>` sigue disponible para limitar a una.
+- `VERCEL.md` y este `AGENTS.md`: documentado el muro de autenticacion y el aviso
+  de `--branch`.
+
+Pendiente del propietario (no se puede hacer desde el repo, requiere el panel de
+Vercel o un token):
+- Desactivar *Vercel Authentication* para Preview **o** crear un *Protection
+  Bypass* y anadir `?x-vercel-protection-bypass=<secreto>`.
+- Reejecutar `bash tools/setup-vercel-env.sh` (con `npx vercel login`) para subir
+  las variables a **todas** las ramas de Preview, y **Redeploy**.
+- OJO: `deploy/vercel.env` tiene vacias `GOOGLE_CLIENT_ID/SECRET`,
+  `MAIL_SMTP_PASS` y `ADMIN_PASSWORD`; en produccion esas claves estan puestas a
+  mano en el dashboard (por eso produccion si activa el boton de Google). Para el
+  preview hay que darselas tambien.
