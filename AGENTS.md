@@ -843,3 +843,80 @@ Conserva los IDs originales, convierte `meta` a JSONB y reajusta las secuencias
 - `tools/serve-next.sh` — vista previa Next + PG (`--ensure` / `--watch` / `--prod`).
 - `tools/serve.sh` — servidor PHP antiguo (ya no se usa; se conserva por referencia).
 - `tools/build_zip.py` — empaquetado del sitio estatico (heredado del hosting PHP).
+
+## Vercel: el preview no mostraba los cambios (2026-10-16)
+
+Sintoma: el propietario abre el preview de `dev_plca` y **no ve** los cambios ya
+fusionados (p. ej. las mejoras de Google). No era un problema de codigo.
+
+Diagnostico (comprobado con la API de GitHub y `curl`):
+- El codigo **si estaba** en `dev_plca` y **si estaba desplegado**: los commits de
+  las PR #5/#6 son ancestros de `dev_plca`, los ficheros de Google son identicos a
+  los de `main`, y el deployment del preview termino en `success`.
+- `dev_plca` aparecia "1 por detras" de `main` solo por el commit de **merge**
+  `f96ef50` (vive unicamente en `main` y no aporta contenido). `git diff
+  f96ef50 51fdd51` sale vacio. Se resolvio fusionando `main` en `dev_plca`
+  (merge limpio, sin conflictos) y empujando: ahora `main...dev_plca` = `ahead: 2,
+  behind: 0`.
+
+Causa real: **entorno**, no codigo. Dos motivos, ambos en Vercel:
+1. **Vercel Authentication**: todos los previews devuelven `302` a
+   `vercel.com/sso-api`. Sin iniciar sesion (o sin un *Protection Bypass*) no se ve
+   nada. El alias de produccion `crotulus.vercel.app` si es publico.
+2. **Variables de entorno de Preview atadas a una rama**: `tools/setup-vercel-env.sh`
+   subia Preview con `--git-branch <rama actual>`. Si se ejecuto desde otra rama,
+   el preview de `dev_plca` se queda sin `DATABASE_URL`/`APP_KEY`/Google -> 500 o
+   boton de Google apagado.
+
+Arreglo aplicado (en el repo):
+- `tools/setup-vercel-env.sh`: por defecto **Preview sin rama = todas las ramas**
+  (`BRANCH=""`); `--branch <rama>` sigue disponible para limitar a una.
+- `VERCEL.md` y este `AGENTS.md`: documentado el muro de autenticacion y el aviso
+  de `--branch`.
+
+Pendiente del propietario (no se puede hacer desde el repo, requiere el panel de
+Vercel o un token):
+- Desactivar *Vercel Authentication* para Preview **o** crear un *Protection
+  Bypass* y anadir `?x-vercel-protection-bypass=<secreto>`.
+- Reejecutar `bash tools/setup-vercel-env.sh` (con `npx vercel login`) para subir
+  las variables a **todas** las ramas de Preview, y **Redeploy**.
+- OJO: `deploy/vercel.env` tiene vacias `GOOGLE_CLIENT_ID/SECRET`,
+  `MAIL_SMTP_PASS` y `ADMIN_PASSWORD`; en produccion esas claves estan puestas a
+  mano en el dashboard (por eso produccion si activa el boton de Google). Para el
+  preview hay que darselas tambien.
+
+
+## Bug resuelto: "me registro pero no puedo iniciar sesion" (2026-10-17)
+
+Sintoma en produccion: el registro respondia "Cuenta creada. Revisa tu correo",
+pero el login devolvia 403 "Tu cuenta aun no esta verificada" y el correo de
+verificacion nunca llegaba (tampoco el de "olvide mi contrasena").
+
+**Causa raiz (no era SMTP de Vercel ni credenciales mal puestas).** La semilla
+`scripts/seed.ts` escribe TODAS las claves de `DEFAULTS` en la tabla `settings`,
+incluida `mail_smtp_pass: ""` (`src/lib/defaults.ts`). En cada peticion,
+`settingsApplyOverrides()` (`src/lib/settings.ts`) copiaba **incondicionalmente**
+todos los ajustes de la BD sobre la config en memoria, asi que esa cadena vacia
+PISABA el `MAIL_SMTP_PASS` definido en Vercel. Nodemailer intentaba autenticar
+con contrasena vacia -> Gmail `535 BadCredentials` -> `sendMail()` devolvia
+`false`, pero el registro lo ignoraba y decia "revisa tu correo". La cuenta
+quedaba `status="pending"` / `email_verified_at=NULL` y el login la bloqueaba.
+
+**Prueba de la asimetria**: `google_client_id`/`google_client_secret` NO estan en
+`DEFAULTS` -> no se siembran -> la env sobrevive -> Google OAuth funciona. En
+cambio `mail_smtp_pass`, `google_places_api_key` y `sms_twilio_auth_token` SI
+estan en `DEFAULTS` -> se sembraban vacios -> pisaban la env.
+
+**Arreglo** (commit `ae2ce97` en `dev_plca`):
+- `src/lib/settings.ts`: un secreto vacio en la BD ya **no** pisa la variable de
+  entorno (misma semantica que el panel: vacio = conservar).
+- `src/lib/mailer.ts`: aviso claro si hay `smtp_user` sin `smtp_pass`.
+- `src/app/api/auth/route.ts`: el registro informa si el correo no pudo salir;
+  nueva accion `resend_verify`.
+- `public/admin/assets/admin-auth.js` + `src/app/admin/login/page.tsx`: boton
+  "Reenviar enlace de verificacion" cuando el login responde "no esta verificada".
+
+**Regla para el futuro**: si anades una clave secreta a `DEFAULTS` (o a la
+semilla) y tambien quieres configurarla por variable de entorno, la semilla la
+dejara en blanco en la BD; el arreglo de `settingsApplyOverrides()` ya evita que
+pise la env. Nunca quites ese `continue` para secretos.

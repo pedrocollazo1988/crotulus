@@ -55,6 +55,10 @@ const tsx = path.join("node_modules", ".bin", "tsx");
 if (existsSync(tsx)) {
   console.log("[db-bootstrap] Sembrando contenido (solo tablas vacias)...");
   run("seed", tsx, ["scripts/seed.ts"]);
+  // Migracion de datos: cambia las ilustraciones SVG por fotos reales en una
+  // base ya sembrada (idempotente).
+  console.log("[db-bootstrap] Migrando imagenes SVG -> JPG...");
+  run("migrate-images", tsx, ["scripts/migrate-images.ts"]);
 } else {
   console.log("[db-bootstrap] tsx no disponible: se omite la semilla.");
 }

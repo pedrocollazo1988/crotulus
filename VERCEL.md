@@ -136,8 +136,20 @@ bash tools/setup-vercel-env.sh                   # 5. sube a Production y Previe
 El script sube a **Production y Preview** a la vez, omite las variables vacias,
 genera la `APP_KEY` si no la pones y, al terminar, **verifica** cada valor con
 `vercel env pull` (algunas versiones del CLI reportan exito y guardan cadena
-vacia). `--only prod` / `--only preview` limita el destino; `--branch` cambia la
-rama de Preview (por defecto, la rama actual).
+vacia). `--only prod` / `--only preview` limita el destino; `--branch <rama>`
+limita Preview a esa rama (por defecto se suben a **todas las ramas**, que es lo
+que quieres casi siempre).
+
+> OJO con `--branch`: si atas las variables de Preview a **una sola rama**, los
+> previews de las **demas** ramas se quedan sin BD ni credenciales (error 500 o
+> boton de Google apagado). Ese fue el motivo de que el preview de `dev_plca` no
+> mostrara los cambios: el codigo si estaba desplegado, pero el entorno no.
+> Sube las variables **sin rama** (todas) y vuelve a desplegar.
+
+> Los **previews** salen detras de *Vercel Authentication* (respuesta 302 a
+> `vercel.com/sso-api`). Para verlos sin iniciar sesion, o bien desactiva la
+> proteccion para Preview (Settings > Deployment Protection), o bien crea un
+> *Protection Bypass* y anade `?x-vercel-protection-bypass=<secreto>` a la URL.
 
 > Las variables nuevas **no se aplican** a despliegues ya hechos: hay que
 > **Redeploy** en el panel o hacer un push.

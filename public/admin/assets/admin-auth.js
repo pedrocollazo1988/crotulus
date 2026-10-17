@@ -107,7 +107,7 @@
 
   /* ===================== 3. ENVIO (fetch + CSRF) ======================== */
 
-  function submitForm(form, okId, errId, onSuccess, errBoxOverride) {
+  function submitForm(form, okId, errId, onSuccess, errBoxOverride, onError) {
     var okBox = document.getElementById(okId);
     var errBox = errBoxOverride || document.getElementById(errId);
     var btn = form.querySelector('button[type="submit"]');
@@ -144,10 +144,12 @@
           errBox.textContent = (data && data.error) || "No se pudo completar la operación.";
           errBox.hidden = false;
         }
+        if (onError) onError(data, errBox);
       })
       .catch(function () {
         if (btn) { btn.disabled = false; btn.textContent = original; }
         if (errBox) { errBox.textContent = "Error de conexión. Inténtalo de nuevo."; errBox.hidden = false; }
+        if (onError) onError(null, errBox);
       });
   }
 
@@ -243,8 +245,52 @@
           window.location.href = (role === "admin")
             ? (login.getAttribute("data-admin-url") || "admin/")
             : (login.getAttribute("data-success-url") || "admin/account");
+        }, null, function (data) {
+          // Cuenta sin verificar: ofrecer reenviar el enlace en la propia pantalla.
+          var box = document.getElementById("resendVerify");
+          var code = data && data.error ? String(data.error) : "";
+          if (box && /no está verificada/i.test(code)) box.hidden = false;
         });
       });
+
+      var resend = document.getElementById("resendVerifyBtn");
+      if (resend) {
+        resend.addEventListener("click", function (ev) {
+          ev.preventDefault();
+          var emailInput = login.querySelector('input[name="email"]');
+          var email = emailInput ? (emailInput.value || "").trim() : "";
+          var box = document.getElementById("resendVerifyMsg");
+          var errBox = document.getElementById("loginError");
+          if (email === "") {
+            if (errBox) { errBox.textContent = "Escribe tu correo para reenviar el enlace."; errBox.hidden = false; }
+            if (emailInput) emailInput.focus();
+            return;
+          }
+          resend.disabled = true;
+          if (box) { box.hidden = true; }
+          var csrfField = login.querySelector('input[name="_csrf"]');
+          var body = new FormData();
+          if (csrfField) body.append("_csrf", csrfField.value);
+          body.append("email", email);
+          fetch("/api/auth?action=resend_verify", {
+            method: "POST",
+            body: body,
+            headers: { "X-Requested-With": "XMLHttpRequest" },
+          })
+            .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
+            .then(function (data) {
+              resend.disabled = false;
+              if (box) {
+                box.textContent = (data && data.message) || "Si la cuenta existe, te hemos reenviado el enlace.";
+                box.hidden = false;
+              }
+            })
+            .catch(function () {
+              resend.disabled = false;
+              if (box) { box.textContent = "Error de conexión. Inténtalo de nuevo."; box.hidden = false; }
+            });
+        });
+      }
     }
 
     /* --- Verificacion en dos pasos --- */

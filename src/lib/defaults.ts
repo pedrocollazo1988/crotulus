@@ -24,9 +24,9 @@ const DEFAULTS: Dict = {
     "Ayudamos a pymes y autónomos a digitalizarse con desarrollo web, automatización e IA, redes seguras y soporte continuo. Menos problemas, más tiempo para lo que importa.",
   hero_cta1_label: "Solicitar servicios",
   hero_cta2_label: "Escríbenos por WhatsApp",
-  hero_image: "assets/img/hero-tech.svg",
+  hero_image: "assets/img/hero-tech.jpg",
   hero_image_alt:
-    "Panel de control de C-ROTULUS con gráficas, servicios en la nube y una red de datos conectada",
+    "Equipo de C-ROTULUS trabajando con ordenadores en una oficina",
 
   // Cifras
   stat1_value: "12", stat1_label: "años de experiencia",
@@ -86,7 +86,7 @@ const DEFAULTS: Dict = {
   // Sobre nosotros
   about_body:
     "C-ROTULUS nació con una idea sencilla: la tecnología no debería ser un dolor de cabeza. Empezamos resolviendo pequeños problemas informáticos para negocios de nuestro entorno y, con el tiempo, ampliamos el servicio hasta diseñar, desplegar y mantener la infraestructura digital completa de nuestros clientes.",
-  about_image: "assets/img/equipo.svg",
+  about_image: "assets/img/hero-tech.jpg",
   about_image_alt:
     "Equipo de profesionales de C-ROTULUS trabajando en un proyecto",
 

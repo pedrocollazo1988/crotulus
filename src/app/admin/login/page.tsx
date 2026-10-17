@@ -95,6 +95,12 @@ export default async function LoginPage({
         <button className="btn btn--block" type="submit">Entrar</button>
         <GoogleButton enabled={google} />
 
+        <div className="resend-verify" id="resendVerify" hidden>
+          <p className="muted">¿Tu correo sigue sin verificar? Podemos enviarte el enlace otra vez.</p>
+          <button type="button" className="btn btn--sm btn--ghost" id="resendVerifyBtn">Reenviar enlace de verificación</button>
+          <p className="alert alert--info" id="resendVerifyMsg" hidden />
+        </div>
+
         <div className="links">
           <a href="/admin/forgot">Olvidé mi contraseña</a>
           <span aria-hidden="true">·</span>

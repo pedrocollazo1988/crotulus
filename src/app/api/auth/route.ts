@@ -129,8 +129,18 @@ export async function POST(req: NextRequest) {
 
       const userId = await authCreateUser(email, name, pass, "pending");
       const user = await prisma.user.findUnique({ where: { id: userId } });
-      if (user) await sendVerificationEmail(user.id, user.email, user.name);
+      const sent = user ? await sendVerificationEmail(user.id, user.email, user.name) : false;
       await appLog(`user_registered ${userId} ${email}`);
+      // Si el correo no sale, decirlo: antes respondia "revisa tu correo" y el
+      // usuario quedaba bloqueado en "cuenta no verificada" sin saber por que.
+      if (!sent) {
+        return jsonOk({
+          message:
+            "Cuenta creada, pero no pudimos enviar el correo de verificación. " +
+            "Pide un enlace nuevo desde la pantalla de acceso o usa «Olvidé mi contraseña».",
+          mail_sent: false,
+        });
+      }
       return jsonOk({ message: "Cuenta creada. Revisa tu correo para verificarla." });
     }
 
@@ -249,13 +259,32 @@ export async function POST(req: NextRequest) {
       return jsonOk({ message: "Si el correo existe, recibirás un enlace para restablecerla." });
     }
 
+    case "resend_verify": {
+      const csrf = csrfRequire(req, data);
+      if (csrf) return csrf;
+      if (!(await rateLimit("resend_verify", clientIp(req), 5, 3600))) {
+        return jsonError("Demasiadas solicitudes. Prueba más tarde.", 429);
+      }
+      const email = normalizeEmail(input(data, "email"));
+      if (email === null) {
+        return jsonError("Escribe un correo válido.", 422, { fields: { email: "Escribe un correo válido." } });
+      }
+      // Respuesta uniforme exista o no la cuenta (no revelar usuarios), pero solo
+      // se envia a cuentas pendientes de verificar.
+      const user = await authFindByEmail(email);
+      if (user && user.status === "pending" && user.emailVerifiedAt === null) {
+        await sendVerificationEmail(user.id, user.email, user.name);
+      }
+      return jsonOk({ message: "Si la cuenta existe y está sin verificar, te hemos reenviado el enlace." });
+    }
+
     default:
       return jsonError("Acción no reconocida.", 404);
   }
 }
 
-/** Envia el correo de verificacion de cuenta. */
-async function sendVerificationEmail(userId: number, email: string, name: string): Promise<void> {
+/** Envia el correo de verificacion de cuenta. Devuelve true si salio. */
+async function sendVerificationEmail(userId: number, email: string, name: string): Promise<boolean> {
   const token = await authCreateToken(userId, "email_verify", 86400 * 2);
   const link = url(`api/verify?token=${encodeURIComponent(token)}`);
   const html = mailerTemplate(
@@ -265,7 +294,7 @@ async function sendVerificationEmail(userId: number, email: string, name: string
      <p><a class="btn" href="${link}">Verificar mi correo</a></p>
      <p>El enlace caduca en 48 horas. Si no has sido tú, ignora este mensaje.</p>`,
   );
-  await sendMail(email, `Verifica tu correo · ${getConfig().siteName}`, html);
+  return sendMail(email, `Verifica tu correo · ${getConfig().siteName}`, html);
 }
 
 /** Envia el correo para restablecer la contrasena. */

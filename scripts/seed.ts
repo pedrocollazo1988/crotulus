@@ -38,9 +38,9 @@ async function seedContent() {
       ["Mantenimiento integral", "Continuidad", "Nos ocupamos de que todo siga funcionando: actualizaciones, monitorización y mejoras continuas."],
     ],
     proyecto: [
-      ["Tienda online para distribuidora local", "Desarrollo web", "Catálogo de más de 2.000 referencias, pago integrado y panel de gestión para el equipo.", { image: "assets/img/proyecto-web.svg" }],
-      ["Asistente que atiende consultas 24/7", "Automatización e IA", "Un agente de IA que responde dudas frecuentes y deriva las incidencias al equipo humano.", { image: "assets/img/proyecto-ia.svg" }],
-      ["Renovación de red en oficinas", "Redes y seguridad", "Cableado, Wi-Fi profesional y firewall gestionado para 60 puestos de trabajo.", { image: "assets/img/proyecto-redes.svg" }],
+      ["Tienda online para distribuidora local", "Desarrollo web", "Catálogo de más de 2.000 referencias, pago integrado y panel de gestión para el equipo.", { image: "assets/img/proyecto-web.jpg" }],
+      ["Asistente que atiende consultas 24/7", "Automatización e IA", "Un agente de IA que responde dudas frecuentes y deriva las incidencias al equipo humano.", { image: "assets/img/proyecto-ia.jpg" }],
+      ["Renovación de red en oficinas", "Redes y seguridad", "Cableado, Wi-Fi profesional y firewall gestionado para 60 puestos de trabajo.", { image: "assets/img/proyecto-redes.jpg" }],
     ],
     testimonio: [
       ["Marta López", "Gerente · Distribuciones ML", "Nos renovaron la web y automatizaron los presupuestos. Ahora ahorramos varias horas cada semana y todo es mucho más claro.", { photo: "assets/img/testimonios/marta-lopez.jpg", rating: 5, resultado: "+40% de solicitudes online en 3 meses" }],
@@ -109,9 +109,9 @@ async function seedBlogAndTeam() {
 
   if ((await prisma.blogPost.count()) === 0) {
     const posts = [
-      ["automatizacion-ia-pymes", "Cómo la IA puede ahorrar horas a tu pyme", "Descubre qué tareas conviene automatizar primero y cómo empezar sin complicaciones.", "La inteligencia artificial ya no es cosa de grandes empresas. En este artículo repasamos tareas cotidianas que puedes automatizar —presupuestos, respuestas frecuentes, informes— y cómo dar el primer paso con un coste bajo.", "Automatización", "Marta López", "assets/img/blog/automatizacion-ia-pymes.svg"],
-      ["seguridad-red-pyme", "Protege tu red: 5 medidas básicas", "Cinco acciones sencillas que reducen drásticamente el riesgo de un incidente.", "No necesitas un gran presupuesto para proteger tu negocio. Estas cinco medidas —copias de seguridad, contraseñas robustas, actualizaciones, Wi-Fi segmentado y formación del equipo— cubren la mayoría de riesgos habituales.", "Seguridad", "Javier Ruiz", "assets/img/blog/seguridad-red-pyme.svg"],
-      ["web-que-convierte", "Una web que convierte visitas en clientes", "Qué debe tener tu web para que quien llega termine contactando contigo.", "Una web bonita que no genera contactos es un gasto, no una inversión. Repasamos los elementos que marcan la diferencia: mensaje claro, prueba social, llamadas a la acción visibles y velocidad de carga.", "Desarrollo web", "Diego Marín", "assets/img/blog/web-que-convierte.svg"],
+      ["automatizacion-ia-pymes", "Cómo la IA puede ahorrar horas a tu pyme", "Descubre qué tareas conviene automatizar primero y cómo empezar sin complicaciones.", "La inteligencia artificial ya no es cosa de grandes empresas. En este artículo repasamos tareas cotidianas que puedes automatizar —presupuestos, respuestas frecuentes, informes— y cómo dar el primer paso con un coste bajo.", "Automatización", "Marta López", "assets/img/blog/automatizacion-ia-pymes.jpg"],
+      ["seguridad-red-pyme", "Protege tu red: 5 medidas básicas", "Cinco acciones sencillas que reducen drásticamente el riesgo de un incidente.", "No necesitas un gran presupuesto para proteger tu negocio. Estas cinco medidas —copias de seguridad, contraseñas robustas, actualizaciones, Wi-Fi segmentado y formación del equipo— cubren la mayoría de riesgos habituales.", "Seguridad", "Javier Ruiz", "assets/img/blog/seguridad-red-pyme.jpg"],
+      ["web-que-convierte", "Una web que convierte visitas en clientes", "Qué debe tener tu web para que quien llega termine contactando contigo.", "Una web bonita que no genera contactos es un gasto, no una inversión. Repasamos los elementos que marcan la diferencia: mensaje claro, prueba social, llamadas a la acción visibles y velocidad de carga.", "Desarrollo web", "Diego Marín", "assets/img/blog/web-que-convierte.jpg"],
     ];
     for (let i = 0; i < posts.length; i++) {
       const p = posts[i];
