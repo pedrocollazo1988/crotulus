@@ -160,6 +160,10 @@ const DEFAULTS: Dict = {
   // Valoraciones y resenas
   reviews_enabled: "1",
   reviews_auto_approve: "0",
+  // Visibilidad independiente de cada bloque de valoraciones en la portada
+  testimonials_enabled: "1",
+  google_reviews_enabled: "1",
+  trustpilot_enabled: "1",
   reviews_provider: "trustpilot",
   trustpilot_url: "https://es.trustpilot.com/review/[TU-DOMINIO]",
   trustpilot_business_id: "[TRUSTPILOT_BUSINESS_ID]",

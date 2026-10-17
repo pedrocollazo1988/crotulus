@@ -463,9 +463,71 @@
       mostrarMantenimiento(s.maintenance_message || "Estamos mejorando la web. Volvemos en unos minutos.");
     }
 
+    // Visibilidad de los bloques de valoraciones (se activan/desactivan de forma
+    // independiente desde el panel). Cada sección lleva data-section-toggle="clave";
+    // al ocultarla se quitan también su enlace del menú y del pie.
+    aplicarSeccionesVisibles(s);
+
     // SEO editable: sobreescribe título, descripción y datos de compartir
     aplicarSeo(s);
 
+  }
+
+  /* ==========================================================================
+     VISIBILIDAD DE SECCIONES DE VALORACIONES
+     --------------------------------------------------------------------------
+     El panel guarda "testimonials_enabled", "google_reviews_enabled" y
+     "trustpilot_enabled" ("1"/"0"). Cada <section> de la portada declara su
+     clave con data-section-toggle. Si está a "0", se oculta la sección y los
+     enlaces (menú, pie) que apuntan a su ancla. Si la clave no llega (backend
+     sin respuesta), todo se queda visible.
+     ========================================================================== */
+  function aplicarSeccionesVisibles(s) {
+    var huboCambio = false;
+    $$("[data-section-toggle]").forEach(function (sec) {
+      var key = sec.getAttribute("data-section-toggle");
+      var valor = s[key];
+      if (valor === undefined) return;               // sin dato: no tocar
+      var visible = String(valor) !== "0";
+      sec.hidden = !visible;
+      huboCambio = true;
+      if (!visible) {
+        var id = sec.getAttribute("id");
+        if (id) {
+          $$('a[href="#' + id + '"], a[href$="#' + id + '"]').forEach(function (a) {
+            var li = a.closest("li");
+            (li || a).hidden = true;
+          });
+        }
+      }
+    });
+    // Al ocultar un bloque pueden quedar dos secciones azules seguidas (p. ej.
+    // «proceso» + «valoraciones»), lo que rompe la alternancia del diseno. Se
+    // devuelve a gris suave la segunda azul de cada pareja contigua.
+    if (huboCambio) normalizarFondos();
+  }
+
+  function esAzul(sec) {
+    return sec.classList.contains("section--blue") || sec.classList.contains("section--alt");
+  }
+
+  function normalizarFondos() {
+    var main = document.querySelector("main");
+    if (!main) return;
+    var previaAzul = false;
+    $$("section.section", main).forEach(function (sec) {
+      if (sec.hidden) return;
+      if (esAzul(sec)) {
+        if (previaAzul) {
+          sec.classList.remove("section--blue", "section--alt");
+          sec.classList.add("section--soft");
+        } else {
+          previaAzul = true;
+        }
+      } else {
+        previaAzul = false;
+      }
+    });
   }
 
   /* Aplica al <head> los textos de SEO guardados en el panel. */
