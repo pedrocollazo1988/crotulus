@@ -40,6 +40,9 @@ start_server() {
     npm run build >>"$LOG" 2>&1 || { echo "[serve-next] ERROR: el build fallo (ver $LOG)"; return 1; }
     setsid nohup npx next start -p "$PORT" >>"$LOG" 2>&1 </dev/null &
   else
+    # El HTML referencia los assets .min; "next dev" no ejecuta el build, asi
+    # que hay que generarlos aqui o la vista previa saldria sin estilos.
+    node scripts/minify-assets.mjs >>"$LOG" 2>&1
     setsid nohup npx next dev -p "$PORT" >>"$LOG" 2>&1 </dev/null &
   fi
 

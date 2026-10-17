@@ -475,6 +475,21 @@ export default async function SettingsPage({
               </div>
             </div>
             <div className="settings-card">
+              <h3>Registro de cuentas</h3>
+              <p className="muted">
+                Decide si una cuenta nueva debe confirmar su correo antes de poder entrar. Si el envío
+                de correo falla, la cuenta se activa igualmente para que nadie quede bloqueado.
+              </p>
+              <div className="grid-2">
+                <div className="field"><label htmlFor="email_verification">Verificación por correo</label>
+                  <select id="email_verification" name="email_verification" defaultValue={s["email_verification"] ?? "required"}>
+                    <option value="required">Obligatoria (la cuenta se activa al verificar)</option>
+                    <option value="optional">No obligatoria (la cuenta se activa al registrarse)</option>
+                  </select>
+                  <p className="muted">La variable de entorno <code>EMAIL_VERIFICATION</code>, si está definida, manda sobre este ajuste.</p></div>
+              </div>
+            </div>
+            <div className="settings-card">
               <h3>Límites anti-spam (por IP)</h3>
               <div className="grid-2">
                 {RATE_FIELDS.map(([key, label]) => (

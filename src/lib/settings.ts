@@ -70,6 +70,7 @@ export function settingsEditable(): string[] {
     "mail_smtp_host", "mail_smtp_port", "mail_smtp_user", "mail_smtp_pass",
     "mail_smtp_secure",
     "security_password_min", "security_session_lifetime",
+    "email_verification",
     "security_contact_rate_max", "security_contact_rate_window",
     "security_login_rate_max", "security_login_rate_window",
     "security_review_rate_max", "security_review_rate_window",
@@ -136,6 +137,7 @@ export function settingsConfigMap(): Record<string, string> {
     mail_smtp_pass: "mail.smtpPass",
     mail_smtp_secure: "mail.smtpSecure",
     security_password_min: "security.passwordMin",
+    email_verification: "security.emailVerification",
     security_session_lifetime: "security.sessionLifetime",
     security_session_bind_ip: "security.sessionBindIp",
     security_contact_rate_max: "security.contactRateMax",
@@ -203,18 +205,18 @@ export async function settingsApplyOverrides(config: Record<string, unknown>): P
     return; // Sin tabla de ajustes todavia.
   }
   const map = settingsConfigMap();
-  const secrets = settingsSecretKeys();
   for (const row of rows) {
     const key = row.skey;
     const path = map[key];
     if (!path) continue;
     const value = row.svalue ?? "";
-    // Un secreto vacio en la BD (la semilla siembra "mail_smtp_pass" y
-    // "google_places_api_key" en blanco) NO debe pisar el valor de la variable
-    // de entorno: sin esto, MAIL_SMTP_PASS de Vercel se perdia y el correo
-    // fallaba con 535 BadCredentials. Misma semantica que el panel (vacio =
-    // conservar). Ver tambien adminSaveSettings().
-    if (secrets.includes(key) && value === "") continue;
+    // Un valor vacio en la BD NO pisa la variable de entorno. La semilla
+    // siembra en blanco "mail_smtp_pass", "google_places_api_key",
+    // "mail_from_email", "sms_twilio_account_sid", "sms_twilio_from" o
+    // "paths_log_dir": si el vacio ganara, MAIL_SMTP_PASS (correo 535
+    // BadCredentials) o TWILIO_ACCOUNT_SID de Vercel se perderian sin aviso.
+    // Misma semantica que el panel (vacio = conservar). Ver adminSaveSettings().
+    if (value === "") continue;
     if (CAST_BOOL.has(path)) {
       setPath(config, path, value === "1");
     } else if (CAST_INT.has(path)) {

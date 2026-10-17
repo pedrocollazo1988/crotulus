@@ -70,6 +70,7 @@ export interface SiteConfig {
     submissionRateWindow: number;
     passwordMin: number;
     passwordMax: number;
+    emailVerification: string;
     captchaTtl: number;
     trustedProxies: string[];
     twoFactorMode: string;
@@ -141,6 +142,11 @@ export function loadConfig(): SiteConfig {
       submissionRateWindow: envInt("SUBMISSION_RATE_WINDOW", 3600),
       passwordMin: envInt("PASSWORD_MIN", 8),
       passwordMax: envInt("PASSWORD_MAX", 200),
+      // Verificacion por correo al registrarse: 'required' (por defecto) o
+      // 'optional' (la cuenta se activa al crearse). Si el correo de verificacion
+      // no puede salir, la cuenta se activa igualmente para no dejar al usuario
+      // bloqueado sin salida.
+      emailVerification: env("EMAIL_VERIFICATION", "required"),
       captchaTtl: envInt("CAPTCHA_TTL", 1200),
       trustedProxies: env("TRUSTED_PROXIES", "")
         .split(",")
@@ -177,6 +183,15 @@ let cached: SiteConfig | null = null;
 export function getConfig(): SiteConfig {
   if (!cached) cached = loadConfig();
   return cached;
+}
+
+/**
+ * Fija la configuracion del proceso. Lo usa bootstrap() para publicar la config
+ * ya sobrescrita con los ajustes de la base de datos (si no, getConfig()
+ * devolveria la config base y los ajustes del panel se ignorarian).
+ */
+export function setConfig(config: SiteConfig): void {
+  cached = config;
 }
 
 /** Reinicia la cache (util en pruebas). */

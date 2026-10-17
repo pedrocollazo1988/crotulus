@@ -1,5 +1,5 @@
 import "server-only";
-import { loadConfig, getConfig, resetConfig } from "./config";
+import { loadConfig, getConfig, resetConfig, setConfig } from "./config";
 import { settingsApplyOverrides } from "./settings";
 
 /**
@@ -24,6 +24,10 @@ export async function bootstrap(): Promise<void> {
   resetConfig();
   const config = loadConfig();
   await settingsApplyOverrides(config as unknown as Record<string, unknown>);
+  // Publicar la config ya sobrescrita: sin esto getConfig() devolveria la
+  // config base (solo variables de entorno) y los ajustes del panel -correo,
+  // Google, seguridad- no tendrian efecto en tiempo de ejecucion.
+  setConfig(config);
 }
 
 /** Reinicia el estado de arranque (util en pruebas y tras guardar ajustes). */

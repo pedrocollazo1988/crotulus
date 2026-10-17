@@ -194,7 +194,7 @@
   }
 
   function itemPost(it) {
-    var img = it.image ? esc(it.image) : "assets/img/blog/web-que-convierte.svg";
+    var img = it.image ? it.image : "assets/img/blog/web-que-convierte.jpg";
     var fecha = fechaCorta(it.published_at);
     var meta = [];
     if (it.author) meta.push(esc(it.author));
@@ -202,7 +202,7 @@
     if (it.reading_minutes) meta.push(it.reading_minutes + " min");
     return '<article class="post">'
       + '<a class="post__media" href="#blog" aria-label="Leer: ' + esc(it.title) + '">'
-      + '<img src="' + img + '" alt="' + esc(it.title) + '" width="800" height="500" loading="lazy" decoding="async"></a>'
+      + fotoResponsive(img, it.title, 800, 500) + '</a>'
       + '<div class="post__body">'
       + (it.category ? '<span class="post__tag">' + esc(it.category) + "</span>" : "")
       + '<h3 class="post__title"><a href="#blog">' + esc(it.title) + "</a></h3>"
@@ -232,15 +232,24 @@
       .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
   }
   /* Devuelve un <picture> con AVIF y WebP a partir de una ruta .jpg/.png,
-     dejando el formato original como respaldo. */
-  function fotoResponsive(src, alt, w, h) {
+     dejando el formato original como respaldo. Si la ruta no termina en una
+     extension conocida (p. ej. un SVG) devuelve un <img> normal. */
+  function fotoResponsive(src, alt, w, h, cls, loading) {
     if (!src) return "";
-    var base = String(src).replace(/\.(jpe?g|png)$/i, "");
+    var s = String(src);
+    var clsAttr = cls ? ' class="' + esc(cls) + '"' : "";
+    var load = loading === "eager" ? "eager" : "lazy";
+    if (!/\.(jpe?g|png)$/i.test(s)) {
+      return '<img' + clsAttr + ' src="' + esc(s) + '" alt="' + esc(alt) + '"'
+        + (w ? ' width="' + w + '" height="' + h + '"' : "")
+        + ' loading="' + load + '" decoding="async">';
+    }
+    var base = s.replace(/\.(jpe?g|png)$/i, "");
     return '<picture>'
       + '<source type="image/avif" srcset="' + esc(base) + '.avif">'
       + '<source type="image/webp" srcset="' + esc(base) + '.webp">'
-      + '<img class="testimonial__avatar" src="' + esc(src) + '" alt="' + esc(alt) + '"'
-      + ' width="' + w + '" height="' + h + '" loading="lazy" decoding="async">'
+      + '<img' + clsAttr + ' src="' + esc(s) + '" alt="' + esc(alt) + '"'
+      + ' width="' + w + '" height="' + h + '" loading="' + load + '" decoding="async">'
       + '</picture>';
   }
 
@@ -257,8 +266,8 @@
   }
   function itemProyecto(it) {
     var meta = it.meta || {};
-    var img  = meta.image ? esc(meta.image) : "assets/img/proyecto-web.svg";
-    return '<article class="project"><div class="project__media"><img src="' + img + '" alt="' + esc(it.title) + '" loading="lazy" decoding="async"></div>'
+    var img  = meta.image ? meta.image : "assets/img/proyecto-web.jpg";
+    return '<article class="project"><div class="project__media">' + fotoResponsive(img, it.title, 800, 500) + '</div>'
       + '<div class="project__body"><span class="project__tag">' + esc(it.subtitle) + '</span>'
       + '<h3 class="project__title">' + esc(it.title) + '</h3>'
       + '<p class="project__text">' + esc(it.body) + '</p>'
@@ -267,7 +276,7 @@
   function itemTestimonio(it) {
     var meta = it.meta || {};
     var avatar = meta.photo
-      ? fotoResponsive(meta.photo, "Foto de " + it.title, 96, 96)
+      ? fotoResponsive(meta.photo, "Foto de " + it.title, 96, 96, "testimonial__avatar")
       : '<span class="testimonial__avatar" aria-hidden="true">' + iniciales(it.title) + '</span>';
     var estrellas = meta.rating ? Math.max(1, Math.min(5, parseInt(meta.rating, 10) || 5)) : 5;
     var rating = '<span class="testimonial__rating" role="img" aria-label="Valoración: ' + estrellas + ' de 5 estrellas">'
@@ -378,11 +387,26 @@
       }
     });
 
-    // Imágenes editables (hero y equipo): src y texto alternativo
+    // Imágenes editables (hero y equipo): src y texto alternativo. Si la imagen
+    // va dentro de un <picture>, se regeneran tambien las fuentes AVIF/WebP para
+    // que el cambio del panel no quede anulado por un <source> obsoleto.
     $$("[data-site-image]").forEach(function (img) {
       var ruta = s[img.getAttribute("data-site-image")];
       var alt  = s[img.getAttribute("data-site-alt")];
-      if (ruta !== undefined && String(ruta).trim() !== "") img.setAttribute("src", ruta);
+      if (ruta !== undefined && String(ruta).trim() !== "") {
+        img.setAttribute("src", ruta);
+        var pic = img.closest("picture");
+        if (pic) {
+          var base = String(ruta).replace(/\.(jpe?g|png)$/i, "");
+          var fuentes = pic.querySelectorAll("source");
+          if (fuentes.length >= 2 && /\.(jpe?g|png)$/i.test(String(ruta))) {
+            fuentes[0].setAttribute("srcset", base + ".avif");
+            fuentes[1].setAttribute("srcset", base + ".webp");
+          } else {
+            fuentes.forEach(function (f) { f.remove(); });
+          }
+        }
+      }
       if (alt !== undefined && String(alt).trim() !== "") img.setAttribute("alt", alt);
     });
 

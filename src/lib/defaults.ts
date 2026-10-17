@@ -126,6 +126,7 @@ const DEFAULTS: Dict = {
   security_password_min: "8",
   security_session_lifetime: "2592000",
   security_session_bind_ip: "0",
+  email_verification: "required",
   security_contact_rate_max: "5",
   security_contact_rate_window: "3600",
   security_login_rate_max: "10",

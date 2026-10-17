@@ -46,3 +46,9 @@ Thumbs.db
 
 # --- Capturas de vista previa (artefactos de desarrollo) --------------------
 /preview/
+
+# --- Assets minificados (se regeneran con scripts/minify-assets.mjs) --------
+public/css/*.min.css
+public/js/*.min.js
+public/admin/assets/*.min.css
+public/admin/assets/*.min.js
