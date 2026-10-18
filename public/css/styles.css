@@ -72,6 +72,10 @@
   --color-primary:      #136493;   /* Azul petroleo (marca, acciones y acentos) */
   --color-primary-dark: #0E4E75;   /* Azul petroleo oscurecido (hover y degradados) */
   --color-primary-soft: #E7F1F8;   /* Azul muy claro para fondos suaves */
+  /* Texto de enlaces y acentos: en modo dia es el azul de marca; en modo
+     noche se aclara para conservar el contraste AA sobre fondo oscuro. */
+  --color-link:         #136493;
+  --color-link-strong:  #0E4E75;
   --color-navy:         #0B2E45;   /* Azul profundo (fondos oscuros y pie) */
   --color-navy-soft:    #103C58;   /* Azul profundo algo más claro (tarjetas oscuras) */
   --color-accent:       #2E86B8;   /* Azul de apoyo (acentos y nodos del circuito) */
@@ -82,7 +86,7 @@
   --color-steel-dark:   #3F4A52;   /* Gris oscuro azulado (fondo del pie) */
   --color-ink:          #17303F;   /* Textos de cuerpo (contraste alto) */
   --color-heading:      #136493;   /* Azul petroleo para titulos (mas marca) */
-  --color-heading-gray: #6E7C86;   /* Gris para etiquetas y secundarios (legible) */
+  --color-heading-gray: #63717B;   /* Gris para etiquetas y secundarios (legible) */
   --color-ink-soft:     #4F6474;   /* Gris azulado para textos secundarios */
   --color-line:         #DDE7EE;   /* Lineas y bordes suaves */
   --color-bg:           #FFFFFF;   /* Fondo base */
@@ -139,7 +143,7 @@ img { max-width: 100%; height: auto; display: block; }
    transparente al flujo, el <img> se comporta como hijo directo del contenedor. */
 picture { display: contents; }
 ul, ol { margin: 0; padding: 0; list-style: none; }
-a { color: var(--color-primary); text-decoration: none; }
+a { color: var(--color-link); text-decoration: none; }
 a:hover { text-decoration: underline; }
 button { font: inherit; cursor: pointer; }
 
@@ -212,14 +216,14 @@ p { margin: 0 0 1rem; }
   font-weight: 400;
   letter-spacing: .12em;
   text-transform: uppercase;
-  color: var(--color-primary);
+  color: var(--color-link);
   background: var(--color-primary-soft);
   padding: .3rem .75rem;
   border-radius: var(--radius-pill);
   margin: 0 0 .9rem;
 }
 
-.text-accent { color: var(--color-primary); }
+.text-accent { color: var(--color-link); }
 
 /* ==========================================================================
    CABECERA DE PÁGINA INTERNA (empresa.html) Y MIGAS DE PAN
@@ -251,7 +255,7 @@ p { margin: 0 0 1rem; }
   color: var(--color-heading-gray);
 }
 .breadcrumb li + li::before { content: "\203A"; margin-right: .45rem; color: var(--color-steel); }
-.breadcrumb a { color: var(--color-primary); text-decoration: none; }
+.breadcrumb a { color: var(--color-link); text-decoration: none; }
 .breadcrumb a:hover { text-decoration: underline; }
 
 /* Bloque de llamada a la acción azul reutilizable (páginas internas). */
@@ -399,7 +403,7 @@ p { margin: 0 0 1rem; }
    los colores de marca (ya no hace falta aclararlos). */
 .section--alt .project__tag,
 .section--blue .project__tag {
-  color: var(--color-primary);
+  color: var(--color-link);
   background: var(--color-primary-soft);
 }
 
@@ -531,7 +535,7 @@ p { margin: 0 0 1rem; }
 
 .btn--ghost {
   background: transparent;
-  color: var(--color-primary);
+  color: var(--color-link);
   border-color: var(--color-line);
 }
 .btn--ghost:hover { border-color: var(--color-primary); background: var(--color-primary-soft); }
@@ -664,9 +668,9 @@ p { margin: 0 0 1rem; }
   flex: none;
   transition: background var(--transition), transform var(--transition);
 }
-.nav-link:hover { color: var(--color-primary); background: var(--color-primary-soft); text-decoration: none; }
+.nav-link:hover { color: var(--color-link); background: var(--color-primary-soft); text-decoration: none; }
 .nav-link:hover::before { background: var(--color-accent); transform: scale(1.25); }
-.nav-link.is-active { color: var(--color-primary); background: var(--color-primary-soft); font-weight: 700; }
+.nav-link.is-active { color: var(--color-link); background: var(--color-primary-soft); font-weight: 700; }
 .nav-link.is-active::before { background: var(--color-primary); transform: scale(1.35); }
 
 /* Enlace al area privada (panel de administracion) */
@@ -710,7 +714,7 @@ p { margin: 0 0 1rem; }
   color: var(--color-ink);
   transition: color var(--transition), background var(--transition), border-color var(--transition), transform var(--transition);
 }
-.tool-btn:hover { color: var(--color-primary); border-color: rgba(19,100,147,.35); background: var(--color-primary-soft); transform: translateY(-1px); }
+.tool-btn:hover { color: var(--color-link); border-color: rgba(19,100,147,.35); background: var(--color-primary-soft); transform: translateY(-1px); }
 .tool-btn:focus-visible { outline: 3px solid var(--color-accent); outline-offset: 2px; }
 .tool-btn__code { font-family: var(--font-alt); font-weight: 700; font-size: .72rem; letter-spacing: .04em; }
 /* Iconos sol/luna del boton de tema: se muestra uno segun el modo. */
@@ -743,8 +747,8 @@ p { margin: 0 0 1rem; }
   color: var(--color-ink);
   font-size: .9rem;
 }
-.lang__menu button:hover { background: var(--color-primary-soft); color: var(--color-primary); }
-.lang__menu button[aria-current="true"] { font-weight: 700; color: var(--color-primary); }
+.lang__menu button:hover { background: var(--color-primary-soft); color: var(--color-link); }
+.lang__menu button[aria-current="true"] { font-weight: 700; color: var(--color-link); }
 
 /* Panel de busqueda global (desplegable bajo la cabecera) */
 .search-panel {
@@ -795,7 +799,7 @@ p { margin: 0 0 1rem; }
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .05em;
-  color: var(--color-primary);
+  color: var(--color-link);
   background: var(--color-primary-soft);
   border: 1px solid rgba(19,100,147,.16);
   border-radius: var(--radius-pill);
@@ -907,7 +911,7 @@ p { margin: 0 0 1rem; }
 
 .hero__subtitle {
   font-size: 1.02rem;
-  color: #B7D6E8;
+  color: #D6E8F4;
   max-width: 48ch;
 }
 .hero__actions { display: flex; flex-wrap: wrap; gap: .7rem; margin: 1.35rem 0 1.7rem; }
@@ -1006,7 +1010,7 @@ p { margin: 0 0 1rem; }
   display: grid; place-items: center;
   width: 34px; height: 34px;
   border-radius: 10px;
-  color: var(--color-primary);
+  color: var(--color-link);
   background: linear-gradient(135deg, var(--color-primary-soft), var(--color-ice));
   border: 1px solid rgba(19,100,147,.16);
 }
@@ -1098,7 +1102,7 @@ html.has-reveal-anim .hero__media .flow {
   color: #fff;
   line-height: 1;
 }
-.stat__label { font-size: .82rem; color: #9FB4D0; margin-top: .3rem; }
+.stat__label { font-size: .82rem; color: #C5E2F2; margin-top: .3rem; }
 
 /* ==========================================================================
    7. SECCIONES Y TARJETAS
@@ -1119,7 +1123,7 @@ html.has-reveal-anim .hero__media .flow {
   transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
 }
 .mv-card:hover { transform: translateY(-3px); box-shadow: 0 16px 36px rgba(11,46,69,.11); border-left-color: var(--color-accent); }
-.mv-card__title { font-size: 1rem; margin-bottom: .35rem; color: var(--color-primary); }
+.mv-card__title { font-size: 1rem; margin-bottom: .35rem; color: var(--color-link); }
 .mv-card p { margin: 0; font-size: .95rem; color: var(--color-ink-soft); }
 
 .values { display: grid; gap: .5rem; }
@@ -1167,7 +1171,7 @@ html.has-reveal-anim .hero__media .flow {
   display: grid; place-items: center;
   border-radius: 12px;
   background: linear-gradient(135deg, var(--color-primary-soft), var(--color-amber));
-  color: var(--color-primary);
+  color: var(--color-link);
   margin-bottom: .9rem;
   transition: transform var(--transition), background var(--transition), color var(--transition);
 }
@@ -1229,7 +1233,7 @@ html.has-reveal-anim .hero__media .flow {
   font-weight: 800;
   font-size: 4.6rem;
   line-height: 1;
-  color: var(--color-primary);
+  color: var(--color-link);
   opacity: .06;
   pointer-events: none;
 }
@@ -1262,14 +1266,14 @@ html.has-reveal-anim .hero__media .flow {
   font-size: .82rem;
   letter-spacing: .04em;
   text-transform: uppercase;
-  color: var(--color-primary);
+  color: var(--color-link);
   margin-bottom: .6rem;
 }
 .team-card__bio { color: var(--color-ink-soft); font-size: .9rem; margin-bottom: .85rem; }
 .team-card__mail {
   margin-top: auto;
   font-size: .88rem;
-  color: var(--color-primary);
+  color: var(--color-link);
   word-break: break-word;
 }
 .team-card__mail:hover { text-decoration: underline; }
@@ -1299,7 +1303,7 @@ html.has-reveal-anim .hero__media .flow {
   font-size: .78rem;
   letter-spacing: .04em;
   text-transform: uppercase;
-  color: var(--color-primary);
+  color: var(--color-link);
   background: var(--color-primary-soft);
   border-radius: var(--radius-pill);
   padding: .22rem .68rem;
@@ -1307,7 +1311,7 @@ html.has-reveal-anim .hero__media .flow {
 }
 .post__title { font-size: 1.06rem; margin-bottom: .4rem; line-height: 1.3; }
 .post__title a { color: inherit; }
-.post__title a:hover { color: var(--color-primary); }
+.post__title a:hover { color: var(--color-link); }
 .post__text { color: var(--color-ink-soft); font-size: .92rem; margin-bottom: .85rem; }
 .post__meta { margin-top: auto; font-size: .82rem; color: var(--color-heading-gray); }
 .post__meta time { color: inherit; }
@@ -1342,7 +1346,7 @@ html.has-reveal-anim .hero__media .flow {
   font-family: var(--font-head);
   font-size: 3.4rem;
   line-height: 1;
-  color: var(--color-primary);
+  color: var(--color-link);
   opacity: .12;
   pointer-events: none;
 }
@@ -1366,7 +1370,7 @@ html.has-reveal-anim .hero__media .flow {
 .testimonial__badge {
   display: inline-flex; align-items: center; gap: .3rem;
   font-size: .74rem; font-weight: 600; letter-spacing: .02em;
-  color: var(--color-primary);
+  color: var(--color-link);
   background: var(--color-primary-soft);
   padding: .28rem .6rem; border-radius: var(--radius-pill);
 }
@@ -1378,7 +1382,7 @@ html.has-reveal-anim .hero__media .flow {
   border-top: 1px dashed var(--color-line);
   font-size: .9rem; color: var(--color-ink-soft);
 }
-.testimonial__result strong { color: var(--color-primary); font-family: var(--font-head); font-size: 1rem; }
+.testimonial__result strong { color: var(--color-link); font-family: var(--font-head); font-size: 1rem; }
 .testimonial__author { display: flex; align-items: center; gap: .8rem; margin-top: 1.1rem; padding: 0 .25rem; }
 /* Avatar: puede ser una FOTO (img) o las iniciales (span) como respaldo.
    Sustituye assets/img/testimonios/*.jpg por las fotos reales del cliente. */
@@ -1411,7 +1415,7 @@ img.testimonial__avatar {
   border-radius: 50%;
   border: 1px solid var(--color-line);
   background: var(--color-white);
-  color: var(--color-primary);
+  color: var(--color-link);
   font-size: 1.5rem; line-height: 1;
   display: grid; place-items: center;
   box-shadow: var(--shadow-sm);
@@ -1585,7 +1589,7 @@ img.testimonial__avatar {
   font-size: .95rem;
   color: var(--color-ink);
 }
-.accordion__trigger:hover { color: var(--color-primary); }
+.accordion__trigger:hover { color: var(--color-link); }
 .accordion__icon {
   flex: none;
   position: relative;
@@ -1699,7 +1703,7 @@ img.testimonial__avatar {
   display: grid; place-items: center;
   border-radius: 50%;
   background: var(--color-primary-soft);
-  color: var(--color-primary);
+  color: var(--color-link);
 }
 .contact-info__item strong { display: block; font-size: .82rem; color: var(--color-ink-soft); }
 .contact-info__item a { font-weight: 600; }
@@ -1720,9 +1724,9 @@ img.testimonial__avatar {
 .contact-map__link { margin: .8rem 0 0; font-size: .92rem; }
 .contact-map__link a {
   display: inline-flex; align-items: center; gap: .45rem;
-  color: var(--color-primary); font-weight: 600;
+  color: var(--color-link); font-weight: 600;
 }
-.contact-map__link a:hover { color: var(--color-primary-dark); }
+.contact-map__link a:hover { color: var(--color-link-strong); }
 .contact-map__link svg { flex: none; }
 
 /* Los teléfonos y el correo del bloque de contacto se apilan uno por línea */
@@ -1909,7 +1913,7 @@ html.has-reveal-anim .cards .reveal.is-visible:nth-child(6) { transition-delay: 
   font-weight: 400;
   letter-spacing: .04em;
   text-transform: uppercase;
-  color: var(--color-primary);
+  color: var(--color-link);
   background: linear-gradient(135deg, var(--color-primary-soft), var(--color-amber));
   border-radius: 999px;
   padding: .25rem .7rem;
@@ -1917,7 +1921,7 @@ html.has-reveal-anim .cards .reveal.is-visible:nth-child(6) { transition-delay: 
 }
 .project__title { font-size: 1.05rem; margin-bottom: .3rem; }
 .project__text { color: var(--color-ink-soft); font-size: .92rem; margin-bottom: .85rem; }
-.project__link { margin-top: auto; font-weight: 600; color: var(--color-primary); display: inline-flex; align-items: center; gap: .35rem; }
+.project__link { margin-top: auto; font-weight: 600; color: var(--color-link); display: inline-flex; align-items: center; gap: .35rem; }
 .project__link::after { content: "\2192"; transition: transform var(--transition); }
 .project__link:hover { text-decoration: none; }
 .project__link:hover::after { transform: translateX(4px); }
@@ -2003,7 +2007,7 @@ html.has-reveal-anim .cards .reveal.is-visible:nth-child(6) { transition-delay: 
   .nav-link:hover { background: var(--color-primary-soft); }
   .nav-link.is-active {
     background: var(--color-primary-soft);
-    color: var(--color-primary);
+    color: var(--color-link);
   }
   .site-header__actions { grid-column: 3; justify-self: end; }
   .nav-link--auth { font-size: .78rem; }
@@ -2038,7 +2042,7 @@ html.has-reveal-anim .cards .reveal.is-visible:nth-child(6) { transition-delay: 
   background: linear-gradient(135deg, var(--color-primary-soft), var(--color-ice));
   border: 1px solid var(--color-line);
   font-family: var(--font-head); font-weight: 700; letter-spacing: .06em;
-  color: var(--color-primary-dark); font-size: 1.05rem; white-space: nowrap;
+  color: var(--color-link-strong); font-size: 1.05rem; white-space: nowrap;
   user-select: none;
 }
 .captcha__refresh {
@@ -2075,9 +2079,9 @@ html.has-reveal-anim .cards .reveal.is-visible:nth-child(6) { transition-delay: 
 .review-card__author { font-weight: 600; }
 .review-card__meta { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin-bottom: .4rem; }
 .review-card__source { font-size: .72rem; font-weight: 600; color: var(--color-ink-soft); border: 1px solid var(--color-line); border-radius: var(--radius-pill); padding: .1rem .55rem; }
-.review-card__source--tp { color: #fff; background: #00B67A; border-color: #00B67A; }
+.review-card__source--tp { color: #fff; background: #00875A; border-color: #00875A; }
 .review-card--tp { border-left: 3px solid #00B67A; }
-.review-card__tag { font-size: .78rem; color: var(--color-primary); background: var(--color-primary-soft); border-radius: var(--radius-pill); padding: .15rem .6rem; }
+.review-card__tag { font-size: .78rem; color: var(--color-link); background: var(--color-primary-soft); border-radius: var(--radius-pill); padding: .15rem .6rem; }
 .review-card__text { margin: .35rem 0 0; color: var(--color-ink); }
 .review-card__date { font-size: .78rem; color: var(--color-ink-soft); }
 [hidden] { display: none !important; }
@@ -2133,6 +2137,9 @@ html.has-reveal-anim .cards .reveal.is-visible:nth-child(6) { transition-delay: 
   --color-heading-gray: #9DB4C4;
   --color-line:         #274052;
   --color-primary-soft: #17303F;
+  --color-link:         #A8D3EE;   /* enlaces y acentos sobre fondo oscuro */
+  --color-link-strong:  #D6E8F4;
+  --color-success:      #4CC79B;   /* verde legible sobre superficie oscura */
 }
 .theme-dark body { color: var(--color-ink); }
 /* Cabecera y desplegables */
@@ -2216,6 +2223,37 @@ html.has-reveal-anim .cards .reveal.is-visible:nth-child(6) { transition-delay: 
 .theme-dark select { background: var(--color-bg-alt); color: var(--color-ink); border-color: var(--color-line); }
 .theme-dark .btn--ghost { color: var(--color-ice); border-color: var(--color-line); }
 .theme-dark .btn--ghost:hover { background: rgba(46,134,184,.22); border-color: var(--color-accent); color: #fff; }
+
+/* Chips y controles cuyo fondo NO es una variable (degradado o color fijo):
+   en modo noche necesitan su propio ajuste para que el texto claro se lea. */
+.theme-dark .project__tag {
+  background: rgba(46,134,184,.20);
+  border: 1px solid rgba(95,168,201,.35);
+}
+.theme-dark .captcha__challenge {
+  color: var(--color-ice);
+  background: rgba(46,134,184,.20);
+  border-color: rgba(95,168,201,.35);
+}
+.theme-dark .flow__signature { color: var(--color-ice); }
+/* Los contenedores de icono llevan un degradado claro (--color-amber no cambia
+   en modo noche); se sustituye por un chip translucido para que el icono claro
+   se lea. Se excluye el paso "firmado", que ya es azul con icono blanco. */
+.theme-dark .card__icon,
+.theme-dark .flow__step:not(.flow__step--sign) .flow__ico {
+  color: var(--color-link);
+  background: rgba(46,134,184,.20);
+  border: 1px solid rgba(95,168,201,.35);
+}
+.theme-dark .flow__live,
+.theme-dark .flow__stamp {
+  color: var(--color-success);
+  border-color: rgba(76,199,155,.45);
+}
+.theme-dark .accordion__icon::before,
+.theme-dark .accordion__icon::after { background: var(--color-ice); }
+.theme-dark .review-card--google { border-top-color: #4285F4; }
+.theme-dark .review-card--tp { border-left-color: #00875A; }
 
 /* ==========================================================================
    ACCESIBILIDAD: foco visible y preferencia de movimiento reducido
