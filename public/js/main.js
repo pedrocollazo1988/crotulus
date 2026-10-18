@@ -477,28 +477,29 @@
      VISIBILIDAD DE SECCIONES DE VALORACIONES
      --------------------------------------------------------------------------
      El panel guarda "testimonials_enabled", "google_reviews_enabled" y
-     "trustpilot_enabled" ("1"/"0"). Cada <section> de la portada declara su
-     clave con data-section-toggle. Si está a "0", se oculta la sección y los
-     enlaces (menú, pie) que apuntan a su ancla. Si la clave no llega (backend
-     sin respuesta), todo se queda visible.
+     "trustpilot_enabled" ("1"/"0"). Si una vale "0" se oculta su sección (la que
+     lleve data-section-toggle con esa clave) y TODOS los enlaces que apunten a su
+     ancla (menú y pie), también desde empresa.html. Si la clave no llega (backend
+     sin respuesta) todo se queda visible.
      ========================================================================== */
+  var SECCIONES_TOGGLE = [
+    { key: "testimonials_enabled", id: "testimonios" },
+    { key: "google_reviews_enabled", id: "valoraciones" },
+    { key: "trustpilot_enabled", id: "trustpilot" }
+  ];
+
   function aplicarSeccionesVisibles(s) {
     var huboCambio = false;
-    $$("[data-section-toggle]").forEach(function (sec) {
-      var key = sec.getAttribute("data-section-toggle");
-      var valor = s[key];
+    SECCIONES_TOGGLE.forEach(function (def) {
+      var valor = s[def.key];
       if (valor === undefined) return;               // sin dato: no tocar
-      var visible = String(valor) !== "0";
-      sec.hidden = !visible;
-      huboCambio = true;
-      if (!visible) {
-        var id = sec.getAttribute("id");
-        if (id) {
-          $$('a[href="#' + id + '"], a[href$="#' + id + '"]').forEach(function (a) {
-            var li = a.closest("li");
-            (li || a).hidden = true;
-          });
-        }
+      if (String(valor) === "0") {
+        huboCambio = true;
+        $$('[data-section-toggle="' + def.key + '"]').forEach(function (sec) { sec.hidden = true; });
+        $$('a[href="#' + def.id + '"], a[href$="#' + def.id + '"]').forEach(function (a) {
+          var li = a.closest("li");
+          (li || a).hidden = true;
+        });
       }
     });
     // Al ocultar un bloque pueden quedar dos secciones azules seguidas (p. ej.
