@@ -105,6 +105,9 @@
     setupTestimonialForm();    // formulario publico de testimonios (sin cuenta)
     setupGoogleReviewsLink();  // enlace «Ver todas en Google» (configurable)
     setupTrustpilotLink();     // enlace «Ver todas en Trustpilot» (configurable)
+    setupSiteSearch();         // buscador global (secciones y contenido)
+    setupLangSwitch();         // selector de idioma (es / en / pt)
+    setupTheme();              // modo noche / dia
     cargarGoogleReviews();     // reseñas de Google en vivo (con respaldo en BD)
     cargarTrustpilot();        // reseñas de Trustpilot (con caché en BD)
     // Al recuperar la conexión, reintenta traer las reseñas actualizadas.
@@ -489,7 +492,8 @@
   var SECCIONES_TOGGLE = [
     { key: "testimonials_enabled", id: "testimonios" },
     { key: "google_reviews_enabled", id: "valoraciones" },
-    { key: "trustpilot_enabled", id: "trustpilot" }
+    { key: "trustpilot_enabled", id: "trustpilot" },
+    { key: "blog_enabled", id: "blog" }
   ];
 
   function aplicarSeccionesVisibles(s) {
@@ -1504,6 +1508,259 @@
       input.setAttribute("aria-invalid", "true");
       if (box) box.textContent = msg;
     }
+  }
+
+  /* ==========================================================================
+     8. BUSCADOR GLOBAL, IDIOMA Y TEMA
+     --------------------------------------------------------------------------
+     Tres herramientas de la cabecera:
+     - Buscador: indexa en caliente las secciones de la página y sus elementos
+       (servicios, proyectos, artículos, pasos, FAQ...) y lleva al resultado.
+     - Idioma: traduce los textos de navegación (es / en / pt) y lo recuerda.
+     - Tema: alterna día/noche con la clase .theme-dark en <html>.
+     ========================================================================== */
+
+  /* Diccionario de navegación. El contenido editable (servicios, blog...) vive
+     en la base de datos y se mantiene en su idioma original. */
+  var I18N = {
+    es: {
+      nav_home: "Inicio", nav_company: "Empresa", nav_services: "Servicios",
+      nav_projects: "Proyectos", nav_process: "Proceso", nav_testimonials: "Testimonios",
+      nav_faq: "FAQ", nav_login: "Acceder", nav_contact: "Contacto",
+      aria_search: "Buscar en el sitio", aria_lang: "Idioma del sitio",
+      aria_theme: "Cambiar a modo noche", aria_close: "Cerrar búsqueda",
+      search_placeholder: "Buscar en el sitio: servicios, proyectos, blog, preguntas…",
+      no_results: "Sin resultados. Prueba con otra palabra."
+    },
+    en: {
+      nav_home: "Home", nav_company: "Company", nav_services: "Services",
+      nav_projects: "Projects", nav_process: "Process", nav_testimonials: "Testimonials",
+      nav_faq: "FAQ", nav_login: "Sign in", nav_contact: "Contact",
+      aria_search: "Search the site", aria_lang: "Site language",
+      aria_theme: "Switch to dark mode", aria_close: "Close search",
+      search_placeholder: "Search the site: services, projects, blog, questions…",
+      no_results: "No results. Try another word."
+    },
+    pt: {
+      nav_home: "Início", nav_company: "Empresa", nav_services: "Serviços",
+      nav_projects: "Projetos", nav_process: "Processo", nav_testimonials: "Depoimentos",
+      nav_faq: "FAQ", nav_login: "Entrar", nav_contact: "Contato",
+      aria_search: "Pesquisar no site", aria_lang: "Idioma do site",
+      aria_theme: "Mudar para modo escuro", aria_close: "Fechar pesquisa",
+      search_placeholder: "Pesquisar no site: serviços, projetos, blog, dúvidas…",
+      no_results: "Sem resultados. Tente outra palavra."
+    }
+  };
+
+  function t(clave) {
+    var idioma = document.documentElement.getAttribute("data-lang") || "es";
+    return (I18N[idioma] && I18N[idioma][clave]) || I18N.es[clave] || "";
+  }
+
+  /* Aplica el idioma a los textos marcados con data-i18n* y lo recuerda. */
+  function aplicarIdioma(idioma) {
+    if (!I18N[idioma]) idioma = "es";
+    document.documentElement.setAttribute("lang", idioma);
+    document.documentElement.setAttribute("data-lang", idioma);
+    try { localStorage.setItem("crotulus_lang", idioma); } catch (e) { /* privacidad */ }
+    $$("[data-i18n]").forEach(function (el) {
+      var txt = t(el.getAttribute("data-i18n"));
+      if (txt) el.textContent = txt;
+    });
+    $$("[data-i18n-aria]").forEach(function (el) {
+      var txt = t(el.getAttribute("data-i18n-aria"));
+      if (txt) el.setAttribute("aria-label", txt);
+    });
+    $$("[data-i18n-ph]").forEach(function (el) {
+      var txt = t(el.getAttribute("data-i18n-ph"));
+      if (txt) el.setAttribute("placeholder", txt);
+    });
+    var code = $("#langCode");
+    if (code) code.textContent = idioma.toUpperCase();
+    $$("#langMenu [data-lang]").forEach(function (b) {
+      b.setAttribute("aria-current", b.getAttribute("data-lang") === idioma ? "true" : "false");
+    });
+    // El botón de tema cambia su etiqueta según el idioma activo.
+    var themeBtn = $("#themeToggle");
+    if (themeBtn) {
+      var oscuro = document.documentElement.classList.contains("theme-dark");
+      themeBtn.setAttribute("aria-label", oscuro ? (idioma === "en" ? "Switch to light mode" : idioma === "pt" ? "Mudar para modo claro" : "Cambiar a modo día") : t("aria_theme"));
+    }
+  }
+
+  function setupLangSwitch() {
+    var guardado = "";
+    try { guardado = localStorage.getItem("crotulus_lang") || ""; } catch (e) { /* privacidad */ }
+    if (guardado) aplicarIdioma(guardado);
+
+    var toggle = $("#langToggle");
+    var menu = $("#langMenu");
+    if (toggle && menu) {
+      toggle.addEventListener("click", function (ev) {
+        ev.stopPropagation();
+        var abierto = !menu.hidden;
+        menu.hidden = abierto;
+        toggle.setAttribute("aria-expanded", abierto ? "false" : "true");
+      });
+      document.addEventListener("click", function (ev) {
+        if (menu.hidden) return;
+        if (!menu.contains(ev.target) && ev.target !== toggle) {
+          menu.hidden = true;
+          toggle.setAttribute("aria-expanded", "false");
+        }
+      });
+      document.addEventListener("keydown", function (ev) {
+        if (ev.key === "Escape" && !menu.hidden) {
+          menu.hidden = true;
+          toggle.setAttribute("aria-expanded", "false");
+        }
+      });
+    }
+    $$("#langMenu [data-lang]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        aplicarIdioma(b.getAttribute("data-lang"));
+        if (menu) menu.hidden = true;
+        if (toggle) toggle.setAttribute("aria-expanded", "false");
+      });
+    });
+  }
+
+  function setupTheme() {
+    var guardado = "";
+    try { guardado = localStorage.getItem("crotulus_theme") || ""; } catch (e) { /* privacidad */ }
+    // Preferencia del sistema si el visitante no ha elegido nada.
+    if (!guardado && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      guardado = "dark";
+    }
+    var btn = $("#themeToggle");
+    function pintar() {
+      var oscuro = document.documentElement.classList.contains("theme-dark");
+      if (btn) {
+        btn.setAttribute("aria-pressed", oscuro ? "true" : "false");
+        aplicarIdioma(document.documentElement.getAttribute("data-lang") || "es");
+      }
+    }
+    if (guardado === "dark") document.documentElement.classList.add("theme-dark");
+    pintar();
+    if (btn) {
+      btn.addEventListener("click", function () {
+        var oscuro = document.documentElement.classList.toggle("theme-dark");
+        try { localStorage.setItem("crotulus_theme", oscuro ? "dark" : "light"); } catch (e) { /* privacidad */ }
+        pintar();
+      });
+    }
+  }
+
+  /* --- Buscador global ---------------------------------------------------- */
+  function normalizar(s) {
+    return String(s || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  /* Recorre el documento y devuelve el índice de resultados. Se hace en cada
+     búsqueda para incluir el contenido cargado por la API. */
+  function indiceBusqueda() {
+    var items = [];
+    var vistos = {};
+    function add(tag, titulo, texto, href) {
+      if (!titulo) return;
+      var clave = href + "|" + titulo;
+      if (vistos[clave]) return;
+      vistos[clave] = 1;
+      items.push({ tag: tag, titulo: titulo, texto: texto, href: href });
+    }
+    // Secciones con ancla.
+    $$("section[id]").forEach(function (sec) {
+      if (sec.hidden) return;
+      var id = sec.getAttribute("id");
+      var h = $(".section__title, .hero__title, .page-hero__title", sec);
+      var lead = $(".section__lead, .hero__subtitle, .page-hero__lead", sec);
+      add("Sección", h ? h.textContent : "", lead ? lead.textContent : "", "#" + id);
+    });
+    // Elementos de contenido dentro de cada sección.
+    var mapa = [
+      [".card", "Servicio", ".card__title, .card__text"],
+      [".project", "Proyecto", ".project__title, .project__text, .project__tag"],
+      [".post", "Blog", ".post__title, .post__text, .post__tag"],
+      [".step", "Proceso", ".step__title, .step__text"],
+      [".accordion__item", "FAQ", ".accordion__trigger, .accordion__panel"],
+      [".review-card", "Opinión", ".review-card__author, .review-card__text"],
+      [".testimonial__quote", "Testimonio", "p, cite"]
+    ];
+    mapa.forEach(function (def) {
+      $$(def[0]).forEach(function (el) {
+        var sec = el.closest("section[id]");
+        var id = sec ? sec.getAttribute("id") : "";
+        var h = $(def[2], el);
+        add(def[1], h ? h.textContent : el.textContent, "", id ? "#" + id : "#inicio");
+      });
+    });
+    return items;
+  }
+
+  function setupSiteSearch() {
+    var panel = $("#siteSearch");
+    var input = $("#searchInput");
+    var lista = $("#searchResults");
+    var toggle = $("#searchToggle");
+    var cerrar = $("#searchClose");
+    if (!panel || !input || !lista || !toggle) return;
+
+    var indice = null;
+    function abrir() {
+      indice = indiceBusqueda();
+      panel.hidden = false;
+      toggle.setAttribute("aria-expanded", "true");
+      input.focus();
+    }
+    function ocultar() {
+      panel.hidden = true;
+      toggle.setAttribute("aria-expanded", "false");
+    }
+    function pintarResultados(q) {
+      var nq = normalizar(q);
+      lista.innerHTML = "";
+      if (!nq) return;
+      var res = indice.filter(function (it) {
+        return normalizar(it.titulo + " " + it.texto).indexOf(nq) !== -1;
+      }).slice(0, 8);
+      if (!res.length) {
+        var li = document.createElement("li");
+        li.className = "search-empty";
+        li.textContent = t("no_results");
+        lista.appendChild(li);
+        return;
+      }
+      res.forEach(function (it) {
+        var a = document.createElement("a");
+        a.className = "search-result";
+        a.href = it.href;
+        a.innerHTML = '<span class="search-result__tag">' + esc(it.tag) + "</span>" +
+          '<span class="search-result__text"><strong>' + esc(it.titulo) + "</strong>" +
+          (it.texto ? "<span>" + esc(it.texto.slice(0, 90)) + "</span>" : "") + "</span>";
+        a.addEventListener("click", function () { ocultar(); });
+        var li = document.createElement("li");
+        li.appendChild(a);
+        lista.appendChild(li);
+      });
+    }
+    toggle.addEventListener("click", function (ev) {
+      ev.stopPropagation();
+      panel.hidden ? abrir() : ocultar();
+    });
+    if (cerrar) cerrar.addEventListener("click", ocultar);
+    input.addEventListener("input", function () { pintarResultados(input.value); });
+    document.addEventListener("keydown", function (ev) {
+      if (ev.key === "Escape" && !panel.hidden) ocultar();
+    });
+    document.addEventListener("click", function (ev) {
+      if (panel.hidden) return;
+      if (!panel.contains(ev.target) && ev.target !== toggle && !toggle.contains(ev.target)) ocultar();
+    });
   }
 
   /* ==========================================================================

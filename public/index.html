@@ -53,7 +53,7 @@
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Inter-latin.woff2" crossorigin>
 
   <!-- ============ ESTILOS ============ -->
-  <link rel="stylesheet" href="css/styles.min.css?v=20261027">
+  <link rel="stylesheet" href="css/styles.min.css?v=20261029">
 
   <!-- ============ DATOS ESTRUCTURADOS AutoRepair (JSON-LD) ============
        schema.org/AutoRepair (subtipo de LocalBusiness, ideal para servicios
@@ -140,35 +140,6 @@
   <a class="skip-link" href="#inicio">Saltar al contenido principal</a>
 
   <!-- ==================== CABECERA / NAVEGACIÓN ==================== -->
-  <!-- Barra superior: datos de contacto rápidos (solo escritorio).
-       Todos los valores se editan desde el panel (Ajustes · Contacto) o en
-       los marcadores [TELÉFONO] / [CORREO] / [DIRECCIÓN] de este archivo. -->
-  <div class="topbar">
-    <div class="container topbar__inner">
-      <ul class="topbar__list">
-        <li class="topbar__item">
-          <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="M4 5h4l2 5-2 1a12 12 0 0 0 5 5l1-2 5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 3 6a1 1 0 0 1 1-1Z"/></svg>
-          <a href="tel:+5359888821" data-site="telefono" data-tel-primary>+53 5988 8821</a>
-          <span class="topbar__sep" aria-hidden="true">·</span>
-          <a href="tel:+5349368808" data-tel-secondary>+53 4936 8808</a>
-        </li>
-        <li class="topbar__item">
-          <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="M3 6h18v12H3zM3 7l9 6 9-6"/></svg>
-          <a href="mailto:crotulus.mipyme@gmail.com" data-site="correo">crotulus.mipyme@gmail.com</a>
-        </li>
-        <li class="topbar__item topbar__item--hide-sm">
-          <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="M12 7v5l3 2"/></svg>
-          <span data-site="horario">Lunes a Viernes de 9:00 am a 5:00 pm</span>
-        </li>
-      </ul>
-      <ul class="topbar__social" aria-label="Redes sociales de C-ROTULUS">
-        <li><a href="https://www.facebook.com/com.rotulus.surl" data-social="facebook" aria-label="Facebook" rel="noopener"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M13 22v-8h3l1-4h-4V8c0-1 .3-1.6 1.7-1.6H17V3.1C16.4 3 15.4 3 14.3 3 11.8 3 10 4.4 10 7.3V10H7v4h3v8h3Z"/></svg></a></li>
-        <li><a href="#" data-social="instagram" aria-label="Instagram" rel="noopener"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M12 7.5A4.5 4.5 0 1 0 12 16.5 4.5 4.5 0 0 0 12 7.5Zm0 7.4a2.9 2.9 0 1 1 0-5.8 2.9 2.9 0 0 1 0 5.8Zm4.7-7.6a1.05 1.05 0 1 0 0 2.1 1.05 1.05 0 0 0 0-2.1Z"/></svg></a></li>
-        <li><a href="#" data-social="linkedin" aria-label="LinkedIn" rel="noopener"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0 0-5ZM3 9h4v12H3zM10 9h3.8v1.7h.1c.5-.9 1.8-1.9 3.6-1.9 3.9 0 4.6 2.4 4.6 5.6V21h-4v-5.3c0-1.3 0-2.9-1.8-2.9s-2 1.4-2 2.8V21h-4z"/></svg></a></li>
-      </ul>
-    </div>
-  </div>
-
   <header class="site-header" id="top">
     <div class="container site-header__inner">
       <a class="brand" href="#inicio" aria-label="C-ROTULUS, ir al inicio">
@@ -183,28 +154,69 @@
            desplegable (hamburguesa) en móvil/tableta. -->
       <nav class="primary-nav" id="primaryNav" aria-label="Navegación principal">
         <ul class="primary-nav__list">
-          <li><a class="nav-link is-active" href="#inicio">Inicio</a></li>
-          <li><a class="nav-link" href="empresa.html">Empresa</a></li>
-          <li><a class="nav-link" href="#servicios">Servicios</a></li>
-          <li><a class="nav-link" href="#proyectos">Proyectos</a></li>
-          <li><a class="nav-link" href="#proceso">Proceso</a></li>
-          <li><a class="nav-link" href="#testimonios">Testimonios</a></li>
-          <li><a class="nav-link" href="#faq">FAQ</a></li>
+          <li><a class="nav-link is-active" href="#inicio" data-i18n="nav_home">Inicio</a></li>
+          <li><a class="nav-link" href="empresa.html" data-i18n="nav_company">Empresa</a></li>
+          <li><a class="nav-link" href="#servicios" data-i18n="nav_services">Servicios</a></li>
+          <li><a class="nav-link" href="#proyectos" data-i18n="nav_projects">Proyectos</a></li>
+          <li><a class="nav-link" href="#proceso" data-i18n="nav_process">Proceso</a></li>
+          <li><a class="nav-link" href="#testimonios" data-i18n="nav_testimonials">Testimonios</a></li>
+          <li><a class="nav-link" href="#faq" data-i18n="nav_faq">FAQ</a></li>
         </ul>
       </nav>
 
-      <!-- Área privada, CTA y botón hamburguesa -->
+      <!-- Herramientas del sitio (buscar, idioma, tema), acceso y CTA -->
       <div class="site-header__actions">
-        <a class="nav-link nav-link--auth" id="navAuthLink" href="admin/login">Acceder</a>
+        <div class="header-tools">
+          <button class="tool-btn" id="searchToggle" type="button" aria-expanded="false" aria-controls="siteSearch" aria-label="Buscar en el sitio" data-i18n-aria="aria_search">
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="m16.5 16.5 4 4"/></svg>
+          </button>
+
+          <div class="lang" id="langSwitch">
+            <button class="tool-btn" id="langToggle" type="button" aria-expanded="false" aria-haspopup="true" aria-label="Idioma del sitio" data-i18n-aria="aria_lang">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" d="M3.4 9h17.2M3.4 15h17.2M12 3c2.4 2.4 3.7 5.4 3.7 9S14.4 18.6 12 21c-2.4-2.4-3.7-5.4-3.7-9S9.6 5.4 12 3Z"/></svg>
+              <span class="tool-btn__code" id="langCode">ES</span>
+            </button>
+            <ul class="lang__menu" id="langMenu" hidden>
+              <li><button type="button" data-lang="es" lang="es">Español</button></li>
+              <li><button type="button" data-lang="en" lang="en">English</button></li>
+              <li><button type="button" data-lang="pt" lang="pt">Português</button></li>
+            </ul>
+          </div>
+
+          <button class="tool-btn tool-btn--theme" id="themeToggle" type="button" aria-pressed="false" aria-label="Cambiar a modo noche" data-i18n-aria="aria_theme">
+            <svg class="tool-btn__sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6"/></svg>
+            <svg class="tool-btn__moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M20.2 14.6A8.6 8.6 0 0 1 9.4 3.8a8.6 8.6 0 1 0 10.8 10.8Z"/></svg>
+          </button>
+        </div>
+
+        <a class="nav-link nav-link--auth" id="navAuthLink" href="admin/login" data-i18n="nav_login">Acceder</a>
         <a class="btn btn--primary btn--nav-cta" href="#contacto">
           <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 5h16v14H4zM4 7l8 5 8-5"/></svg>
-          Contacto
+          <span data-i18n="nav_contact">Contacto</span>
         </a>
         <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="primaryNav" aria-label="Abrir menú de navegación">
           <span class="nav-toggle__bar"></span>
           <span class="nav-toggle__bar"></span>
           <span class="nav-toggle__bar"></span>
         </button>
+      </div>
+    </div>
+
+    <!-- Panel de búsqueda global (se abre desde la lupa de la cabecera).
+         Indexa las secciones de la página y los elementos de contenido
+         (servicios, proyectos, artículos, FAQ...) y lleva al resultado. -->
+    <div class="search-panel" id="siteSearch" hidden>
+      <div class="container search-panel__inner">
+        <form class="search-panel__form" role="search" onsubmit="return false">
+          <span class="search-panel__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="m16.5 16.5 4 4"/></svg>
+          </span>
+          <input type="search" id="searchInput" class="search-panel__input" placeholder="Buscar en el sitio: servicios, proyectos, blog, preguntas…" aria-label="Buscar en el sitio" autocomplete="off" data-i18n-ph="search_placeholder">
+          <button type="button" class="tool-btn" id="searchClose" aria-label="Cerrar búsqueda" data-i18n-aria="aria_close">
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M6 6l12 12M18 6 6 18"/></svg>
+          </button>
+        </form>
+        <ul class="search-results" id="searchResults" aria-live="polite"></ul>
       </div>
     </div>
   </header>
@@ -255,12 +267,62 @@
         </div>
 
         <div class="hero__media">
-          <!-- Imagen editable: equipo de trabajo real en la portada -->
-          <picture>
-            <source type="image/avif" srcset="assets/img/hero-tech.avif?v=20261023">
-            <source type="image/webp" srcset="assets/img/hero-tech.webp?v=20261023">
-            <img src="assets/img/hero-tech.jpg?v=20261023" alt="Equipo de C-ROTULUS trabajando con ordenadores en una oficina" width="640" height="480" fetchpriority="high" decoding="async" data-site-image="hero_image" data-site-alt="hero_image_alt">
-          </picture>
+          <!-- Ejemplo de automatizacion con agente IA: proceso de facturas y
+               firma digital. Se dibuja con HTML/CSS (no es una imagen) para
+               poder animar el flujo paso a paso. -->
+          <div class="flow" role="img" aria-label="Agente de IA que recibe una factura, extrae los datos, valida, la firma digitalmente y la archiva automáticamente">
+            <div class="flow__head">
+              <span class="flow__dot"></span>
+              <span class="flow__title">Agente IA · Facturas y firmas</span>
+              <span class="flow__live">en vivo</span>
+            </div>
+
+            <ol class="flow__steps">
+              <li class="flow__step">
+                <span class="flow__ico">
+                  <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M6 2.5h8l4 4V21a.5.5 0 0 1-.5.5h-11A.5.5 0 0 1 6 21V3a.5.5 0 0 1 .5-.5Z"/><path fill="none" stroke="currentColor" stroke-width="1.8" d="M14 2.6V7h4.4"/></svg>
+                </span>
+                <div class="flow__text"><strong>Entrada</strong><span>factura-2026-0412.pdf recibida por correo</span></div>
+                <span class="flow__tick" aria-hidden="true"></span>
+              </li>
+
+              <li class="flow__step">
+                <span class="flow__ico">
+                  <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path fill="none" stroke="currentColor" stroke-width="1.8" d="M12 3v3M12 18v3M3 12h3M18 12h3M6 6l2 2M16 16l2 2M18 6l-2 2M8 16l-2 2"/></svg>
+                </span>
+                <div class="flow__text"><strong>Lectura IA</strong><span>emisor, NIF, importe y fecha extraídos (OCR)</span></div>
+                <span class="flow__tick" aria-hidden="true"></span>
+              </li>
+
+              <li class="flow__step">
+                <span class="flow__ico">
+                  <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="m4 12.5 5 5L20 6.5"/></svg>
+                </span>
+                <div class="flow__text"><strong>Validación</strong><span>coincide con el pedido · sin duplicados</span></div>
+                <span class="flow__tick" aria-hidden="true"></span>
+              </li>
+
+              <li class="flow__step flow__step--sign">
+                <span class="flow__ico">
+                  <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M3 17.5c3.5 0 4.5-9 7-9s2 6 4.5 6 2.5-3 6.5-3"/></svg>
+                </span>
+                <div class="flow__text"><strong>Firma digital</strong><span>sellada con certificado de la empresa</span></div>
+                <span class="flow__tick" aria-hidden="true"></span>
+              </li>
+            </ol>
+
+            <div class="flow__signature" aria-hidden="true">
+              <svg viewBox="0 0 220 46" width="220" height="46" preserveAspectRatio="xMinYMid meet">
+                <path class="flow__sign-path" d="M6 34c14 0 18-24 30-24s14 20 24 20 12-16 22-16 14 22 26 22 18-26 30-26 16 24 26 24 20-10 46-10" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+              </svg>
+              <span class="flow__stamp">Firmado</span>
+            </div>
+
+            <div class="flow__foot">
+              <span class="flow__bar"><span class="flow__bar-fill"></span></span>
+              <span class="flow__meta">4 pasos · 8 s · 0 errores</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -430,7 +492,7 @@
 
 
     <!-- ==================== 4. BLOG ==================== -->
-    <section class="section" id="blog">
+    <section class="section" id="blog" data-section-toggle="blog_enabled">
       <div class="container">
         <header class="section__head">
           <p class="eyebrow" data-site="blog_eyebrow">Blog</p>
@@ -1253,7 +1315,7 @@
   </button>
 
   <!-- ==================== SCRIPTS ==================== -->
-  <script src="js/main.min.js?v=20261027" defer></script>
+  <script src="js/main.min.js?v=20261029" defer></script>
 
   <!-- Widget de CreatuAgente (chat de atención al cliente).
        Inyecta su propio botón flotante abajo a la derecha; por eso el botón

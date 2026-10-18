@@ -5,6 +5,8 @@ import { requireAdmin } from "@/lib/admin-guard";
 import { csrfToken, csrfVerify } from "@/lib/csrf";
 import { prisma } from "@/lib/db";
 import { limitText, cleanText } from "@/lib/validator";
+import { setting, settingSet } from "@/lib/settings";
+import { audit } from "@/lib/admin";
 
 /**
  * ============================================================================
@@ -85,12 +87,22 @@ export default async function BlogAdminPage({
       revalidatePath("/admin/blog");
       redirect(`/admin/blog?ok=${encodeURIComponent(doAct === "publicar" ? "Artículo publicado." : "Artículo oculto.")}`);
     }
+    if (doAct === "visibilidad") {
+      await settingSet("blog_enabled", data["blog_enabled"] !== undefined ? "1" : "0");
+      await audit("blog_visibility_updated");
+      revalidatePath("/admin/blog");
+      revalidatePath("/");
+      redirect(`/admin/blog?ok=${encodeURIComponent("Visibilidad de la sección Blog guardada.")}`);
+    }
     redirect(`/admin/blog?err=${encodeURIComponent("Acción no válida.")}`);
   }
 
-  const items = await prisma.blogPost.findMany({
-    orderBy: [{ publishedAt: "desc" }, { sortOrder: "asc" }, { id: "desc" }],
-  });
+  const [items, blogEnabled] = await Promise.all([
+    prisma.blogPost.findMany({
+      orderBy: [{ publishedAt: "desc" }, { sortOrder: "asc" }, { id: "desc" }],
+    }),
+    setting("blog_enabled", "1"),
+  ]);
   const edit = editId > 0 ? await prisma.blogPost.findUnique({ where: { id: editId } }) : null;
   const editMeta = (edit?.meta as Record<string, unknown> | null) ?? {};
 
@@ -99,6 +111,24 @@ export default async function BlogAdminPage({
       <h1>Blog</h1>
       {flashOk ? <Alert kind="ok">{flashOk}</Alert> : null}
       {flashErr ? <Alert kind="error">{flashErr}</Alert> : null}
+
+      <form method="post" action={action}>
+        <input type="hidden" name="_csrf" value={csrf} />
+        <input type="hidden" name="do" value="visibilidad" />
+        <div className="settings-card">
+          <h2>Sección Blog en la portada</h2>
+          <p className="muted">
+            Si la desactivas, la sección «Blog» desaparece de la página principal (y su enlace
+            del menú y del pie). Los artículos se conservan y vuelven a mostrarse al reactivarla.
+          </p>
+          <div className="field">
+            <label>
+              <input type="checkbox" name="blog_enabled" value="1" defaultChecked={blogEnabled === "1"} /> Mostrar la sección Blog
+            </label>
+          </div>
+          <button className="btn" type="submit">Guardar visibilidad</button>
+        </div>
+      </form>
 
       <p className="muted">
         Los artículos publicados aparecen en la sección «Blog» de la web. La portada es una
