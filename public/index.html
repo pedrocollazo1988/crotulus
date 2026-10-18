@@ -53,7 +53,7 @@
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Inter-latin.woff2" crossorigin>
 
   <!-- ============ ESTILOS ============ -->
-  <link rel="stylesheet" href="css/styles.min.css?v=20261025">
+  <link rel="stylesheet" href="css/styles.min.css?v=20261026">
 
   <!-- ============ DATOS ESTRUCTURADOS AutoRepair (JSON-LD) ============
        schema.org/AutoRepair (subtipo de LocalBusiness, ideal para servicios
@@ -534,11 +534,11 @@
         <header class="section__head">
           <p class="eyebrow" data-site="testimonials_eyebrow">Testimonios</p>
           <h2 class="section__title" data-site="testimonials_title">Lo que opinan nuestros clientes</h2>
-          <p class="section__lead" data-site="testimonials_lead">Opiniones de clientes reales. Para compartir la tuya, entra en tu cuenta.</p>
+          <p class="section__lead" data-site="testimonials_lead">Opiniones de clientes reales. Comparte la tuya en un minuto, sin crear ninguna cuenta.</p>
         </header>
 
         <p class="section__cta">
-          <a class="btn btn--ghost" href="admin/login">Inicia sesión para dejar tu testimonio</a>
+          <a class="btn btn--primary" href="#testimonialForm" data-testimonial-cta>Deja tu testimonio</a>
         </p>
 
         <div class="testimonials" id="testimonials" aria-roledescription="carrusel" aria-label="Testimonios de clientes">
@@ -633,6 +633,102 @@
             <div class="carousel-dots" role="tablist" aria-label="Seleccionar testimonio"></div>
             <button class="carousel-btn" type="button" data-carousel="next" aria-label="Testimonio siguiente">&#8250;</button>
           </div>
+        </div>
+
+        <!-- FORMULARIO PUBLICO DE TESTIMONIOS ----------------------------------
+             Abierto a cualquier visitante: no requiere cuenta. Los testimonios
+             entran como aportacion (se moderan en el panel · Aportaciones) y,
+             al aprobarse, aparecen en el carrusel de arriba. La visibilidad de
+             este bloque se controla en el panel · Valoraciones.
+        -------------------------------------------------------------------- -->
+        <div class="testimonial-invite" id="testimonialForm" data-testimonial-invite>
+          <div class="testimonial-invite__aside">
+            <span class="testimonial-invite__quote" aria-hidden="true">&ldquo;</span>
+            <h3 class="testimonial-invite__title">Tu experiencia ayuda a otros</h3>
+            <p class="testimonial-invite__text">
+              Cuéntanos cómo fue trabajar con nosotros. Tu testimonio se publica en la
+              portada y ayuda a otras empresas a decidirse. No necesitas cuenta.
+            </p>
+            <ul class="testimonial-invite__points">
+              <li>Se revisa antes de publicarse.</li>
+              <li>Puedes firmar con tu nombre y empresa.</li>
+              <li>Tu correo no se muestra nunca.</li>
+            </ul>
+          </div>
+
+          <form class="testimonial-form" id="testimonialFormEl" action="api/submissions.php" method="POST" novalidate>
+            <input type="hidden" name="_csrf" value="">
+            <input type="hidden" name="tipo" value="testimonio">
+
+            <div class="field">
+              <label for="tfNombre">Tu nombre *</label>
+              <input type="text" id="tfNombre" name="titulo" autocomplete="name" required minlength="2" maxlength="120" placeholder="Ej.: María Pérez">
+              <small class="field__error" data-error-for="tfNombre" aria-live="polite"></small>
+            </div>
+
+            <div class="field">
+              <label for="tfRol">Cargo y empresa <span class="field__optional">(opcional)</span></label>
+              <input type="text" id="tfRol" name="rol" maxlength="120" placeholder="Ej.: Gerente · Distribuciones ML">
+              <small class="field__error" data-error-for="tfRol" aria-live="polite"></small>
+            </div>
+
+            <div class="field">
+              <label id="tfRatingLabel">Tu valoración *</label>
+              <div class="rating-input" role="radiogroup" aria-labelledby="tfRatingLabel" id="tfRating">
+                <button type="button" class="rating-input__star is-on" data-rating="1" role="radio" aria-checked="false" aria-label="1 estrella">
+                  <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="m12 2 3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                </button>
+                <button type="button" class="rating-input__star is-on" data-rating="2" role="radio" aria-checked="false" aria-label="2 estrellas">
+                  <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="m12 2 3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                </button>
+                <button type="button" class="rating-input__star is-on" data-rating="3" role="radio" aria-checked="false" aria-label="3 estrellas">
+                  <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="m12 2 3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                </button>
+                <button type="button" class="rating-input__star is-on" data-rating="4" role="radio" aria-checked="false" aria-label="4 estrellas">
+                  <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="m12 2 3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                </button>
+                <button type="button" class="rating-input__star is-on" data-rating="5" role="radio" aria-checked="true" aria-label="5 estrellas">
+                  <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="m12 2 3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+                </button>
+                <span class="rating-input__label" id="tfRatingValue" aria-live="polite">5 de 5</span>
+              </div>
+              <input type="hidden" name="rating" id="tfRatingInput" value="5">
+            </div>
+
+            <div class="field">
+              <label for="tfTexto">Tu experiencia *</label>
+              <textarea id="tfTexto" name="texto" rows="4" required minlength="10" maxlength="1500"
+                        placeholder="¿Qué problema tenías y cómo lo resolvimos?"></textarea>
+              <div class="field__foot">
+                <small class="field__error" data-error-for="tfTexto" aria-live="polite"></small>
+                <small class="field__counter" id="tfCounter" aria-live="polite">0 / 1500</small>
+              </div>
+            </div>
+
+            <!-- Verificacion anti-spam (captcha propio, accesible y sin dependencias) -->
+            <div class="field field--captcha" id="tfCaptchaField">
+              <label for="tfCaptcha">Verificacion de seguridad *</label>
+              <div class="captcha">
+                <div class="captcha__challenge">
+                  <span class="captcha__question" id="tfCaptchaQuestion" aria-live="polite">Cargando reto&hellip;</span>
+                  <button type="button" class="captcha__refresh" id="tfCaptchaRefresh" aria-label="Generar otro reto de seguridad">
+                    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M20 11a8 8 0 1 0-2.3 6.3M20 5v6h-6"/></svg>
+                  </button>
+                </div>
+                <input type="text" id="tfCaptcha" name="captcha" inputmode="numeric" autocomplete="off" required aria-describedby="tfCaptchaHint">
+              </div>
+              <small class="field__error" data-error-for="tfCaptcha" aria-live="polite"></small>
+              <small class="field__hint" id="tfCaptchaHint">Resuelve la operacion para demostrar que eres una persona.</small>
+              <input type="hidden" name="captcha_token" id="tfCaptchaToken" value="">
+              <div class="field--hp" aria-hidden="true">
+                <label for="tfGotcha">No rellenar</label>
+                <input type="text" id="tfGotcha" name="_gotcha" tabindex="-1" autocomplete="off">
+              </div>
+            </div>
+
+            <button class="btn btn--primary btn--block" type="submit">Publicar mi testimonio</button>
+            <p class="form-status" id="tfStatus" role="status" aria-live="polite"></p>
+          </form>
         </div>
       </div>
     </section>
@@ -1138,7 +1234,7 @@
   </button>
 
   <!-- ==================== SCRIPTS ==================== -->
-  <script src="js/main.min.js?v=20261025" defer></script>
+  <script src="js/main.min.js?v=20261026" defer></script>
 
   <!-- Widget de CreatuAgente (chat de atención al cliente).
        Inyecta su propio botón flotante abajo a la derecha; por eso el botón

@@ -61,7 +61,7 @@ const DEFAULTS: Dict = {
     "Sin sorpresas: te acompañamos desde la primera conversación hasta el soporte del día a día.",
   testimonials_eyebrow: "Testimonios",
   testimonials_title: "Lo que opinan nuestros clientes",
-  testimonials_lead: "Opiniones de clientes reales. Para compartir la tuya, entra en tu cuenta.",
+  testimonials_lead: "Opiniones de clientes reales. Comparte la tuya en un minuto, sin crear ninguna cuenta.",
   reviews_eyebrow: "Opiniones",
   reviews_title: "Lo que opinan de nosotros en Google",
   reviews_lead:
@@ -164,6 +164,8 @@ const DEFAULTS: Dict = {
   testimonials_enabled: "1",
   google_reviews_enabled: "1",
   trustpilot_enabled: "1",
+  // Formulario publico de testimonios (abierto, sin cuenta)
+  testimonials_form_enabled: "1",
   reviews_provider: "trustpilot",
   trustpilot_url: "https://es.trustpilot.com/review/[TU-DOMINIO]",
   trustpilot_business_id: "[TRUSTPILOT_BUSINESS_ID]",
