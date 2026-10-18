@@ -176,18 +176,20 @@ model ContentItem {
 }
 
 model UserSubmission {
-  id        Int       @id @default(autoincrement())
-  userId    Int       @map("user_id")
-  stype     String
-  title     String?   @default("")
-  body      String?
-  status    String    @default("pendiente")
-  score     Int       @default(0)
-  ip        String?   @default("")
-  createdAt DateTime? @map("created_at")
-  updatedAt DateTime? @map("updated_at")
+  id         Int       @id @default(autoincrement())
+  userId     Int?      @map("user_id")
+  stype      String
+  title      String?   @default("")
+  body       String?
+  authorRole String?   @default("") @map("author_role")
+  rating     Int       @default(5)
+  status     String    @default("pendiente")
+  score      Int       @default(0)
+  ip         String?   @default("")
+  createdAt  DateTime? @map("created_at")
+  updatedAt  DateTime? @map("updated_at")
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([stype, status])
   @@map("user_submissions")

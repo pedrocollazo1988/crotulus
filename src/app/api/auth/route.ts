@@ -123,8 +123,24 @@ export async function POST(req: NextRequest) {
         return jsonError("Revisa los datos.", 422, { fields: errors });
       }
 
-      if (await authFindByEmail(email)) {
-        return jsonError("Ya existe una cuenta con este correo.", 409);
+      const existing = await authFindByEmail(email);
+      if (existing) {
+        // La cuenta ya existe (p. ej. el correo del administrador que crea el
+        // despliegue). No dejar un callejon sin salida: si quedo sin verificar
+        // se reenvia el enlace; si no, se guia al acceso o la recuperacion.
+        if (existing.status === "pending" && existing.emailVerifiedAt === null) {
+          const resent = await sendVerificationEmail(existing.id, existing.email, existing.name);
+          return jsonError(
+            resent
+              ? "Ya existe una cuenta con este correo sin verificar. Te hemos reenviado el enlace de verificación; revisa tu correo."
+              : "Ya existe una cuenta con este correo. Inicia sesión o usa «Olvidé mi contraseña» si no la recuerdas.",
+            409,
+          );
+        }
+        return jsonError(
+          "Ya existe una cuenta con este correo. Inicia sesión o usa «Olvidé mi contraseña» para recuperarla.",
+          409,
+        );
       }
 
       // Verificacion por correo: 'required' (por defecto) o 'optional'. La

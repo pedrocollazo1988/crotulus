@@ -57,6 +57,9 @@
   // (en ese caso recuerda cambiar también el "action" del <form> en index.html)
   var FORM_ENDPOINT = withBackend("api/contact.php");
 
+  // Endpoint de aportaciones (testimonios y preguntas abiertas, sin cuenta).
+  var FORM_ENDPOINT_SUBMISSIONS = withBackend("api/submissions.php");
+
   // Base de la API del sitio (datos editables: teléfono, correo, mapa, redes).
   var API_BASE = withBackend("api/");
 
@@ -99,6 +102,7 @@
     setupBackTop();
     setupOffscreenPause();  // pausa animaciones decorativas fuera de pantalla
     setupForm();
+    setupTestimonialForm();    // formulario publico de testimonios (sin cuenta)
     setupGoogleReviewsLink();  // enlace «Ver todas en Google» (configurable)
     setupTrustpilotLink();     // enlace «Ver todas en Trustpilot» (configurable)
     cargarGoogleReviews();     // reseñas de Google en vivo (con respaldo en BD)
@@ -641,27 +645,55 @@
       .catch(function () { /* sin datos: se mantienen las FAQ del HTML */ });
   }
 
-  // Añade los testimonios aprobados de usuarios registrados a la lista.
+  // Añade los testimonios aprobados de usuarios a la lista del carrusel y
+  // ajusta la visibilidad del formulario publico segun el panel.
   function cargarTestimoniosUsuarios(forzar) {
-    var track = document.querySelector(".testimonials__track");
-    if (!track || !window.fetch) return;
+    if (!window.fetch) return;
     fetch(API_BASE + "index?resource=testimonials", { headers: { "Accept": "application/json" } })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (data) {
-        if (!data || !data.ok || !data.items || !data.items.length) return;
+        if (!data || !data.ok) return;
+
+        // Formulario publico: visible salvo que el panel lo desactive.
+        aplicarFormularioTestimonios(data.form_enabled);
+
+        var track = document.querySelector(".testimonials__track");
+        if (!track || !data.items || !data.items.length) return;
         $$("[data-user-testimonial]", track).forEach(function (li) { li.remove(); });
         var html = data.items.map(function (t) {
           var avatar = t.photo
-            ? fotoResponsive(t.photo, "Foto de " + t.author_name, 96, 96)
+            ? fotoResponsive(t.photo, "Foto de " + t.author_name, 96, 96, "testimonial__avatar")
             : '<span class="testimonial__avatar" aria-hidden="true">' + iniciales(t.author_name) + '</span>';
-          return '<li class="testimonial" data-user-testimonial><blockquote class="testimonial__quote"><p>"'
-            + esc(t.comment) + '"</p></blockquote><footer class="testimonial__author">' + avatar
-            + '<cite><strong>' + esc(t.author_name) + '</strong><span>Cliente</span></cite></footer></li>';
+          var estrellas = Math.max(1, Math.min(5, parseInt(t.rating, 10) || 5));
+          var rating = '<span class="testimonial__rating" role="img" aria-label="Valoración: ' + estrellas + ' de 5 estrellas">'
+            + new Array(estrellas + 1).join('<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="m12 2 3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>')
+            + '</span>';
+          var rol = t.role ? '<span>' + esc(t.role) + '</span>' : '<span>Cliente</span>';
+          return '<li class="testimonial" data-user-testimonial><blockquote class="testimonial__quote">'
+            + '<div class="testimonial__top">' + rating + '</div>'
+            + '<p class="testimonial__text">&laquo;' + esc(t.comment) + '&raquo;</p>'
+            + '</blockquote><footer class="testimonial__author">' + avatar
+            + '<cite><strong>' + esc(t.author_name) + '</strong>' + rol + '</cite></footer></li>';
         }).join("");
         track.insertAdjacentHTML("beforeend", html);
         if (typeof setupCarousel === "function") setupCarousel();
       })
       .catch(function () { /* sin testimonios de usuarios */ });
+  }
+
+  // Muestra u oculta la invitacion a dejar testimonio (y su enlace de cabecera)
+  // segun el ajuste "testimonials_form_enabled" del panel.
+  function aplicarFormularioTestimonios(habilitado) {
+    if (habilitado === undefined || habilitado === null) return;   // sin dato: se deja como esta
+    // La API puede devolver boolean (false) o cadena ("0"): se aceptan ambos.
+    var visible = !(habilitado === false || String(habilitado) === "0");
+    var invite = $("[data-testimonial-invite]");
+    var cta = $("[data-testimonial-cta]");
+    if (invite) invite.hidden = !visible;
+    if (cta) {
+      var li = cta.closest("li");
+      (li || cta).hidden = !visible;
+    }
   }
 
   /* ==========================================================================
@@ -1020,7 +1052,7 @@
     var form = $("#contactForm");
     if (!form) return;
     var status = $("#formStatus");
-    cargarCaptcha();
+    cargarCaptcha(form);
 
     // Reglas de validación por campo
     var reglas = {
@@ -1059,7 +1091,7 @@
 
     // Botón para generar otro reto de seguridad
     var refresh = $("#captchaRefresh");
-    if (refresh) refresh.addEventListener("click", cargarCaptcha);
+    if (refresh) refresh.addEventListener("click", function () { cargarCaptcha(form); });
 
     // Validación al salir del campo
     $$("input, select, textarea", form).forEach(function (el) {
@@ -1110,11 +1142,13 @@
   }
 
   /* Pide un reto anti-spam a la API y lo pinta en el formulario.
-     El reto y su firma los genera el servidor (no se puede falsificar). */
-  function cargarCaptcha() {
-    var q = $("#captchaQuestion");
-    var token = $("#captchaToken");
-    var campo = $("#captcha");
+     El reto y su firma los genera el servidor (no se puede falsificar).
+     `scope` limita la busqueda a un formulario concreto (hay varios en la
+     pagina: contacto y testimonios). */
+  function cargarCaptcha(scope) {
+    var q = $(".captcha__question", scope);
+    var token = $('input[name="captcha_token"]', scope);
+    var campo = $('input[name="captcha"]', scope);
     if (!q || !token) return;
 
     q.textContent = "Cargando reto…";
@@ -1154,7 +1188,7 @@
           status.textContent = "Gracias, hemos recibido tu mensaje. Te responderemos en menos de 24 horas laborables.";
           status.className = "form-status is-success";
           form.reset();
-          cargarCaptcha();
+          cargarCaptcha(form);
           return;
         }
         // Errores por campo devueltos por el backend
@@ -1166,12 +1200,12 @@
         }
         status.textContent = (data && data.error) || "No se pudo enviar. Inténtalo de nuevo o escríbenos por WhatsApp.";
         status.className = "form-status is-error";
-        cargarCaptcha();
+        cargarCaptcha(form);
       })
       .catch(function () {
         status.textContent = "No se pudo enviar. Inténtalo de nuevo o escríbenos por WhatsApp.";
         status.className = "form-status is-error";
-        cargarCaptcha();
+        cargarCaptcha(form);
       });
   }
 
@@ -1181,6 +1215,171 @@
       .then(function (r) { return r.json(); })
       .then(function (d) { return (d && d.csrf_token) || ""; })
       .catch(function () { return ""; });
+  }
+
+  /* ==========================================================================
+     8.b FORMULARIO PÚBLICO DE TESTIMONIOS (abierto, sin cuenta)
+     --------------------------------------------------------------------------
+     Cualquier visitante puede dejar su testimonio desde la portada. Se envía a
+     api/submissions.php (con CSRF y captcha) y entra como aportación: se
+     modera en el panel · Aportaciones y, al aprobarse, aparece en el carrusel.
+     ========================================================================== */
+  function setupTestimonialForm() {
+    var form = $("#testimonialFormEl");
+    if (!form) return;
+
+    var status = $("#tfStatus");
+    var ratingBox = $("#tfRating");
+    var ratingInput = $("#tfRatingInput");
+    var ratingValue = $("#tfRatingValue");
+    var counter = $("#tfCounter");
+    var texto = $("#tfTexto");
+
+    // --- Selector de estrellas (accesible) ---
+    function pintarEstrellas(valor) {
+      $$(".rating-input__star", ratingBox).forEach(function (b) {
+        var n = parseInt(b.getAttribute("data-rating"), 10);
+        var on = n <= valor;
+        b.classList.toggle("is-on", on);
+        b.setAttribute("aria-checked", n === valor ? "true" : "false");
+        b.setAttribute("tabindex", n === valor ? "0" : "-1");
+      });
+      ratingInput.value = valor;
+      if (ratingValue) ratingValue.textContent = valor + " de 5";
+    }
+    if (ratingBox) {
+      pintarEstrellas(5);
+      $$(".rating-input__star", ratingBox).forEach(function (b) {
+        b.addEventListener("click", function () {
+          pintarEstrellas(parseInt(b.getAttribute("data-rating"), 10));
+        });
+        // Navegación con flechas dentro del grupo de radios
+        b.addEventListener("keydown", function (ev) {
+          var actual = parseInt(ratingInput.value, 10) || 5;
+          if (ev.key === "ArrowRight" || ev.key === "ArrowUp") {
+            ev.preventDefault(); pintarEstrellas(Math.min(5, actual + 1));
+          } else if (ev.key === "ArrowLeft" || ev.key === "ArrowDown") {
+            ev.preventDefault(); pintarEstrellas(Math.max(1, actual - 1));
+          }
+        });
+      });
+    }
+
+    // --- Contador de caracteres ---
+    if (texto && counter) {
+      var max = parseInt(texto.getAttribute("maxlength"), 10) || 1500;
+      var refrescar = function () { counter.textContent = texto.value.length + " / " + max; };
+      texto.addEventListener("input", refrescar);
+      refrescar();
+    }
+
+    cargarCaptcha(form);
+    var refresh = $("#tfCaptchaRefresh");
+    if (refresh) refresh.addEventListener("click", function () { cargarCaptcha(form); });
+
+    // Reglas de validación por campo (mismas que el formulario de contacto)
+    var reglas = {
+      titulo:  { req: true, min: 2, msg: "Escribe tu nombre (mín. 2 caracteres)." },
+      texto:   { req: true, min: 10, msg: "Cuéntanos un poco más (mín. 10 caracteres)." },
+      captcha: { req: true, num: true, msg: "Resuelve la operacion de seguridad." }
+    };
+
+    function setError(input, msg) {
+      var box = $('[data-error-for="' + input.id + '"]', form);
+      if (msg) {
+        input.setAttribute("aria-invalid", "true");
+        if (box) box.textContent = msg;
+        return false;
+      }
+      input.removeAttribute("aria-invalid");
+      if (box) box.textContent = "";
+      return true;
+    }
+
+    function validar(input) {
+      var r = reglas[input.name];
+      if (!r) return true;
+      var v = input.value.trim();
+      if (r.req && v === "") return setError(input, r.msg);
+      if (r.num && !/^-?\d+$/.test(v)) return setError(input, r.msg);
+      if (r.min && v.length < r.min) return setError(input, r.msg);
+      return setError(input, "");
+    }
+
+    $$("input, textarea", form).forEach(function (el) {
+      if (!reglas[el.name]) return;
+      el.addEventListener("blur", function () { validar(el); });
+      el.addEventListener("input", function () {
+        if (el.getAttribute("aria-invalid") === "true") validar(el);
+      });
+    });
+
+    form.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+
+      var campos = $$("input, textarea", form).filter(function (el) { return reglas[el.name]; });
+      var ok = true, primero = null;
+      campos.forEach(function (el) {
+        if (!validar(el)) { ok = false; if (!primero) primero = el; }
+      });
+      if (!ok) {
+        status.textContent = "Revisa los campos marcados en rojo.";
+        status.className = "form-status is-error";
+        primero && primero.focus();
+        return;
+      }
+
+      // Campo trampa: si un bot lo rellena, simulamos éxito y no enviamos.
+      if ($('[name="_gotcha"]', form).value !== "") {
+        status.textContent = "¡Gracias! Tu testimonio se revisará antes de publicarse.";
+        status.className = "form-status is-success";
+        form.reset();
+        pintarEstrellas(5);
+        if (counter) counter.textContent = "0 / 1500";
+        return;
+      }
+
+      status.textContent = "Enviando…";
+      status.className = "form-status";
+
+      var datos = new FormData(form);
+      obtenerCsrf()
+        .then(function (token) {
+          return fetch(FORM_ENDPOINT_SUBMISSIONS, {
+            method: "POST",
+            headers: { "Accept": "application/json", "X-CSRF-Token": token || "" },
+            body: datos
+          });
+        })
+        .then(function (res) { return res.json().catch(function () { return { ok: res.ok }; }); })
+        .then(function (data) {
+          if (data && data.ok) {
+            status.textContent = data.message || "¡Gracias! Tu testimonio se revisará antes de publicarse.";
+            status.className = "form-status is-success";
+            form.reset();
+            pintarEstrellas(5);
+            if (counter) counter.textContent = "0 / 1500";
+            cargarCaptcha(form);
+            // Si se aprobó automáticamente, se muestra en el carrusel al momento.
+            if (data.status === "aprobada") cargarTestimoniosUsuarios(true);
+            return;
+          }
+          if (data && data.fields) {
+            Object.keys(data.fields).forEach(function (name) {
+              var el = form.querySelector('[name="' + name + '"]');
+              if (el) setFieldError(form, el, data.fields[name]);
+            });
+          }
+          status.textContent = (data && data.error) || "No se pudo enviar. Inténtalo de nuevo en unos minutos.";
+          status.className = "form-status is-error";
+          cargarCaptcha(form);
+        })
+        .catch(function () {
+          status.textContent = "No se pudo enviar. Inténtalo de nuevo en unos minutos.";
+          status.className = "form-status is-error";
+          cargarCaptcha(form);
+        });
+    });
   }
 
   /* Marca el error de un campo concreto. */

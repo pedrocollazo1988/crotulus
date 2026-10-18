@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { bootstrap } from "@/lib/bootstrap";
 import { jsonOk, jsonError, requestInput, input, clientIp, appLog } from "@/lib/http";
 import { csrfRequire } from "@/lib/csrf";
+import { captchaVerify } from "@/lib/captcha";
 import { validateSubmission, e } from "@/lib/validator";
 import { rateLimit, rateLimitGc } from "@/lib/rate-limit";
 import { currentUser } from "@/lib/auth";
@@ -15,7 +16,9 @@ import { prisma } from "@/lib/db";
 /**
  * ============================================================================
  *  API DE APORTACIONES  ->  POST /api/submissions
- *  Puerto de api/submissions.php (requiere sesion iniciada).
+ *  Puerto de api/submissions.php. Abierto a cualquier visitante (los
+ *  testimonios no exigen cuenta); si hay sesion, se asocia al usuario. Los
+ *  envios anonimos pasan por el captcha para frenar el spam.
  * ============================================================================
  */
 export const dynamic = "force-dynamic";
@@ -29,8 +32,8 @@ export async function POST(req: NextRequest) {
     return jsonError("Las aportaciones están desactivadas.", 503);
   }
 
+  // Abierto a cualquier visitante; si hay sesion, se asocia a la cuenta.
   const user = await currentUser();
-  if (!user) return jsonError("Inicia sesión para continuar.", 401);
 
   const csrf = csrfRequire(req, data);
   if (csrf) return csrf;
@@ -44,6 +47,15 @@ export async function POST(req: NextRequest) {
     return jsonOk({ message: "¡Gracias por tu aportación!" });
   }
 
+  // Captcha: obligatorio para visitantes anonimos; con sesion no hace falta.
+  if (!user) {
+    if (!captchaVerify(input(data, "captcha_token"), input(data, "captcha"))) {
+      return jsonError("La verificacion de seguridad no es correcta. Intentalo de nuevo.", 422, {
+        fields: { captcha: "Resuelve la operacion para demostrar que eres una persona." },
+      });
+    }
+  }
+
   const result = validateSubmission(data);
   if (Object.keys(result.errors).length) {
     return jsonError("Revisa los campos marcados.", 422, { fields: result.errors });
@@ -54,25 +66,29 @@ export async function POST(req: NextRequest) {
   const now = new Date();
   const row = await prisma.userSubmission.create({
     data: {
-      userId: user.id,
+      userId: user ? user.id : null,
       stype: d.stype,
       title: d.title,
       body: d.body,
+      authorRole: d.authorRole,
+      rating: d.rating,
       status,
       ip: clientIp(req),
       createdAt: now,
       updatedAt: now,
     },
   });
-  await appLog(`submission_created ${row.id} type=${d.stype} user=${user.id}`);
+  await appLog(`submission_created ${row.id} type=${d.stype} user=${user ? user.id : "anon"}`);
 
   const tipo = submissionTypeLabel(d.stype);
-  const autor = user.name || user.email;
+  const autor = d.title || (user ? user.name || user.email : "Visitante");
   const html = mailerTemplate(
     `Nueva aportación: ${tipo}`,
     `<p><strong>Tipo:</strong> ${e(tipo)}</p>
-     <p><strong>Autor:</strong> ${e(autor)}</p>
+     <p><strong>Autor:</strong> ${e(autor)}${user ? "" : " <em>(visitante anónimo)</em>"}</p>
      <p><strong>Título:</strong> ${e(d.title)}</p>
+     ${d.authorRole ? `<p><strong>Cargo / empresa:</strong> ${e(d.authorRole)}</p>` : ""}
+     ${d.stype === "testimonio" ? `<p><strong>Valoración:</strong> ${d.rating}/5</p>` : ""}
      <p><strong>Detalle:</strong></p><p>${e(d.body).replace(/\n/g, "<br>")}</p>
      <p><em>Estado: ${status}.</em></p>`,
   );

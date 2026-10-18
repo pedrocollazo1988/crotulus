@@ -1228,6 +1228,100 @@ img.testimonial__avatar {
 .carousel-dots button[aria-selected="true"]::before { background: var(--color-primary); transform: scale(1.25); }
 
 /* ==========================================================================
+   8.b INVITACION A DEJAR TESTIMONIO (formulario publico, sin cuenta)
+   --------------------------------------------------------------------------
+   Dos columnas: a la izquierda el mensaje de marca, a la derecha el formulario.
+   En pantallas estrechas se apila. Se puede ocultar desde el panel.
+   ========================================================================== */
+.testimonial-invite {
+  display: grid;
+  gap: 0;
+  margin-top: 2rem;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 18px 44px rgba(11,46,69,.12);
+}
+.testimonial-invite[hidden] { display: none; }
+.testimonial-invite__aside {
+  position: relative;
+  padding: 1.8rem 1.6rem;
+  background: linear-gradient(155deg, #1A6E9C, var(--color-primary) 55%, var(--color-primary-dark));
+  color: #fff;
+  overflow: hidden;
+}
+.testimonial-invite__aside::before {
+  content: "";
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 18% 22%, rgba(255,255,255,.28) 0 2px, transparent 3px),
+    radial-gradient(circle at 72% 60%, rgba(255,255,255,.20) 0 2px, transparent 3px),
+    radial-gradient(circle at 40% 84%, rgba(255,255,255,.16) 0 2px, transparent 3px);
+  background-size: 120px 120px, 90px 90px, 150px 150px;
+  opacity: .5;
+  pointer-events: none;
+}
+.testimonial-invite__aside > * { position: relative; }
+.testimonial-invite__quote {
+  display: block;
+  font-family: var(--font-head);
+  font-size: 3.6rem; line-height: .7;
+  color: rgba(255,255,255,.35);
+  margin-bottom: .5rem;
+}
+.testimonial-invite__title {
+  font-family: var(--font-head);
+  font-size: 1.35rem; line-height: 1.25;
+  color: #fff; margin: 0 0 .6rem;
+}
+.testimonial-invite__text { color: rgba(255,255,255,.9); font-size: .95rem; line-height: 1.6; margin: 0 0 1rem; }
+.testimonial-invite__points { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
+.testimonial-invite__points li {
+  position: relative;
+  padding-left: 1.6rem;
+  font-size: .9rem;
+  color: rgba(255,255,255,.95);
+}
+.testimonial-invite__points li::before {
+  content: "";
+  position: absolute; left: 0; top: .35rem;
+  width: 14px; height: 8px;
+  border-left: 2px solid var(--color-ice);
+  border-bottom: 2px solid var(--color-ice);
+  transform: rotate(-45deg);
+}
+.testimonial-form {
+  background: var(--color-white);
+  padding: 1.6rem;
+  border: 1px solid var(--color-line);
+  border-top: none;
+}
+.testimonial-form .field__optional { font-weight: 400; color: var(--color-ink-soft); font-size: .82rem; }
+.testimonial-form .field__foot { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
+.testimonial-form .field__counter { color: var(--color-ink-soft); font-size: .78rem; white-space: nowrap; }
+
+/* Selector de estrellas (accesible: role=radiogroup + aria-checked) */
+.rating-input { display: flex; align-items: center; flex-wrap: wrap; gap: .15rem; }
+.rating-input__star {
+  padding: .15rem; border: none; background: none; cursor: pointer;
+  color: var(--color-line);
+  display: inline-flex;
+  transition: transform var(--transition), color var(--transition);
+}
+.rating-input__star.is-on { color: var(--color-star); }
+.rating-input__star:hover { transform: scale(1.12); }
+.rating-input__star:focus-visible { outline: 3px solid var(--color-accent); outline-offset: 2px; border-radius: 6px; }
+.rating-input__label { margin-left: .5rem; font-size: .85rem; font-weight: 600; color: var(--color-ink-soft); }
+
+@media (min-width: 760px) {
+  .testimonial-invite { grid-template-columns: 1fr 1.15fr; }
+  .testimonial-invite__aside { padding: 2.2rem 2rem; display: flex; flex-direction: column; justify-content: center; }
+  .testimonial-form { padding: 2rem; border-top: 1px solid var(--color-line); border-left: none; }
+}
+
+/* Sobre fondo azul, la tarjeta del formulario destaca en blanco */
+.section--blue .testimonial-form { border-color: rgba(255,255,255,.5); }
+
+/* ==========================================================================
    9. PREGUNTAS FRECUENTES (ACORDEÓN)
    ========================================================================== */
 .accordion { display: grid; gap: .65rem; }

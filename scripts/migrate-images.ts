@@ -5,6 +5,11 @@ import { PrismaClient } from "@prisma/client";
  * fotos reales (mismo nombre base, extension .jpg). Idempotente: al volver a
  * ejecutarse no encuentra rutas .svg y no hace nada. No pisa imagenes que el
  * administrador haya cambiado a otra ruta distinta de las conocidas.
+ *
+ * Tambien actualiza textos por defecto que quedaron obsoletos en bases ya
+ * sembradas (p. ej. la entradilla de Testimonios, que invitaba a iniciar
+ * sesion cuando el formulario paso a ser publico). Solo sustituye el valor
+ * antiguo exacto: si el propietario lo edito, se respeta.
  */
 const prisma = new PrismaClient();
 
@@ -19,6 +24,13 @@ const MAP: Record<string, string> = {
   "assets/img/blog/automatizacion-ia-pymes.svg": "assets/img/blog/automatizacion-ia-pymes.jpg",
   "assets/img/blog/seguridad-red-pyme.svg": "assets/img/blog/seguridad-red-pyme.jpg",
   "assets/img/blog/web-que-convierte.svg": "assets/img/blog/web-que-convierte.jpg",
+};
+
+// Textos por defecto obsoletos -> actuales. Solo se sustituye el valor antiguo
+// exacto (si el propietario ya lo edito, se respeta su version).
+const TEXT_MAP: Record<string, string> = {
+  "Opiniones de clientes reales. Para compartir la tuya, entra en tu cuenta.":
+    "Opiniones de clientes reales. Comparte la tuya en un minuto, sin crear ninguna cuenta.",
 };
 
 async function main() {
@@ -54,6 +66,16 @@ async function main() {
       await prisma.blogPost.update({ where: { id: b.id }, data: { image: MAP[b.image] } });
       changed++;
       console.log(`blog #${b.id}: ${b.image} -> ${MAP[b.image]}`);
+    }
+  }
+
+  // 4) Textos por defecto obsoletos en ajustes (idempotente)
+  for (const s of await prisma.setting.findMany()) {
+    const next = s.svalue ? TEXT_MAP[s.svalue] : undefined;
+    if (next) {
+      await prisma.setting.update({ where: { skey: s.skey }, data: { svalue: next, updatedAt: new Date() } });
+      changed++;
+      console.log(`setting ${s.skey}: texto obsoleto -> actualizado`);
     }
   }
 

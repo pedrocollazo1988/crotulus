@@ -9,7 +9,7 @@ import { reviewsEnabled, reviewsSummary, reviewsPublished } from "@/lib/reviews"
 import { googleReviewsFetch } from "@/lib/google-reviews";
 import { trustpilotFetch } from "@/lib/trustpilot";
 import { faqsTop } from "@/lib/faq";
-import { submissionsEnabled, submissionsForUser, testimonialsPublished } from "@/lib/submissions";
+import { submissionsEnabled, submissionsForUser, testimonialsPublished, testimonialsFormEnabled } from "@/lib/submissions";
 import { currentUser } from "@/lib/auth";
 import { csrfToken } from "@/lib/csrf";
 import { captchaIssue } from "@/lib/captcha";
@@ -111,13 +111,18 @@ export async function GET(req: NextRequest) {
       for (const t of await testimonialsPublished(12)) {
         items.push({
           author_name: t.title,
+          role: t.role,
+          rating: t.rating,
           comment: t.body,
           photo: t.avatar_url,
           created_at: t.created_at,
           source: "usuario",
         });
       }
-      return jsonOk({ items });
+      return jsonOk({
+        items,
+        form_enabled: await testimonialsFormEnabled(),
+      });
     }
 
     case "session": {

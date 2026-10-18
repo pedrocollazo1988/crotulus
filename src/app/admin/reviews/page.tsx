@@ -24,6 +24,13 @@ const SECTIONS = [
   { key: "trustpilot_enabled", label: "Reseñas de Trustpilot", hint: "Reseñas verificadas de Trustpilot." },
 ] as const;
 
+/** Interruptor del formulario publico de testimonios (abierto, sin cuenta). */
+const FORM_TOGGLE = {
+  key: "testimonials_form_enabled",
+  label: "Formulario para dejar testimonio",
+  hint: "Cualquier visitante puede enviar su testimonio desde la portada, sin crear cuenta.",
+} as const;
+
 export default async function ReviewsPage({
   searchParams,
 }: {
@@ -71,6 +78,7 @@ export default async function ReviewsPage({
     for (const { key } of SECTIONS) {
       await settingSet(key, data[key] !== undefined ? "1" : "0");
     }
+    await settingSet(FORM_TOGGLE.key, data[FORM_TOGGLE.key] !== undefined ? "1" : "0");
     await audit("reviews_sections_updated");
     revalidatePath("/admin/reviews");
     revalidatePath("/");
@@ -78,7 +86,7 @@ export default async function ReviewsPage({
   }
 
   const where = statusFilter && STATUSES.includes(statusFilter) ? { status: statusFilter } : {};
-  const [items, total, pend, appr, avg, autoApprove, sectionsState] = await Promise.all([
+  const [items, total, pend, appr, avg, autoApprove, sectionsState, formToggleOn] = await Promise.all([
     prisma.review.findMany({
       where,
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
@@ -90,6 +98,7 @@ export default async function ReviewsPage({
     reviewsSummary(),
     setting("reviews_auto_approve", "0"),
     Promise.all(SECTIONS.map(async ({ key }) => ({ key, on: (await setting(key, "1")) === "1" }))),
+    setting(FORM_TOGGLE.key, "1"),
   ]);
   const sections = sectionsState as { key: string; on: boolean }[];
 
@@ -126,6 +135,13 @@ export default async function ReviewsPage({
                 </div>
               );
             })}
+          </div>
+          <div className="field">
+            <label>
+              <input type="checkbox" name={FORM_TOGGLE.key} value="1" defaultChecked={formToggleOn === "1"} />{" "}
+              {FORM_TOGGLE.label}
+            </label>
+            <p className="field__hint">{FORM_TOGGLE.hint}</p>
           </div>
           <button className="btn" type="submit">Guardar visibilidad</button>
         </div>

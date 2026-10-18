@@ -129,12 +129,12 @@ export default async function SubmissionsPage({
                   <td className="muted">{fmtDate(r.createdAt)}</td>
                   <td><Badge tone="leido">{submissionTypeLabel(r.stype)}</Badge></td>
                   <td>
-                    {r.user?.name || "—"}
+                    {r.user?.name || r.title || "—"}
                     <br />
-                    <span className="muted">{r.user?.email ?? ""}</span>
+                    <span className="muted">{r.user?.email ?? (r.userId ? "" : "visitante anónimo")}</span>
                   </td>
                   <td>
-                    <strong>{r.title}</strong>
+                    <strong>{r.user ? r.title : r.authorRole || r.title}</strong>
                     <br />
                     <span className="muted">{truncate(r.body ?? "", 220)}</span>
                   </td>

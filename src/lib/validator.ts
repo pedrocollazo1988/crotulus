@@ -171,6 +171,8 @@ export interface SubmissionData {
   stype: string;
   title: string;
   body: string;
+  authorRole: string;
+  rating: number;
 }
 
 /** Valida una aportacion (equivalente a validate_submission). */
@@ -180,6 +182,12 @@ export function validateSubmission(data: Record<string, unknown>): ValidationRes
   const type = cleanText(data["tipo"] ?? "testimonio");
   const title = cleanText(data["titulo"]);
   const body = cleanText(data["texto"] ?? data["comentario"]);
+  const authorRole = limitText(cleanText(data["rol"]), 120);
+
+  // Estrellas (1-5). Solo aplica a los testimonios; si falta o no es valida, 5.
+  const ratingRaw = cleanText(data["rating"]);
+  let rating = Number.parseInt(ratingRaw, 10);
+  if (Number.isNaN(rating) || rating < 1 || rating > 5) rating = 5;
 
   if (!(type in SUBMISSION_TYPES)) errors["tipo"] = "Elige el tipo de aportación.";
 
@@ -194,7 +202,7 @@ export function validateSubmission(data: Record<string, unknown>): ValidationRes
     if (bodyLen > 1500) errors["texto"] = "El detalle no puede superar los 1500 caracteres.";
   }
 
-  return { errors, data: { stype: type, title, body } };
+  return { errors, data: { stype: type, title, body, authorRole, rating } };
 }
 
 /** Sanea una ruta de imagen (relativa assets/... o URL http(s), sin ".."). */

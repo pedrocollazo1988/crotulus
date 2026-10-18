@@ -28,6 +28,11 @@ export async function submissionsAutoApprove(): Promise<boolean> {
   return (await setting("submissions_auto_approve", "0")) === "1";
 }
 
+/** ¿Se muestra el formulario publico de testimonios en la portada? */
+export async function testimonialsFormEnabled(): Promise<boolean> {
+  return (await setting("testimonials_form_enabled", "1")) === "1";
+}
+
 /** Etiqueta del tipo de aportacion. */
 export function submissionTypeLabel(type: string): string {
   return submissionTypes()[type] ?? type;
@@ -100,6 +105,8 @@ export async function testimonialsPublished(limit = 12) {
     id: r.id,
     title: r.title ?? "",
     body: r.body ?? "",
+    role: r.authorRole ?? "",
+    rating: r.rating,
     created_at: fmt(r.createdAt),
     avatar_url: r.user?.avatarUrl ?? "",
   }));
