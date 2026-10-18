@@ -5,7 +5,8 @@ import { requireAdmin } from "@/lib/admin-guard";
 import { csrfToken, csrfVerify } from "@/lib/csrf";
 import { prisma } from "@/lib/db";
 import { reviewsSummary } from "@/lib/reviews";
-import { setting } from "@/lib/settings";
+import { setting, settingSet } from "@/lib/settings";
+import { audit } from "@/lib/admin";
 
 /**
  * ============================================================================
@@ -15,6 +16,13 @@ import { setting } from "@/lib/settings";
 export const dynamic = "force-dynamic";
 
 const STATUSES = ["aprobada", "rechazada", "pendiente"];
+
+/** Interruptores de visibilidad de los bloques de valoraciones de la portada. */
+const SECTIONS = [
+  { key: "testimonials_enabled", label: "Testimonios de clientes", hint: "Carrusel «Lo que opinan nuestros clientes»." },
+  { key: "google_reviews_enabled", label: "Opiniones de Google", hint: "Reseñas de tu ficha de Google." },
+  { key: "trustpilot_enabled", label: "Reseñas de Trustpilot", hint: "Reseñas verificadas de Trustpilot." },
+] as const;
 
 export default async function ReviewsPage({
   searchParams,
@@ -51,8 +59,26 @@ export default async function ReviewsPage({
     redirect(`/admin/reviews?err=${encodeURIComponent("Acción no válida.")}`);
   }
 
+  /** Server Action: guarda qué bloques de valoraciones se ven en la portada. */
+  async function saveSections(formData: FormData) {
+    "use server";
+    await requireAdmin();
+    const data: Record<string, string> = {};
+    formData.forEach((v, k) => (data[k] = typeof v === "string" ? v : ""));
+    if (!csrfVerify(data["_csrf"])) {
+      redirect(`/admin/reviews?err=${encodeURIComponent("Token de seguridad inválido.")}`);
+    }
+    for (const { key } of SECTIONS) {
+      await settingSet(key, data[key] !== undefined ? "1" : "0");
+    }
+    await audit("reviews_sections_updated");
+    revalidatePath("/admin/reviews");
+    revalidatePath("/");
+    redirect(`/admin/reviews?ok=${encodeURIComponent("Visibilidad de las secciones guardada.")}`);
+  }
+
   const where = statusFilter && STATUSES.includes(statusFilter) ? { status: statusFilter } : {};
-  const [items, total, pend, appr, avg, autoApprove] = await Promise.all([
+  const [items, total, pend, appr, avg, autoApprove, sectionsState] = await Promise.all([
     prisma.review.findMany({
       where,
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
@@ -63,7 +89,9 @@ export default async function ReviewsPage({
     prisma.review.count({ where: { status: "aprobada" } }),
     reviewsSummary(),
     setting("reviews_auto_approve", "0"),
+    Promise.all(SECTIONS.map(async ({ key }) => ({ key, on: (await setting(key, "1")) === "1" }))),
   ]);
+  const sections = sectionsState as { key: string; on: boolean }[];
 
   return (
     <>
@@ -77,6 +105,31 @@ export default async function ReviewsPage({
         <Stat num={total} label="Total recibidas" />
         <Stat num={avg.average.toFixed(1)} label="Media (aprobadas)" />
       </Cards>
+
+      <form method="post" action={saveSections}>
+        <input type="hidden" name="_csrf" value={csrf} />
+        <div className="settings-card">
+          <h2>Secciones visibles en la página principal</h2>
+          <p className="muted">
+            Activa o desactiva cada bloque de forma independiente. Lo que desmarques
+            deja de mostrarse en la portada (también desaparece del menú de navegación).
+          </p>
+          <div className="grid-2">
+            {SECTIONS.map(({ key, label, hint }) => {
+              const on = sections.find((s) => s.key === key)?.on ?? true;
+              return (
+                <div className="field" key={key}>
+                  <label>
+                    <input type="checkbox" name={key} value="1" defaultChecked={on} /> {label}
+                  </label>
+                  <p className="field__hint">{hint}</p>
+                </div>
+              );
+            })}
+          </div>
+          <button className="btn" type="submit">Guardar visibilidad</button>
+        </div>
+      </form>
 
       <p className="muted">
         Publicación automática: <strong>{autoApprove === "1" ? "activada" : "desactivada (se moderan)"}</strong>.{" "}

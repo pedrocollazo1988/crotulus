@@ -43,6 +43,7 @@ export function settingsEditable(): string[] {
     "mapa_embed", "google_maps_url",
     "facebook", "instagram", "linkedin", "github",
     "reviews_enabled", "reviews_auto_approve", "reviews_provider",
+    "testimonials_enabled", "google_reviews_enabled", "trustpilot_enabled",
     "trustpilot_url", "trustpilot_business_id", "trustpilot_template",
     "google_reviews_url", "google_place_id", "google_places_api_key",
     "google_reviews_cache_ttl",
@@ -90,6 +91,7 @@ export function settingsEditable(): string[] {
 export function settingsCheckboxes(): string[] {
   return [
     "reviews_enabled", "reviews_auto_approve",
+    "testimonials_enabled", "google_reviews_enabled", "trustpilot_enabled",
     "submissions_enabled", "submissions_auto_approve",
     "security_session_bind_ip", "maintenance_mode",
     "two_factor_remember_device",
@@ -234,6 +236,7 @@ export function settingsPublicAllowList(): string[] {
     "mapa_embed", "google_maps_url",
     "facebook", "instagram", "linkedin", "github",
     "reviews_enabled", "reviews_auto_approve", "reviews_provider",
+    "testimonials_enabled", "google_reviews_enabled", "trustpilot_enabled",
     "trustpilot_url", "trustpilot_business_id", "trustpilot_template",
     "google_reviews_url", "google_place_id",
     "submissions_enabled", "submissions_auto_approve", "faq_portal_count",

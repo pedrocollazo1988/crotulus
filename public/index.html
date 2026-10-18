@@ -53,7 +53,7 @@
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Inter-latin.woff2" crossorigin>
 
   <!-- ============ ESTILOS ============ -->
-  <link rel="stylesheet" href="css/styles.min.css?v=20261023">
+  <link rel="stylesheet" href="css/styles.min.css?v=20261025">
 
   <!-- ============ DATOS ESTRUCTURADOS AutoRepair (JSON-LD) ============
        schema.org/AutoRepair (subtipo de LocalBusiness, ideal para servicios
@@ -187,11 +187,8 @@
           <li><a class="nav-link" href="empresa.html">Empresa</a></li>
           <li><a class="nav-link" href="#servicios">Servicios</a></li>
           <li><a class="nav-link" href="#proyectos">Proyectos</a></li>
-          <li><a class="nav-link" href="#blog">Blog</a></li>
           <li><a class="nav-link" href="#proceso">Proceso</a></li>
           <li><a class="nav-link" href="#testimonios">Testimonios</a></li>
-          <li><a class="nav-link" href="#valoraciones">Opiniones</a></li>
-          <li><a class="nav-link" href="#ubicacion">Ubicación</a></li>
           <li><a class="nav-link" href="#faq">FAQ</a></li>
         </ul>
       </nav>
@@ -532,7 +529,7 @@
     </section>
 
     <!-- ==================== 6. TESTIMONIOS ==================== -->
-    <section class="section section--soft" id="testimonios">
+    <section class="section section--soft" id="testimonios" data-section-toggle="testimonials_enabled">
       <div class="container">
         <header class="section__head">
           <p class="eyebrow" data-site="testimonials_eyebrow">Testimonios</p>
@@ -645,7 +642,7 @@
          un enlace «Ver todas en Google». Edita aquí los textos de cada reseña y
          la URL de la ficha (marcador [URL_GOOGLE_REVIEWS], también ajustable en
          el panel: Ajustes · Reseñas · «Enlace a tu ficha en Google»). -->
-    <section class="section section--blue" id="valoraciones">
+    <section class="section section--blue" id="valoraciones" data-section-toggle="google_reviews_enabled">
       <div class="container">
         <header class="section__head">
           <p class="eyebrow" data-site="reviews_eyebrow">Opiniones</p>
@@ -732,7 +729,7 @@
          reemplaza estas tarjetas de ejemplo por las reales; si no, se mantienen
          estos textos, fáciles de editar a mano.
     ======================================================= -->
-    <section class="section section--soft" id="trustpilot">
+    <section class="section section--soft" id="trustpilot" data-section-toggle="trustpilot_enabled">
       <div class="container">
         <header class="section__head">
           <p class="eyebrow" data-site="trustpilot_eyebrow">Reseñas verificadas</p>
@@ -1088,6 +1085,7 @@
           <li><a href="#servicios">Servicios</a></li>
           <li><a href="#proyectos">Proyectos</a></li>
           <li><a href="#blog">Blog</a></li>
+          <li><a href="#valoraciones">Opiniones</a></li>
           <li><a href="#contacto">Contacto</a></li>
           <li><a href="#ubicacion">Ubicación</a></li>
           <li><a href="#faq">Preguntas frecuentes</a></li>
@@ -1140,7 +1138,7 @@
   </button>
 
   <!-- ==================== SCRIPTS ==================== -->
-  <script src="js/main.min.js?v=20261023" defer></script>
+  <script src="js/main.min.js?v=20261025" defer></script>
 
   <!-- Widget de CreatuAgente (chat de atención al cliente).
        Inyecta su propio botón flotante abajo a la derecha; por eso el botón
