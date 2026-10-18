@@ -183,6 +183,7 @@ model UserSubmission {
   body       String?
   authorRole String?   @default("") @map("author_role")
   rating     Int       @default(5)
+  photoData  String?   @map("photo_data") @db.Text
   status     String    @default("pendiente")
   score      Int       @default(0)
   ip         String?   @default("")

@@ -99,8 +99,23 @@ export async function testimonialsPublished(limit = 12) {
     where: { stype: "testimonio", status: "aprobada" },
     orderBy: { createdAt: "desc" },
     take,
-    include: { user: { select: { avatarUrl: true } } },
+    select: {
+      id: true, title: true, body: true, authorRole: true, rating: true,
+      createdAt: true, user: { select: { avatarUrl: true } },
+    },
   });
+  // La foto (data URL) puede pesar; se consulta aparte solo para saber quien
+  // la tiene, en vez de traer los blobs en el listado.
+  const withPhoto = rows.length
+    ? new Set(
+        (
+          await prisma.userSubmission.findMany({
+            where: { id: { in: rows.map((r) => r.id) }, photoData: { not: null } },
+            select: { id: true },
+          })
+        ).map((r) => r.id),
+      )
+    : new Set<number>();
   return rows.map((r) => ({
     id: r.id,
     title: r.title ?? "",
@@ -108,7 +123,7 @@ export async function testimonialsPublished(limit = 12) {
     role: r.authorRole ?? "",
     rating: r.rating,
     created_at: fmt(r.createdAt),
-    avatar_url: r.user?.avatarUrl ?? "",
+    avatar_url: r.user?.avatarUrl ?? (withPhoto.has(r.id) ? `/api/testimonial-photo/${r.id}` : ""),
   }));
 }
 

@@ -83,6 +83,12 @@ const nextConfig = {
         headers: [{ key: "Cache-Control", value: "no-store" }],
       },
       {
+        // Las fotos de testimonios son inmutables: se sirven desde una ruta
+        // propia para que puedan cachearse (van despues de la regla general).
+        source: "/api/testimonial-photo/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=86400, immutable" }],
+      },
+      {
         source: "/admin/:path*",
         headers: [{ key: "Cache-Control", value: "no-store" }],
       },

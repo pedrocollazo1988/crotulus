@@ -72,6 +72,7 @@ export async function POST(req: NextRequest) {
       body: d.body,
       authorRole: d.authorRole,
       rating: d.rating,
+      photoData: d.photo || null,
       status,
       ip: clientIp(req),
       createdAt: now,
