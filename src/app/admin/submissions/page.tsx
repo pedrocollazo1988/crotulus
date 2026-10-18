@@ -129,9 +129,23 @@ export default async function SubmissionsPage({
                   <td className="muted">{fmtDate(r.createdAt)}</td>
                   <td><Badge tone="leido">{submissionTypeLabel(r.stype)}</Badge></td>
                   <td>
-                    {r.user?.name || r.title || "—"}
-                    <br />
-                    <span className="muted">{r.user?.email ?? (r.userId ? "" : "visitante anónimo")}</span>
+                    <div style={{ display: "flex", alignItems: "center", gap: ".55rem" }}>
+                      {r.photoData ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={`/api/testimonial-photo/${r.id}`}
+                          alt=""
+                          width={34}
+                          height={34}
+                          style={{ borderRadius: "50%", objectFit: "cover", flex: "none", border: "1px solid var(--color-line)" }}
+                        />
+                      ) : null}
+                      <span>
+                        {r.user?.name || r.title || "—"}
+                        <br />
+                        <span className="muted">{r.user?.email ?? (r.userId ? "" : "visitante anónimo")}</span>
+                      </span>
+                    </div>
                   </td>
                   <td>
                     <strong>{r.user ? r.title : r.authorRole || r.title}</strong>

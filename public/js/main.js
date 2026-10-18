@@ -1224,6 +1224,118 @@
      api/submissions.php (con CSRF y captcha) y entra como aportación: se
      modera en el panel · Aportaciones y, al aprobarse, aparece en el carrusel.
      ========================================================================== */
+
+  /* --------------------------------------------------------------------------
+     Selector de foto del testimonio: recorta en cuadrado y comprime en el
+     navegador (canvas -> JPEG ~256px) para no subir archivos grandes ni
+     depender de almacenamiento externo. El data URL va en el campo oculto.
+     -------------------------------------------------------------------------- */
+  function setupPhotoPicker(form) {
+    var file = $("#tfFoto", form);
+    var dataInput = $("#tfPhotoData", form);
+    var preview = $("#tfPhotoPreview", form);
+    var clearBtn = $("#tfPhotoClear", form);
+    var hint = $("#tfPhotoHint", form);
+    if (!file || !dataInput || !preview) return;
+
+    var MAX_EDGE = 256, MAX_BYTES = 400000;
+
+    function aviso(msg, error) {
+      if (!hint) return;
+      hint.textContent = msg;
+      hint.classList.toggle("is-error", !!error);
+    }
+
+    function pintar(src) {
+      if (!src) {
+        preview.innerHTML = '<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M4 7h3l1.5-2h7L17 7h3v12H4z"/><circle cx="12" cy="13" r="3.2"/></svg>';
+        preview.classList.remove("has-photo");
+        if (clearBtn) clearBtn.hidden = true;
+        return;
+      }
+      preview.innerHTML = '<img alt="" src="' + src + '">';
+      preview.classList.add("has-photo");
+      if (clearBtn) clearBtn.hidden = false;
+    }
+
+    function procesar(archivo) {
+      if (!archivo) return;
+      if (!/^image\/(jpeg|png|webp)$/i.test(archivo.type)) {
+        aviso("Formato no válido. Usa JPG, PNG o WebP.", true);
+        return;
+      }
+      aviso("Procesando la imagen…", false);
+      // FileReader (data URL) en vez de createObjectURL: la CSP del sitio
+      // (img-src 'self' data: https:) no permite blob:.
+      var lector = new FileReader();
+      lector.onload = function () {
+        var img = new Image();
+        img.onload = function () {
+          var lado = Math.min(img.naturalWidth, img.naturalHeight);
+          var sx = Math.round((img.naturalWidth - lado) / 2);
+          var sy = Math.round((img.naturalHeight - lado) / 2);
+          var salida = Math.min(MAX_EDGE, lado) || MAX_EDGE;
+          var canvas = document.createElement("canvas");
+          canvas.width = canvas.height = salida;
+          canvas.getContext("2d").drawImage(img, sx, sy, lado, lado, 0, 0, salida, salida);
+          var data = canvas.toDataURL("image/jpeg", 0.82);
+          if (data.length > MAX_BYTES) {
+            dataInput.value = "";
+            pintar("");
+            aviso("La imagen es demasiado grande. Prueba con otra más ligera.", true);
+            return;
+          }
+          dataInput.value = data;
+          pintar(data);
+          aviso("Foto lista. Se publicará junto a tu testimonio.", false);
+        };
+        img.onerror = function () {
+          dataInput.value = "";
+          pintar("");
+          aviso("No se pudo leer la imagen. Prueba con otra.", true);
+        };
+        img.src = String(lector.result);
+      };
+      lector.onerror = function () {
+        dataInput.value = "";
+        pintar("");
+        aviso("No se pudo leer la imagen. Prueba con otra.", true);
+      };
+      lector.readAsDataURL(archivo);
+    }
+
+    file.addEventListener("change", function () { procesar(file.files && file.files[0]); });
+    if (clearBtn) {
+      clearBtn.addEventListener("click", function () {
+        file.value = "";
+        dataInput.value = "";
+        pintar("");
+        aviso("JPG, PNG o WebP. Se recorta en cuadrado y se optimiza antes de enviarse.", false);
+      });
+    }
+    pintar(dataInput.value);
+  }
+
+  /* Vacía el selector de foto (tras enviar o al pulsar "Quitar"). */
+  function limpiarFoto(form) {
+    var file = $("#tfFoto", form);
+    var dataInput = $("#tfPhotoData", form);
+    var preview = $("#tfPhotoPreview", form);
+    var clearBtn = $("#tfPhotoClear", form);
+    var hint = $("#tfPhotoHint", form);
+    if (file) file.value = "";
+    if (dataInput) dataInput.value = "";
+    if (preview) {
+      preview.classList.remove("has-photo");
+      preview.innerHTML = '<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M4 7h3l1.5-2h7L17 7h3v12H4z"/><circle cx="12" cy="13" r="3.2"/></svg>';
+    }
+    if (clearBtn) clearBtn.hidden = true;
+    if (hint) {
+      hint.textContent = "JPG, PNG o WebP. Se recorta en cuadrado y se optimiza antes de enviarse.";
+      hint.classList.remove("is-error");
+    }
+  }
+
   function setupTestimonialForm() {
     var form = $("#testimonialFormEl");
     if (!form) return;
@@ -1276,6 +1388,8 @@
     cargarCaptcha(form);
     var refresh = $("#tfCaptchaRefresh");
     if (refresh) refresh.addEventListener("click", function () { cargarCaptcha(form); });
+
+    setupPhotoPicker(form);
 
     // Reglas de validación por campo (mismas que el formulario de contacto)
     var reglas = {
@@ -1359,6 +1473,7 @@
             form.reset();
             pintarEstrellas(5);
             if (counter) counter.textContent = "0 / 1500";
+            limpiarFoto(form);
             cargarCaptcha(form);
             // Si se aprobó automáticamente, se muestra en el carrusel al momento.
             if (data.status === "aprobada") cargarTestimoniosUsuarios(true);

@@ -173,6 +173,7 @@ export interface SubmissionData {
   body: string;
   authorRole: string;
   rating: number;
+  photo: string;
 }
 
 /** Valida una aportacion (equivalente a validate_submission). */
@@ -202,7 +203,20 @@ export function validateSubmission(data: Record<string, unknown>): ValidationRes
     if (bodyLen > 1500) errors["texto"] = "El detalle no puede superar los 1500 caracteres.";
   }
 
-  return { errors, data: { stype: type, title, body, authorRole, rating } };
+  // Foto opcional: el navegador la envia como data URL JPEG ya recortada y
+  // comprimida (~256px). Limite defensivo por si llega algo mayor.
+  const photo = sanitizePhotoDataUrl(data["photo"]);
+
+  return { errors, data: { stype: type, title, body, authorRole, rating, photo } };
+}
+
+/** Acepta solo una data URL de imagen pequena y valida; si no, la descarta. */
+export function sanitizePhotoDataUrl(value: unknown, maxBytes = 400_000): string {
+  const v = typeof value === "string" ? value.trim() : "";
+  const m = /^data:image\/(jpeg|png|webp);base64,([A-Za-z0-9+/=]+)$/.exec(v);
+  if (!m) return "";
+  const bytes = Math.floor((m[2].length * 3) / 4);
+  return bytes > 0 && bytes <= maxBytes ? v : "";
 }
 
 /** Sanea una ruta de imagen (relativa assets/... o URL http(s), sin ".."). */

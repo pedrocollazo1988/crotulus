@@ -53,7 +53,7 @@
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Inter-latin.woff2" crossorigin>
 
   <!-- ============ ESTILOS ============ -->
-  <link rel="stylesheet" href="css/styles.min.css?v=20261026">
+  <link rel="stylesheet" href="css/styles.min.css?v=20261027">
 
   <!-- ============ DATOS ESTRUCTURADOS AutoRepair (JSON-LD) ============
        schema.org/AutoRepair (subtipo de LocalBusiness, ideal para servicios
@@ -695,6 +695,25 @@
               <input type="hidden" name="rating" id="tfRatingInput" value="5">
             </div>
 
+            <div class="field field--photo">
+              <label for="tfFoto">Tu foto <span class="field__optional">(opcional)</span></label>
+              <div class="photo-picker" id="tfPhotoPicker">
+                <span class="photo-picker__preview" id="tfPhotoPreview" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M4 7h3l1.5-2h7L17 7h3v12H4z"/><circle cx="12" cy="13" r="3.2"/></svg>
+                </span>
+                <div class="photo-picker__body">
+                  <div class="photo-picker__actions">
+                    <label class="btn btn--ghost btn--sm" for="tfFoto">Elegir imagen</label>
+                    <button type="button" class="btn-link" id="tfPhotoClear" hidden>Quitar</button>
+                  </div>
+                  <p class="photo-picker__hint" id="tfPhotoHint">JPG, PNG o WebP. Se recorta en cuadrado y se optimiza antes de enviarse.</p>
+                </div>
+                <input type="file" id="tfFoto" accept="image/jpeg,image/png,image/webp" hidden>
+                <input type="hidden" name="photo" id="tfPhotoData" value="">
+              </div>
+              <small class="field__error" data-error-for="tfFoto" aria-live="polite"></small>
+            </div>
+
             <div class="field">
               <label for="tfTexto">Tu experiencia *</label>
               <textarea id="tfTexto" name="texto" rows="4" required minlength="10" maxlength="1500"
@@ -1234,7 +1253,7 @@
   </button>
 
   <!-- ==================== SCRIPTS ==================== -->
-  <script src="js/main.min.js?v=20261026" defer></script>
+  <script src="js/main.min.js?v=20261027" defer></script>
 
   <!-- Widget de CreatuAgente (chat de atención al cliente).
        Inyecta su propio botón flotante abajo a la derecha; por eso el botón
