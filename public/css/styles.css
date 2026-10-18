@@ -172,19 +172,20 @@ p { margin: 0 0 1rem; }
 /* Seccion con fondo gris muy suave (sin el azul de .section--blue). Se usa en
    Ubicacion para alternar sin recargar visualmente. */
 .section--soft { background: var(--color-bg-alt); }
-/* Secciones azules: fondo con "bolas" flotantes (mismo lenguaje que el login
-   del panel). Se aplica a las secciones alternas (.section--alt) y a cualquier
-   sección marcada con .section--blue (p. ej. la de presentación). El contenido
-   va sobre una capa con z-index 1. */
+/* Secciones "azules": ahora son la combinacion CLARA (azul claro + blanco) de
+   la marca. El azul PROFUNDO (navy) queda reservado para el hero y el pie, que
+   son las dos superficies de contraste del sitio. El contenido va sobre una
+   capa con z-index 1. */
 .section--alt,
 .section--blue {
   position: relative;
   overflow: hidden;
   contain: layout paint;
-  color: #EAF4FA;
-  /* Azul petroleo algo mas claro que el hero: crea jerarquia visual (hero =
-     tono mas profundo; secciones azules = mismo lenguaje, un paso mas claro). */
-  background: linear-gradient(160deg, #1A6E9C 0%, var(--color-primary) 42%, var(--color-primary-dark) 100%);
+  color: var(--color-ink);
+  /* Combinacion azul claro + blanco: fondo claro con un suave degradado azul. */
+  background: linear-gradient(165deg, #FFFFFF 0%, var(--color-primary-soft) 48%, #D6EAF6 100%);
+  border-top: 1px solid rgba(19,100,147,.10);
+  border-bottom: 1px solid rgba(19,100,147,.10);
 }
 
 .section__head { max-width: 720px; margin: 0 auto 2rem; text-align: center; }
@@ -273,12 +274,12 @@ p { margin: 0 0 1rem; }
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: .55;
+  opacity: .5;
   background-image:
-    radial-gradient(circle at 18% 22%, rgba(255,255,255,.45) 0 3px, transparent 4px),
-    radial-gradient(circle at 72% 40%, rgba(95,168,201,.55) 0 2px, transparent 3px),
-    radial-gradient(circle at 40% 78%, rgba(255,255,255,.30) 0 2px, transparent 3px),
-    radial-gradient(circle at 88% 82%, rgba(95,168,201,.45) 0 2px, transparent 3px);
+    radial-gradient(circle at 18% 22%, rgba(19,100,147,.22) 0 3px, transparent 4px),
+    radial-gradient(circle at 72% 40%, rgba(46,134,184,.28) 0 2px, transparent 3px),
+    radial-gradient(circle at 40% 78%, rgba(19,100,147,.16) 0 2px, transparent 3px),
+    radial-gradient(circle at 88% 82%, rgba(46,134,184,.22) 0 2px, transparent 3px);
   background-size: 240px 240px, 300px 300px, 360px 360px, 420px 420px;
 }
 .section--alt::after,
@@ -289,7 +290,7 @@ p { margin: 0 0 1rem; }
   width: 60vmax; height: 60vmax;
   right: -20vmax; top: -28vmax;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(95,168,201,.30), transparent 65%);
+  background: radial-gradient(circle, rgba(46,134,184,.18), transparent 65%);
   pointer-events: none;
   animation: section-glow 16s ease-in-out infinite;
 }
@@ -325,24 +326,24 @@ p { margin: 0 0 1rem; }
 .is-offscreen::after { animation-play-state: paused !important; }
 
 
-/* Texto claro sobre el azul (solo en la cabecera de sección; las tarjetas
-   blancas conservan sus propios colores). */
+/* Secciones claras (azul claro + blanco): los titulos y textos vuelven a los
+   colores de marca oscuros; las tarjetas blancas ganan una sombra suave para
+   que floten sobre el degradado. */
 .section--alt .section__head .section__title,
-.section--blue .section__head .section__title { color: #fff; }
+.section--blue .section__head .section__title { color: var(--color-heading); }
 .section--alt .section__head .section__lead,
-.section--blue .section__head .section__lead { color: #C5E2F2; }
+.section--blue .section__head .section__lead { color: var(--color-ink-soft); }
 .section--alt .section__title::after,
-.section--blue .section__title::after { box-shadow: 0 0 18px rgba(95,168,201,.55); }
-/* Etiqueta "eyebrow" sobre azul: chip translucido claro, en la misma linea que
-   el distintivo del hero (mejor coherencia visual que el chip solido claro). */
+.section--blue .section__title::after { box-shadow: 0 0 14px rgba(46,134,184,.45); }
+/* Etiqueta "eyebrow" sobre el fondo claro: chip azul claro solido. */
 .section--alt .eyebrow,
 .section--blue .eyebrow {
-  color: #fff;
-  background: rgba(255,255,255,.14);
-  border: 1px solid rgba(255,255,255,.28);
+  color: var(--color-primary-dark);
+  background: rgba(255,255,255,.85);
+  border: 1px solid rgba(19,100,147,.16);
 }
-/* Tarjetas sobre azul: borde luminoso sutil para que "floten" y texto oscuro
-   (el color claro del contenedor es solo para la cabecera de sección). */
+/* Tarjetas sobre el degradado claro: fondo blanco, texto oscuro y sombra
+   suave para que "floten" (antes sobre azul necesitaban borde luminoso). */
 .section--alt .card,
 .section--alt .step,
 .section--alt .review-card,
@@ -368,53 +369,38 @@ p { margin: 0 0 1rem; }
 .section--blue .mv-card,
 .section--blue .about__media img {
   color: var(--color-ink);
-  border-color: rgba(255,255,255,.55);
-  box-shadow: 0 18px 40px rgba(11,46,69, .35);
+  border-color: var(--color-line);
+  box-shadow: 0 16px 34px rgba(11,46,69,.10);
 }
-/* Textos claros en la sección de presentación sobre azul (no hay tarjetas
-   blancas que los contengan). */
-.section--blue .about__subtitle { color: #fff; }
-.section--blue .about__body p { color: #D3E1F4; }
+/* Textos de la sección de presentación sobre el fondo claro. */
+.section--blue .about__subtitle { color: var(--color-heading); }
+.section--blue .about__body p { color: var(--color-ink); }
 .section--blue .mv-card p { color: var(--color-ink-soft); }
-.section--blue .value { color: #EAF4FA; }
+.section--blue .value { color: var(--color-ink); }
 .section--blue .value__icon {
-  background: linear-gradient(135deg, #fff, var(--color-amber));
-  color: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  color: #fff;
 }
 
-/* Elementos de otras secciones que pasan a fondo azul: se fuerzan a superficie
-   blanca con texto oscuro para que se lean igual que .card/.step (los estilos
-   base de .project/.post/.testimonial__quote/.contact-form/.contact-info ya son
-   blancos, aquí solo se refuerza el borde luminoso y la sombra sobre el azul). */
+/* Elementos de otras secciones que viven en la seccion clara: mantienen su
+   superficie blanca con texto oscuro (los estilos base de .project/.post/
+   .testimonial__quote/.contact-form/.contact-info ya son blancos; aqui solo se
+   iguala el borde y la sombra suave del resto de tarjetas). */
 .section--blue .project,
 .section--blue .post,
 .section--blue .testimonial__quote,
 .section--blue .contact-form,
 .section--blue .contact-info__item {
   color: var(--color-ink);
-  border-color: rgba(255,255,255,.55);
-  box-shadow: 0 18px 40px rgba(11,46,69, .35);
+  border-color: var(--color-line);
+  box-shadow: 0 16px 34px rgba(11,46,69,.10);
 }
-/* Enlace "Ver caso" y etiqueta de proyecto sobre azul: el azul de marca no
-   contrasta sobre el fondo oscuro, así que se aclaran. */
-.section--alt .project__link,
-.section--blue .project__link { color: #fff; }
+/* Enlace "Ver caso" y etiqueta de proyecto: sobre el fondo claro se mantienen
+   los colores de marca (ya no hace falta aclararlos). */
 .section--alt .project__tag,
 .section--blue .project__tag {
   color: var(--color-primary);
-  background: #fff;
-}
-/* Botón fantasma (.btn--ghost) sobre azul: texto y borde claros. */
-.section--alt .btn--ghost,
-.section--blue .btn--ghost {
-  color: #fff;
-  border-color: rgba(255,255,255,.55);
-}
-.section--alt .btn--ghost:hover,
-.section--blue .btn--ghost:hover {
-  background: rgba(255,255,255,.14);
-  border-color: #fff;
-  color: #fff;
+  background: var(--color-primary-soft);
 }
 
 /* ==========================================================================
@@ -527,20 +513,17 @@ p { margin: 0 0 1rem; }
   transition: left .6s cubic-bezier(.2,.7,.3,1);
 }
 .btn--primary:hover::after { left: 120%; }
-/* Sobre fondos azules (hero, secciones azules y pie) el boton principal no puede
+/* Sobre las dos superficies OSCURAS (hero y pie) el boton principal no puede
    ser azul: se invertiria con el fondo. Se pinta en blanco con texto azul, una
-   combinacion limpia y de maximo contraste dentro de la paleta de marca. */
+   combinacion limpia y de maximo contraste dentro de la paleta de marca. Las
+   secciones claras (.section--blue/--alt) conservan el boton azul normal. */
 .hero .btn--primary,
-.section--alt .btn--primary,
-.section--blue .btn--primary,
 .site-footer .btn--primary {
   background: #fff;
   color: var(--color-primary);
   box-shadow: 0 10px 26px rgba(0,0,0,.22);
 }
 .hero .btn--primary:hover,
-.section--alt .btn--primary:hover,
-.section--blue .btn--primary:hover,
 .site-footer .btn--primary:hover { background: var(--color-ice); color: var(--color-primary-dark); }
 
 .btn--whatsapp { background: var(--color-wa); color: #06301b; }
@@ -706,6 +689,125 @@ p { margin: 0 0 1rem; }
 }
 
 /* ==========================================================================
+   5.b HERRAMIENTAS DE LA CABECERA (buscar, idioma, tema)
+   --------------------------------------------------------------------------
+   Botones compactos que viven en la zona de acciones de la cabecera. El
+   buscador abre un panel desplegable; el idioma, un menu; el tema alterna
+   dia/noche con la clase .theme-dark en <html>.
+   ========================================================================== */
+.header-tools { display: flex; align-items: center; gap: .35rem; }
+.tool-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .3rem;
+  min-width: 38px;
+  height: 38px;
+  padding: 0 .5rem;
+  background: var(--color-white);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  color: var(--color-ink);
+  transition: color var(--transition), background var(--transition), border-color var(--transition), transform var(--transition);
+}
+.tool-btn:hover { color: var(--color-primary); border-color: rgba(19,100,147,.35); background: var(--color-primary-soft); transform: translateY(-1px); }
+.tool-btn:focus-visible { outline: 3px solid var(--color-accent); outline-offset: 2px; }
+.tool-btn__code { font-family: var(--font-alt); font-weight: 700; font-size: .72rem; letter-spacing: .04em; }
+/* Iconos sol/luna del boton de tema: se muestra uno segun el modo. */
+.tool-btn--theme .tool-btn__moon { display: none; }
+.theme-dark .tool-btn--theme .tool-btn__sun { display: none; }
+.theme-dark .tool-btn--theme .tool-btn__moon { display: inline-block; }
+
+/* Selector de idioma (menu desplegable) */
+.lang { position: relative; }
+.lang__menu {
+  position: absolute;
+  top: calc(100% + .4rem);
+  right: 0;
+  z-index: 60;
+  min-width: 10rem;
+  padding: .35rem;
+  background: var(--color-white);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+}
+.lang__menu button {
+  display: block;
+  width: 100%;
+  padding: .5rem .7rem;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  color: var(--color-ink);
+  font-size: .9rem;
+}
+.lang__menu button:hover { background: var(--color-primary-soft); color: var(--color-primary); }
+.lang__menu button[aria-current="true"] { font-weight: 700; color: var(--color-primary); }
+
+/* Panel de busqueda global (desplegable bajo la cabecera) */
+.search-panel {
+  position: absolute;
+  left: 0; right: 0;
+  top: 100%;
+  z-index: 55;
+  background: var(--color-white);
+  border-bottom: 1px solid var(--color-line);
+  box-shadow: var(--shadow-md);
+}
+.search-panel__inner { padding-top: 1rem; padding-bottom: 1rem; }
+.search-panel__form {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .35rem .6rem .35rem .9rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  background: var(--color-bg-alt);
+}
+.search-panel__icon { display: inline-flex; color: var(--color-ink-soft); }
+.search-panel__input {
+  flex: 1 1 auto;
+  border: 0;
+  background: transparent;
+  font-size: 1rem;
+  color: var(--color-ink);
+  padding: .5rem 0;
+}
+.search-panel__input:focus { outline: none; }
+.search-panel__form .tool-btn { background: transparent; border-color: transparent; }
+.search-results { margin-top: .75rem; display: grid; gap: .3rem; max-height: 50vh; overflow-y: auto; }
+.search-results:empty { display: none; }
+.search-result {
+  display: flex;
+  align-items: baseline;
+  gap: .6rem;
+  padding: .6rem .7rem;
+  border-radius: var(--radius-sm);
+  color: var(--color-ink);
+  text-decoration: none;
+}
+.search-result:hover, .search-result.is-active { background: var(--color-primary-soft); text-decoration: none; }
+.search-result__tag {
+  flex: none;
+  font-size: .7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+  border: 1px solid rgba(19,100,147,.16);
+  border-radius: var(--radius-pill);
+  padding: .1rem .5rem;
+}
+.search-result:hover .search-result__tag, .search-result.is-active .search-result__tag { background: var(--color-white); }
+.search-result__text { min-width: 0; }
+.search-result__text strong { font-family: var(--font-head); }
+.search-result__text span { display: block; font-size: .85rem; color: var(--color-ink-soft); }
+.search-empty { padding: .7rem; color: var(--color-ink-soft); font-size: .92rem; }
+
+/* ==========================================================================
    6. HERO E INICIO  (fondo navy oscuro, estilo tecnológico)
    ========================================================================== */
 .hero {
@@ -749,6 +851,9 @@ p { margin: 0 0 1rem; }
    posicionado), igual que su capa ::after. */
 
 .hero__grid { display: grid; gap: 2.5rem; }
+/* min-width:0 permite que las columnas del grid encojan por debajo del ancho
+   de su contenido (evita el desborde horizontal en pantallas estrechas). */
+.hero__grid > * { min-width: 0; }
 
 /* Distintivo "chip" sobre el titular */
 .hero__badge {
@@ -841,6 +946,141 @@ p { margin: 0 0 1rem; }
   transition: box-shadow .6s ease;
 }
 .hero__media:hover img { box-shadow: 0 30px 74px rgba(0,0,0,.55); }
+
+/* --------------------------------------------------------------------------
+   MAQUETA DEL AGENTE IA (hero): proceso de facturas y firma digital
+   Tarjeta clara sobre el hero oscuro que muestra el flujo paso a paso, con
+   animaciones propias (entrada de pasos, firma que se traza y barra de
+   progreso). Se dibuja con HTML/CSS para poder animarlo.
+   -------------------------------------------------------------------------- */
+.flow {
+  position: relative;
+  background: rgba(255,255,255,.97);
+  color: var(--color-ink);
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.15rem 1.25rem;
+  box-shadow: 0 26px 64px rgba(0,0,0,.45);
+  overflow: hidden;
+}
+.flow::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent), var(--color-accent-soft));
+}
+.flow__head { display: flex; align-items: center; gap: .55rem; padding: .2rem 0 .9rem; }
+.flow__dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--color-success);
+  box-shadow: 0 0 0 0 rgba(18,128,92,.5);
+  animation: pulse-dot 2.2s ease-out infinite;
+}
+.flow__title { font-family: var(--font-head); font-weight: 700; font-size: .98rem; color: var(--color-heading); }
+.flow__live {
+  margin-left: auto;
+  font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--color-success); background: rgba(18,128,92,.10);
+  border: 1px solid rgba(18,128,92,.28); border-radius: var(--radius-pill);
+  padding: .12rem .55rem;
+}
+.flow__steps { display: grid; gap: .55rem; }
+.flow__step {
+  display: flex; align-items: center; gap: .7rem;
+  padding: .6rem .7rem;
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  opacity: 0;
+  transform: translateX(14px);
+  animation: flow-in .6s cubic-bezier(.2,.7,.3,1) forwards;
+}
+.flow__step:nth-child(1) { animation-delay: .25s; }
+.flow__step:nth-child(2) { animation-delay: .65s; }
+.flow__step:nth-child(3) { animation-delay: 1.05s; }
+.flow__step:nth-child(4) { animation-delay: 1.45s; }
+@keyframes flow-in { to { opacity: 1; transform: none; } }
+.flow__ico {
+  flex: none;
+  display: grid; place-items: center;
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  color: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary-soft), var(--color-ice));
+  border: 1px solid rgba(19,100,147,.16);
+}
+.flow__step--sign .flow__ico { color: #fff; background: linear-gradient(135deg, var(--color-primary), var(--color-accent)); border-color: transparent; }
+.flow__text { min-width: 0; display: flex; flex-direction: column; }
+.flow__text strong { font-family: var(--font-head); font-size: .9rem; color: var(--color-heading); }
+.flow__text span { font-size: .8rem; color: var(--color-ink-soft); }
+.flow__tick {
+  flex: none; margin-left: auto;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--color-success);
+  position: relative;
+  opacity: 0;
+  animation: flow-tick .4s ease forwards;
+}
+.flow__step:nth-child(1) .flow__tick { animation-delay: .75s; }
+.flow__step:nth-child(2) .flow__tick { animation-delay: 1.15s; }
+.flow__step:nth-child(3) .flow__tick { animation-delay: 1.55s; }
+.flow__step:nth-child(4) .flow__tick { animation-delay: 1.95s; }
+.flow__tick::after {
+  content: "";
+  position: absolute;
+  left: 6px; top: 4px;
+  width: 5px; height: 9px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+@keyframes flow-tick { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: scale(1); } }
+.flow__signature {
+  position: relative;
+  display: flex; align-items: center; gap: .8rem;
+  margin-top: .85rem;
+  padding: .55rem .7rem;
+  border: 1px dashed rgba(19,100,147,.30);
+  border-radius: var(--radius-sm);
+  background: rgba(231,241,248,.5);
+  color: var(--color-primary-dark);
+}
+.flow__sign-path {
+  stroke-dasharray: 420;
+  stroke-dashoffset: 420;
+  animation: flow-sign 2.4s ease-in-out 1.6s forwards;
+}
+@keyframes flow-sign { to { stroke-dashoffset: 0; } }
+.flow__stamp {
+  margin-left: auto;
+  font-family: var(--font-head); font-weight: 800; font-size: .78rem;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: var(--color-success);
+  border: 2px solid var(--color-success);
+  border-radius: 8px;
+  padding: .12rem .5rem;
+  transform: rotate(-6deg) scale(0);
+  animation: flow-stamp .45s cubic-bezier(.2,1.5,.4,1) 3.4s forwards;
+}
+@keyframes flow-stamp { to { transform: rotate(-6deg) scale(1); } }
+.flow__foot { display: flex; align-items: center; gap: .7rem; margin-top: .95rem; }
+.flow__bar { flex: 1 1 auto; height: 7px; border-radius: var(--radius-pill); background: var(--color-primary-soft); overflow: hidden; }
+.flow__bar-fill {
+  display: block; height: 100%; width: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  animation: flow-bar 3.6s cubic-bezier(.3,.8,.3,1) .3s forwards;
+}
+@keyframes flow-bar { to { width: 100%; } }
+.flow__meta { flex: none; font-size: .78rem; color: var(--color-ink-soft); font-weight: 500; }
+
+/* Entrada de la maqueta y flotado suave, igual que la ilustracion anterior */
+html.has-reveal-anim .hero__media .flow {
+  opacity: 0;
+  animation: hero-in .9s cubic-bezier(.2,.7,.3,1) .3s forwards,
+             float-soft 7s 1.3s ease-in-out infinite;
+}
 
 /* Franja de confianza sobre fondo oscuro */
 .stats {
@@ -1492,16 +1732,15 @@ img.testimonial__avatar {
 /* ==========================================================================
    11. PIE DE PÁGINA
    ========================================================================== */
-/* Pie en GRIS OSCURO con matiz azulado (--color-steel-dark = #3F4A52), a juego
-   con el azul petroleo de la marca. Al ser oscuro, el texto vuelve a tonos
-   claros (azul hielo) para mantener contraste alto (WCAG AA). */
+/* Pie en AZUL PROFUNDO (navy), a juego con el hero: son las dos superficies
+   oscuras del sitio (marco de contraste). El resto de secciones son claras. */
 .site-footer {
   position: relative;
   overflow: hidden;
   contain: layout paint;
   color: var(--color-ice);
-  background: var(--color-steel-dark);
-  border-top: 4px solid var(--color-primary);
+  background: linear-gradient(165deg, var(--color-navy) 0%, #082738 100%);
+  border-top: 4px solid var(--color-accent);
   padding: 2.6rem 0 1.25rem;
   margin-top: 2rem;
 }
@@ -1768,6 +2007,16 @@ html.has-reveal-anim .cards .reveal.is-visible:nth-child(6) { transition-delay: 
   }
   .site-header__actions { grid-column: 3; justify-self: end; }
   .nav-link--auth { font-size: .78rem; }
+  .header-tools { gap: .3rem; }
+}
+
+/* En pantallas estrechas las herramientas van compactas y el enlace "Acceder"
+   se mueve al menú desplegable para no saturar la cabecera. */
+@media (max-width: 599px) {
+  .nav-link--auth { display: none; }
+  .tool-btn { min-width: 34px; height: 34px; padding: 0 .4rem; }
+  .header-tools { gap: .25rem; }
+  .site-header__actions { gap: .4rem; }
 }
 
 /* Escritorio amplio: el menú recupera su tamaño cómodo */
@@ -1868,6 +2117,107 @@ html.has-reveal-anim .cards .reveal.is-visible:nth-child(6) { transition-delay: 
 }
 
 /* ==========================================================================
+   15. MODO NOCHE (tema oscuro)
+   --------------------------------------------------------------------------
+   Se activa añadiendo la clase .theme-dark a <html> (lo hace js/main.js y se
+   recuerda en localStorage). La mayor parte del sitio usa variables, asi que
+   basta con redefinirlas; el hero y el pie ya son oscuros y no cambian.
+   ========================================================================== */
+.theme-dark {
+  --color-bg:           #0C1B26;
+  --color-bg-alt:       #122634;
+  --color-white:        #162C3B;   /* superficie de tarjetas y formularios */
+  --color-ink:          #E6EFF5;
+  --color-ink-soft:     #9DB4C4;
+  --color-heading:      #8FC4E6;
+  --color-heading-gray: #9DB4C4;
+  --color-line:         #274052;
+  --color-primary-soft: #17303F;
+}
+.theme-dark body { color: var(--color-ink); }
+/* Cabecera y desplegables */
+.theme-dark .site-header {
+  background: rgba(12,27,38,.82);
+  border-bottom-color: var(--color-line);
+}
+.theme-dark .brand { box-shadow: 0 6px 18px rgba(0,0,0,.35); }
+.theme-dark .primary-nav,
+.theme-dark .lang__menu,
+.theme-dark .search-panel { background: var(--color-white); border-color: var(--color-line); }
+.theme-dark .search-panel__form { background: var(--color-bg-alt); }
+.theme-dark .nav-link { color: var(--color-ink); }
+.theme-dark .nav-link:hover,
+.theme-dark .nav-link.is-active { color: #fff; background: rgba(46,134,184,.22); }
+.theme-dark .tool-btn { background: var(--color-white); border-color: var(--color-line); color: var(--color-ink); }
+.theme-dark .tool-btn:hover { background: rgba(46,134,184,.22); color: #fff; }
+/* Secciones claras: en modo noche pasan a azul muy oscuro con el mismo
+   lenguaje de "combinacion azul" (degradado sutil azul sobre fondo oscuro). */
+.theme-dark .section--alt,
+.theme-dark .section--blue {
+  background: linear-gradient(165deg, #122634 0%, #10202C 55%, #0E1B26 100%);
+  border-top-color: rgba(95,168,201,.16);
+  border-bottom-color: rgba(95,168,201,.16);
+}
+.theme-dark .section--alt::before,
+.theme-dark .section--blue::before {
+  background-image:
+    radial-gradient(circle at 18% 22%, rgba(95,168,201,.30) 0 3px, transparent 4px),
+    radial-gradient(circle at 72% 40%, rgba(46,134,184,.34) 0 2px, transparent 3px),
+    radial-gradient(circle at 40% 78%, rgba(95,168,201,.20) 0 2px, transparent 3px),
+    radial-gradient(circle at 88% 82%, rgba(46,134,184,.28) 0 2px, transparent 3px);
+}
+.theme-dark .section--alt .eyebrow,
+.theme-dark .section--blue .eyebrow {
+  color: var(--color-ice);
+  background: rgba(46,134,184,.20);
+  border-color: rgba(95,168,201,.35);
+}
+.theme-dark .section--alt .card,
+.theme-dark .section--alt .step,
+.theme-dark .section--alt .review-card,
+.theme-dark .section--alt .accordion__item,
+.theme-dark .section--alt .google-reviews__summary,
+.theme-dark .section--alt .user-submit,
+.theme-dark .section--alt .project,
+.theme-dark .section--alt .post,
+.theme-dark .section--alt .testimonial__quote,
+.theme-dark .section--alt .contact-form,
+.theme-dark .section--alt .contact-info__item,
+.theme-dark .section--blue .card,
+.theme-dark .section--blue .step,
+.theme-dark .section--blue .review-card,
+.theme-dark .section--blue .accordion__item,
+.theme-dark .section--blue .google-reviews__summary,
+.theme-dark .section--blue .user-submit,
+.theme-dark .section--blue .project,
+.theme-dark .section--blue .post,
+.theme-dark .section--blue .testimonial__quote,
+.theme-dark .section--blue .contact-form,
+.theme-dark .section--blue .contact-info__item {
+  color: var(--color-ink);
+  border-color: var(--color-line);
+  box-shadow: 0 16px 34px rgba(0,0,0,.35);
+}
+.theme-dark .card__text,
+.theme-dark .post__text,
+.theme-dark .section__lead,
+.theme-dark .step__text { color: var(--color-ink-soft); }
+.theme-dark .eyebrow { color: var(--color-ice); background: rgba(46,134,184,.20); }
+.theme-dark .flow {
+  background: rgba(18,38,52,.97);
+  border-color: rgba(95,168,201,.30);
+}
+.theme-dark .flow__signature {
+  background: rgba(46,134,184,.14);
+  border-color: rgba(95,168,201,.40);
+}
+.theme-dark input,
+.theme-dark textarea,
+.theme-dark select { background: var(--color-bg-alt); color: var(--color-ink); border-color: var(--color-line); }
+.theme-dark .btn--ghost { color: var(--color-ice); border-color: var(--color-line); }
+.theme-dark .btn--ghost:hover { background: rgba(46,134,184,.22); border-color: var(--color-accent); color: #fff; }
+
+/* ==========================================================================
    ACCESIBILIDAD: foco visible y preferencia de movimiento reducido
    ========================================================================== */
 :focus-visible { outline: 3px solid var(--color-accent); outline-offset: 2px; }
@@ -1888,7 +2238,14 @@ html.has-reveal-anim .cards .reveal.is-visible:nth-child(6) { transition-delay: 
   .hero__badge::before { animation: none !important; }
   .hero__title .text-accent { animation: none !important; }
   html.has-reveal-anim .hero__content > *,
-  html.has-reveal-anim .hero__media img { opacity: 1; transform: none; animation: none !important; }
+  html.has-reveal-anim .hero__media img,
+  html.has-reveal-anim .hero__media .flow { opacity: 1; transform: none; animation: none !important; }
+  /* La maqueta del agente IA muestra su estado final sin animacion. */
+  .flow__step { opacity: 1; transform: none; animation: none !important; }
+  .flow__tick { opacity: 1; animation: none !important; }
+  .flow__sign-path { stroke-dashoffset: 0; animation: none !important; }
+  .flow__stamp { transform: rotate(-6deg) scale(1); animation: none !important; }
+  .flow__bar-fill { width: 100%; animation: none !important; }
   .hero__scroll-icon { animation: none !important; }
 }
 

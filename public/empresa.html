@@ -48,7 +48,7 @@
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Inter-latin.woff2" crossorigin>
 
   <!-- ============ ESTILOS ============ -->
-  <link rel="stylesheet" href="css/styles.min.css?v=20261028">
+  <link rel="stylesheet" href="css/styles.min.css?v=20261029">
 
   <!-- ============ DATOS ESTRUCTURADOS: Organización ============
        EDITAR: teléfono, correo, dirección y redes. -->
@@ -119,27 +119,67 @@
            "index.html#seccion" (funcionan desde cualquier página). -->
       <nav class="primary-nav" id="primaryNav" aria-label="Navegación principal">
         <ul class="primary-nav__list">
-          <li><a class="nav-link" href="index.html">Inicio</a></li>
-          <li><a class="nav-link is-active" href="empresa.html" aria-current="page">Empresa</a></li>
-          <li><a class="nav-link" href="index.html#servicios">Servicios</a></li>
-          <li><a class="nav-link" href="index.html#proyectos">Proyectos</a></li>
-          <li><a class="nav-link" href="index.html#proceso">Proceso</a></li>
-          <li><a class="nav-link" href="index.html#testimonios">Testimonios</a></li>
-          <li><a class="nav-link" href="index.html#faq">FAQ</a></li>
+          <li><a class="nav-link" href="index.html" data-i18n="nav_home">Inicio</a></li>
+          <li><a class="nav-link is-active" href="empresa.html" aria-current="page" data-i18n="nav_company">Empresa</a></li>
+          <li><a class="nav-link" href="index.html#servicios" data-i18n="nav_services">Servicios</a></li>
+          <li><a class="nav-link" href="index.html#proyectos" data-i18n="nav_projects">Proyectos</a></li>
+          <li><a class="nav-link" href="index.html#proceso" data-i18n="nav_process">Proceso</a></li>
+          <li><a class="nav-link" href="index.html#testimonios" data-i18n="nav_testimonials">Testimonios</a></li>
+          <li><a class="nav-link" href="index.html#faq" data-i18n="nav_faq">FAQ</a></li>
         </ul>
       </nav>
 
+      <!-- Herramientas del sitio (buscar, idioma, tema), acceso y CTA -->
       <div class="site-header__actions">
-        <a class="nav-link nav-link--auth" id="navAuthLink" href="admin/login">Acceder</a>
+        <div class="header-tools">
+          <button class="tool-btn" id="searchToggle" type="button" aria-expanded="false" aria-controls="siteSearch" aria-label="Buscar en el sitio" data-i18n-aria="aria_search">
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="m16.5 16.5 4 4"/></svg>
+          </button>
+
+          <div class="lang" id="langSwitch">
+            <button class="tool-btn" id="langToggle" type="button" aria-expanded="false" aria-haspopup="true" aria-label="Idioma del sitio" data-i18n-aria="aria_lang">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" d="M3.4 9h17.2M3.4 15h17.2M12 3c2.4 2.4 3.7 5.4 3.7 9S14.4 18.6 12 21c-2.4-2.4-3.7-5.4-3.7-9S9.6 5.4 12 3Z"/></svg>
+              <span class="tool-btn__code" id="langCode">ES</span>
+            </button>
+            <ul class="lang__menu" id="langMenu" hidden>
+              <li><button type="button" data-lang="es" lang="es">Español</button></li>
+              <li><button type="button" data-lang="en" lang="en">English</button></li>
+              <li><button type="button" data-lang="pt" lang="pt">Português</button></li>
+            </ul>
+          </div>
+
+          <button class="tool-btn tool-btn--theme" id="themeToggle" type="button" aria-pressed="false" aria-label="Cambiar a modo noche" data-i18n-aria="aria_theme">
+            <svg class="tool-btn__sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6"/></svg>
+            <svg class="tool-btn__moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M20.2 14.6A8.6 8.6 0 0 1 9.4 3.8a8.6 8.6 0 1 0 10.8 10.8Z"/></svg>
+          </button>
+        </div>
+
+        <a class="nav-link nav-link--auth" id="navAuthLink" href="admin/login" data-i18n="nav_login">Acceder</a>
         <a class="btn btn--primary btn--nav-cta" href="index.html#contacto">
           <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 5h16v14H4zM4 7l8 5 8-5"/></svg>
-          Contacto
+          <span data-i18n="nav_contact">Contacto</span>
         </a>
         <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="primaryNav" aria-label="Abrir menú de navegación">
           <span class="nav-toggle__bar"></span>
           <span class="nav-toggle__bar"></span>
           <span class="nav-toggle__bar"></span>
         </button>
+      </div>
+    </div>
+
+    <!-- Panel de búsqueda global (se abre desde la lupa de la cabecera). -->
+    <div class="search-panel" id="siteSearch" hidden>
+      <div class="container search-panel__inner">
+        <form class="search-panel__form" role="search" onsubmit="return false">
+          <span class="search-panel__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="m16.5 16.5 4 4"/></svg>
+          </span>
+          <input type="search" id="searchInput" class="search-panel__input" placeholder="Buscar en el sitio: servicios, proyectos, blog, preguntas…" aria-label="Buscar en el sitio" autocomplete="off" data-i18n-ph="search_placeholder">
+          <button type="button" class="tool-btn" id="searchClose" aria-label="Cerrar búsqueda" data-i18n-aria="aria_close">
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M6 6l12 12M18 6 6 18"/></svg>
+          </button>
+        </form>
+        <ul class="search-results" id="searchResults" aria-live="polite"></ul>
       </div>
     </div>
   </header>
@@ -358,7 +398,7 @@
     <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 19V5M5 12l7-7 7 7"/></svg>
   </button>
 
-  <script src="js/main.min.js?v=20261028" defer></script>
+  <script src="js/main.min.js?v=20261029" defer></script>
 
   <!-- Widget de CreatuAgente (chat de atención al cliente).
        Inyecta su propio botón flotante abajo a la derecha; por eso el botón

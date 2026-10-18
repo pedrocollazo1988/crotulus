@@ -180,6 +180,9 @@ const DEFAULTS: Dict = {
   submissions_enabled: "1",
   submissions_auto_approve: "0",
   faq_portal_count: "6",
+
+  // Visibilidad de la seccion Blog en la portada (se activa/desactiva en el panel)
+  blog_enabled: "1",
 };
 export { DEFAULTS };
 export type { Dict };
