@@ -23,7 +23,7 @@
   <meta name="description" content="Conoce a C-ROTULUS S.U.R.L.: nuestra historia, misión, visión y valores, y el equipo de profesionales que diseña y mantiene la tecnología de tu empresa." data-seo-desc>
   <meta name="keywords" content="C-ROTULUS, empresa tecnológica, sobre nosotros, equipo, misión, visión, valores" data-seo-keywords>
   <link rel="canonical" href="https://www.c-rotulus.example/empresa.html">
-  <link rel="sitemap" type="application/xml" title="Sitemap" href="sitemap.xml">
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="sitemap.xml" data-i18n-title>
 
   <!-- ============ OPEN GRAPH / REDES SOCIALES ============ -->
   <meta property="og:type" content="website">
@@ -48,7 +48,7 @@
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Inter-latin.woff2" crossorigin>
 
   <!-- ============ ESTILOS ============ -->
-  <link rel="stylesheet" href="css/styles.min.css?v=20261030">
+  <link rel="stylesheet" href="css/styles.min.css?v=20261031">
 
   <!-- ============ DATOS ESTRUCTURADOS: Organización ============
        EDITAR: teléfono, correo, dirección y redes. -->
@@ -107,37 +107,37 @@
   <!-- ==================== CABECERA / NAVEGACIÓN ==================== -->
   <header class="site-header" id="top">
     <div class="container site-header__inner">
-      <a class="brand" href="index.html" aria-label="C-ROTULUS, ir al inicio">
+      <a class="brand" href="index.html" aria-label="C-ROTULUS, ir al inicio" data-i18n-aria>
         <picture>
           <source type="image/avif" srcset="assets/img/logo-header.avif">
           <source type="image/webp" srcset="assets/img/logo-header.webp">
-          <img class="brand__img" src="assets/img/logo-header.png" alt="Logotipo de C-ROTULUS S.U.R.L." width="226" height="85" decoding="async" fetchpriority="high">
+          <img class="brand__img" src="assets/img/logo-header.png" alt="Logotipo de C-ROTULUS S.U.R.L." width="226" height="85" decoding="async" fetchpriority="high" data-i18n-alt>
         </picture>
       </a>
 
       <!-- Navegación principal. Los enlaces a secciones de la portada llevan
            "index.html#seccion" (funcionan desde cualquier página). -->
-      <nav class="primary-nav" id="primaryNav" aria-label="Navegación principal">
+      <nav class="primary-nav" id="primaryNav" aria-label="Navegación principal" data-i18n-aria>
         <ul class="primary-nav__list">
-          <li><a class="nav-link" href="index.html" data-i18n="nav_home">Inicio</a></li>
-          <li><a class="nav-link is-active" href="empresa.html" aria-current="page" data-i18n="nav_company">Empresa</a></li>
-          <li><a class="nav-link" href="index.html#servicios" data-i18n="nav_services">Servicios</a></li>
-          <li><a class="nav-link" href="index.html#proyectos" data-i18n="nav_projects">Proyectos</a></li>
-          <li><a class="nav-link" href="index.html#proceso" data-i18n="nav_process">Proceso</a></li>
-          <li><a class="nav-link" href="index.html#testimonios" data-i18n="nav_testimonials">Testimonios</a></li>
-          <li><a class="nav-link" href="index.html#faq" data-i18n="nav_faq">FAQ</a></li>
+          <li><a class="nav-link" href="index.html">Inicio</a></li>
+          <li><a class="nav-link is-active" href="empresa.html" aria-current="page">Empresa</a></li>
+          <li><a class="nav-link" href="index.html#servicios">Servicios</a></li>
+          <li><a class="nav-link" href="index.html#proyectos">Proyectos</a></li>
+          <li><a class="nav-link" href="index.html#proceso">Proceso</a></li>
+          <li><a class="nav-link" href="index.html#testimonios">Testimonios</a></li>
+          <li><a class="nav-link" href="index.html#faq">FAQ</a></li>
         </ul>
       </nav>
 
       <!-- Herramientas del sitio (buscar, idioma, tema), acceso y CTA -->
       <div class="site-header__actions">
         <div class="header-tools">
-          <button class="tool-btn" id="searchToggle" type="button" aria-expanded="false" aria-controls="siteSearch" aria-label="Buscar en el sitio" data-i18n-aria="aria_search">
+          <button class="tool-btn" id="searchToggle" type="button" aria-expanded="false" aria-controls="siteSearch" aria-label="Buscar en el sitio" data-i18n-aria>
             <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="m16.5 16.5 4 4"/></svg>
           </button>
 
           <div class="lang" id="langSwitch">
-            <button class="tool-btn" id="langToggle" type="button" aria-expanded="false" aria-haspopup="true" aria-label="Idioma del sitio" data-i18n-aria="aria_lang">
+            <button class="tool-btn" id="langToggle" type="button" aria-expanded="false" aria-haspopup="true" aria-label="Idioma del sitio" data-i18n-aria>
               <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" d="M3.4 9h17.2M3.4 15h17.2M12 3c2.4 2.4 3.7 5.4 3.7 9S14.4 18.6 12 21c-2.4-2.4-3.7-5.4-3.7-9S9.6 5.4 12 3Z"/></svg>
               <span class="tool-btn__code" id="langCode">ES</span>
             </button>
@@ -148,18 +148,18 @@
             </ul>
           </div>
 
-          <button class="tool-btn tool-btn--theme" id="themeToggle" type="button" aria-pressed="false" aria-label="Cambiar a modo noche" data-i18n-aria="aria_theme">
+          <button class="tool-btn tool-btn--theme" id="themeToggle" type="button" aria-pressed="false" aria-label="Cambiar a modo noche" data-i18n-aria>
             <svg class="tool-btn__sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6"/></svg>
             <svg class="tool-btn__moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M20.2 14.6A8.6 8.6 0 0 1 9.4 3.8a8.6 8.6 0 1 0 10.8 10.8Z"/></svg>
           </button>
         </div>
 
-        <a class="nav-link nav-link--auth" id="navAuthLink" href="admin/login" data-i18n="nav_login">Acceder</a>
+        <a class="nav-link nav-link--auth" id="navAuthLink" href="admin/login">Acceder</a>
         <a class="btn btn--primary btn--nav-cta" href="index.html#contacto">
           <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 5h16v14H4zM4 7l8 5 8-5"/></svg>
-          <span data-i18n="nav_contact">Contacto</span>
+          <span>Contacto</span>
         </a>
-        <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="primaryNav" aria-label="Abrir menú de navegación">
+        <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="primaryNav" aria-label="Abrir menú de navegación" data-i18n-aria>
           <span class="nav-toggle__bar"></span>
           <span class="nav-toggle__bar"></span>
           <span class="nav-toggle__bar"></span>
@@ -174,8 +174,8 @@
           <span class="search-panel__icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" width="20" height="20"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="m16.5 16.5 4 4"/></svg>
           </span>
-          <input type="search" id="searchInput" class="search-panel__input" placeholder="Buscar en el sitio: servicios, proyectos, blog, preguntas…" aria-label="Buscar en el sitio" autocomplete="off" data-i18n-ph="search_placeholder">
-          <button type="button" class="tool-btn" id="searchClose" aria-label="Cerrar búsqueda" data-i18n-aria="aria_close">
+          <input type="search" id="searchInput" class="search-panel__input" placeholder="Buscar en el sitio: servicios, proyectos, blog, preguntas…" aria-label="Buscar en el sitio" autocomplete="off" data-i18n-ph data-i18n-aria>
+          <button type="button" class="tool-btn" id="searchClose" aria-label="Cerrar búsqueda" data-i18n-aria>
             <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M6 6l12 12M18 6 6 18"/></svg>
           </button>
         </form>
@@ -188,7 +188,7 @@
     <!-- ==================== CABECERA DE PÁGINA ==================== -->
     <section class="page-hero">
       <div class="container">
-        <nav class="breadcrumb" aria-label="Ruta de navegación">
+        <nav class="breadcrumb" aria-label="Ruta de navegación" data-i18n-aria>
           <ol>
             <li><a href="index.html">Inicio</a></li>
             <li aria-current="page">Empresa</li>
@@ -214,7 +214,7 @@
 
         <div class="about__grid">
           <div class="about__media">
-            <img src="assets/img/equipo.svg" alt="Equipo de profesionales de C-ROTULUS trabajando en un proyecto" data-site-image="about_image" data-site-alt="about_image_alt" width="640" height="420" loading="lazy" decoding="async">
+            <img src="assets/img/equipo.svg" alt="Equipo de profesionales de C-ROTULUS trabajando en un proyecto" data-site-image="about_image" data-site-alt="about_image_alt" width="640" height="420" loading="lazy" decoding="async" data-i18n-alt>
           </div>
           <div class="about__body">
             <!-- Historia. El panel puede sobrescribir este texto con la clave
@@ -260,7 +260,7 @@
           <!-- MIEMBRO 1 -->
           <article class="team-card">
             <div class="team-card__media">
-              <img src="assets/img/equipo/marta-lopez.svg" width="400" height="400" alt="Retrato de Marta López, Directora de proyectos" loading="lazy" decoding="async">
+              <img src="assets/img/equipo/marta-lopez.svg" width="400" height="400" alt="Retrato de Marta López, Directora de proyectos" loading="lazy" decoding="async" data-i18n-alt>
             </div>
             <div class="team-card__body">
               <h3 class="team-card__name">Marta López</h3>
@@ -273,7 +273,7 @@
           <!-- MIEMBRO 2 -->
           <article class="team-card">
             <div class="team-card__media">
-              <img src="assets/img/equipo/javier-ruiz.svg" width="400" height="400" alt="Retrato de Javier Ruiz, Ingeniero de redes" loading="lazy" decoding="async">
+              <img src="assets/img/equipo/javier-ruiz.svg" width="400" height="400" alt="Retrato de Javier Ruiz, Ingeniero de redes" loading="lazy" decoding="async" data-i18n-alt>
             </div>
             <div class="team-card__body">
               <h3 class="team-card__name">Javier Ruiz</h3>
@@ -286,7 +286,7 @@
           <!-- MIEMBRO 3 -->
           <article class="team-card">
             <div class="team-card__media">
-              <img src="assets/img/equipo/cristina-serra.svg" width="400" height="400" alt="Retrato de Cristina Serra, Especialista en IA" loading="lazy" decoding="async">
+              <img src="assets/img/equipo/cristina-serra.svg" width="400" height="400" alt="Retrato de Cristina Serra, Especialista en IA" loading="lazy" decoding="async" data-i18n-alt>
             </div>
             <div class="team-card__body">
               <h3 class="team-card__name">Cristina Serra</h3>
@@ -299,7 +299,7 @@
           <!-- MIEMBRO 4 -->
           <article class="team-card">
             <div class="team-card__media">
-              <img src="assets/img/equipo/diego-marin.svg" width="400" height="400" alt="Retrato de Diego Marín, Desarrollador web" loading="lazy" decoding="async">
+              <img src="assets/img/equipo/diego-marin.svg" width="400" height="400" alt="Retrato de Diego Marín, Desarrollador web" loading="lazy" decoding="async" data-i18n-alt>
             </div>
             <div class="team-card__body">
               <h3 class="team-card__name">Diego Marín</h3>
@@ -335,13 +335,13 @@
           <picture>
             <source type="image/avif" srcset="assets/img/logo-header.avif">
             <source type="image/webp" srcset="assets/img/logo-header.webp">
-            <img src="assets/img/logo-header.png" alt="Logotipo de C-ROTULUS S.U.R.L." width="170" height="64" loading="lazy" decoding="async">
+            <img src="assets/img/logo-header.png" alt="Logotipo de C-ROTULUS S.U.R.L." width="170" height="64" loading="lazy" decoding="async" data-i18n-alt>
           </picture>
         </span>
         <p data-site="footer_tagline">Servicios tecnológicos para empresas. Desarrollo, automatización, redes y soporte con trato cercano.</p>
       </div>
 
-      <nav class="site-footer__col" aria-label="Enlaces rápidos">
+      <nav class="site-footer__col" aria-label="Enlaces rápidos" data-i18n-aria>
         <h3>Enlaces rápidos</h3>
         <ul>
           <li><a href="index.html">Inicio</a></li>
@@ -370,11 +370,11 @@
 
       <div class="site-footer__col">
         <h3>Síguenos</h3>
-        <ul class="social" aria-label="Redes sociales de C-ROTULUS">
-          <li><a href="https://www.facebook.com/com.rotulus.surl" data-social="facebook" aria-label="Facebook" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M13 22v-8h3l1-4h-4V8c0-1 .3-1.6 1.7-1.6H17V3.1C16.4 3 15.4 3 14.3 3 11.8 3 10 4.4 10 7.3V10H7v4h3v8h3Z"/></svg></a></li>
-          <li><a href="#" data-social="instagram" aria-label="Instagram" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 7.5A4.5 4.5 0 1 0 12 16.5 4.5 4.5 0 0 0 12 7.5Zm0 7.4a2.9 2.9 0 1 1 0-5.8 2.9 2.9 0 0 1 0 5.8Zm4.7-7.6a1.05 1.05 0 1 0 0 2.1 1.05 1.05 0 0 0 0-2.1Z"/></svg></a></li>
-          <li><a href="#" data-social="linkedin" aria-label="LinkedIn" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0 0-5ZM3 9h4v12H3zM10 9h3.8v1.7h.1c.5-.9 1.8-1.9 3.6-1.9 3.9 0 4.6 2.4 4.6 5.6V21h-4v-5.3c0-1.3 0-2.9-1.8-2.9s-2 1.4-2 2.8V21h-4z"/></svg></a></li>
-          <li><a href="#" data-social="github" aria-label="GitHub" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.6.4-1.1.6-1.3-2.2-.2-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.6 0 0 .8-.3 2.8 1a9.6 9.6 0 0 1 5 0c2-1.3 2.8-1 2.8-1 .5 1.3.2 2.3.1 2.6.6.7 1 1.6 1 2.7 0 3.9-2.4 4.8-4.6 5 .4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10 10 0 0 0 12 2Z"/></svg></a></li>
+        <ul class="social" aria-label="Redes sociales de C-ROTULUS" data-i18n-aria>
+          <li><a href="https://www.facebook.com/com.rotulus.surl" data-social="facebook" aria-label="Facebook" rel="noopener" data-i18n-aria><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M13 22v-8h3l1-4h-4V8c0-1 .3-1.6 1.7-1.6H17V3.1C16.4 3 15.4 3 14.3 3 11.8 3 10 4.4 10 7.3V10H7v4h3v8h3Z"/></svg></a></li>
+          <li><a href="#" data-social="instagram" aria-label="Instagram" rel="noopener" data-i18n-aria><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 7.5A4.5 4.5 0 1 0 12 16.5 4.5 4.5 0 0 0 12 7.5Zm0 7.4a2.9 2.9 0 1 1 0-5.8 2.9 2.9 0 0 1 0 5.8Zm4.7-7.6a1.05 1.05 0 1 0 0 2.1 1.05 1.05 0 0 0 0-2.1Z"/></svg></a></li>
+          <li><a href="#" data-social="linkedin" aria-label="LinkedIn" rel="noopener" data-i18n-aria><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0 0-5ZM3 9h4v12H3zM10 9h3.8v1.7h.1c.5-.9 1.8-1.9 3.6-1.9 3.9 0 4.6 2.4 4.6 5.6V21h-4v-5.3c0-1.3 0-2.9-1.8-2.9s-2 1.4-2 2.8V21h-4z"/></svg></a></li>
+          <li><a href="#" data-social="github" aria-label="GitHub" rel="noopener" data-i18n-aria><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.6.4-1.1.6-1.3-2.2-.2-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.6 0 0 .8-.3 2.8 1a9.6 9.6 0 0 1 5 0c2-1.3 2.8-1 2.8-1 .5 1.3.2 2.3.1 2.6.6.7 1 1.6 1 2.7 0 3.9-2.4 4.8-4.6 5 .4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10 10 0 0 0 12 2Z"/></svg></a></li>
         </ul>
       </div>
     </div>
@@ -389,16 +389,16 @@
   <!-- Botón flotante de WhatsApp: SUSTITUIDO por el widget de chat de CreatuAgente.
        Para recuperarlo, descomenta el enlace y borra el script del widget (abajo). -->
   <!--
-  <a class="float-wa" href="https://wa.me/5359888821?text=Hola%20C-ROTULUS%2C%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n%20sobre%20sus%20servicios%20tecnol%C3%B3gicos." data-whatsapp-link aria-label="Escríbenos por WhatsApp (se abre en una pestana nueva)" target="_blank" rel="noopener">
+  <a class="float-wa" href="https://wa.me/5359888821?text=Hola%20C-ROTULUS%2C%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n%20sobre%20sus%20servicios%20tecnol%C3%B3gicos." data-whatsapp-link aria-label="Escríbenos por WhatsApp (se abre en una pestana nueva)" target="_blank" rel="noopener" data-i18n-aria>
     <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="M12.04 2a9.9 9.9 0 0 0-8.5 15l-1.3 4.7 4.82-1.26A9.9 9.9 0 1 0 12.04 2Zm5.77 14.06c-.24.68-1.4 1.3-1.93 1.34-.5.05-.98.24-3.3-.7-2.77-1.1-4.53-3.94-4.67-4.12-.14-.19-1.12-1.5-1.12-2.86 0-1.36.72-2.03.97-2.3.24-.28.53-.35.71-.35l.51.01c.16 0 .39-.06.6.46.24.57.8 1.98.87 2.13.07.14.12.31.02.5-.09.19-.14.3-.28.47l-.42.49c-.14.14-.29.29-.12.57.16.28.73 1.2 1.57 1.95 1.08.96 1.98 1.26 2.26 1.4.28.14.44.12.6-.07.17-.19.7-.82.89-1.1.19-.28.37-.23.63-.14.26.1 1.66.78 1.94.92.28.14.47.21.54.33.07.12.07.68-.17 1.36Z"/></svg>
   </a>
   -->
 
-  <button class="back-top" id="backTop" type="button" aria-label="Volver arriba" hidden>
+  <button class="back-top" id="backTop" type="button" aria-label="Volver arriba" hidden data-i18n-aria>
     <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 19V5M5 12l7-7 7 7"/></svg>
   </button>
 
-  <script src="js/main.min.js?v=20261030" defer></script>
+  <script src="js/main.min.js?v=20261031" defer></script>
 
   <!-- Widget de CreatuAgente (chat de atención al cliente).
        Inyecta su propio botón flotante abajo a la derecha; por eso el botón
