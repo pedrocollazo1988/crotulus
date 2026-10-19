@@ -420,7 +420,7 @@
           }
         }
       }
-      if (alt !== undefined && String(alt).trim() !== "") img.setAttribute("alt", alt);
+      if (alt !== undefined && String(alt).trim() !== "") img.setAttribute("alt", t(alt));
     });
 
     // Enlaces legales del pie: texto plano separado por «·», cada uno a contacto
@@ -586,7 +586,7 @@
     bar.id = "maintenanceBanner";
     bar.className = "maintenance-banner";
     bar.setAttribute("role", "status");
-    bar.innerHTML = '<strong>Modo mantenimiento:</strong> ' + mensaje;
+    bar.innerHTML = '<strong>' + t("Modo mantenimiento:") + "</strong> " + t(mensaje);
     document.body.insertBefore(bar, document.body.firstChild);
     var form = $("#contactForm");
     if (form) {
@@ -716,12 +716,12 @@
     function close() {
       nav.classList.remove("is-open");
       toggle.setAttribute("aria-expanded", "false");
-      toggle.setAttribute("aria-label", "Abrir menú de navegación");
+      toggle.setAttribute("aria-label", t("Abrir menú de navegación"));
     }
     function open() {
       nav.classList.add("is-open");
       toggle.setAttribute("aria-expanded", "true");
-      toggle.setAttribute("aria-label", "Cerrar menú de navegación");
+      toggle.setAttribute("aria-label", t("Cerrar menú de navegación"));
     }
 
     toggle.addEventListener("click", function () {
@@ -994,7 +994,7 @@
       var b = document.createElement("button");
       b.type = "button";
       b.setAttribute("role", "tab");
-      b.setAttribute("aria-label", "Ir al testimonio " + (i + 1));
+      b.setAttribute("aria-label", t("Ir al testimonio") + " " + (i + 1));
       b.addEventListener("click", function () { go(i); });
       dotsBox.appendChild(b);
       return b;
@@ -1946,7 +1946,28 @@
       "C-ROTULUS S.U.R.L. | Servicios tecnológicos para empresas":
         "C-ROTULUS S.U.R.L. | Technology services for businesses",
       "Empresa | C-ROTULUS S.U.R.L. — Sobre nosotros y equipo":
-        "Company | C-ROTULUS S.U.R.L. — About us and team"
+        "Company | C-ROTULUS S.U.R.L. — About us and team",
+      // --- Textos editables desde el panel (Ajustes - Textos). Si el propietario
+      //     los cambia, hay que actualizar su clave aqui o se pierde la traduccion.
+      "Empresa de servicios tecnológicos para negocios": "Technology services company for businesses",
+      "Innovación a tu alcance, tecnología a tu servicio": "Innovation within your reach, technology at your service",
+      "Ayudamos a negocios en el proceso de transformación digital con soluciones informáticas a la medida, automatización con IA, redes y y comunicaciones, servicios técnicos a equipos, consultoría, diseño e impresiones y soporte técnico 24/7.":
+        "We help businesses through their digital transformation with tailor-made IT solutions, AI automation, networks and communications, technical services for equipment, consulting, design and printing, and 24/7 support.",
+      "Panel de control de C-ROTULUS con gráficas, servicios en la nube y una red de datos conectada":
+        "C-ROTULUS control panel with charts, cloud services and a connected data network",
+      "Equipo de C-ROTULUS trabajando con ordenadores en una oficina":
+        "C-ROTULUS team working with computers in an office",
+      "Modo mantenimiento:": "Maintenance mode:",
+      "Cerrar menú de navegación": "Close navigation menu",
+      "Ir al testimonio": "Go to testimonial",
+      "Estamos mejorando la web. Volvemos en unos minutos.":
+        "We are improving the website. We will be back in a few minutes.",
+      "Un equipo profesional altamente calificado con +13 años de experiencia en el sector empresarial":
+        "A highly qualified professional team with 13+ years of experience in the business sector",
+      "Desde [2021] acompañamos a empresas en su transformación digital, combinando tecnología y servicios profesionales.":
+        "Since [2021] we have supported businesses in their digital transformation, combining technology and professional services.",
+      "Servicios tecnológicos para negocios. Desarrollo, automatización, redes y soporte con trato cercano.":
+        "Technology services for businesses. Development, automation, networks and support with a personal touch."
     },
     pt: {
       // --- Navegação e cabeçalho ---
@@ -2351,7 +2372,26 @@
       "C-ROTULUS S.U.R.L. | Servicios tecnológicos para empresas":
         "C-ROTULUS S.U.R.L. | Serviços tecnológicos para empresas",
       "Empresa | C-ROTULUS S.U.R.L. — Sobre nosotros y equipo":
-        "Empresa | C-ROTULUS S.U.R.L. — Sobre nós e equipa"
+        "Empresa | C-ROTULUS S.U.R.L. — Sobre nós e equipa",
+      "Empresa de servicios tecnológicos para negocios": "Empresa de serviços tecnológicos para negócios",
+      "Innovación a tu alcance, tecnología a tu servicio": "Inovação ao seu alcance, tecnologia ao seu serviço",
+      "Ayudamos a negocios en el proceso de transformación digital con soluciones informáticas a la medida, automatización con IA, redes y y comunicaciones, servicios técnicos a equipos, consultoría, diseño e impresiones y soporte técnico 24/7.":
+        "Ajudamos os negócios no processo de transformação digital com soluções informáticas à medida, automação com IA, redes e comunicações, serviços técnicos a equipamentos, consultoria, design e impressão e suporte técnico 24/7.",
+      "Panel de control de C-ROTULUS con gráficas, servicios en la nube y una red de datos conectada":
+        "Painel de controlo da C-ROTULUS com gráficos, serviços na nuvem e uma rede de dados ligada",
+      "Equipo de C-ROTULUS trabajando con ordenadores en una oficina":
+        "Equipa da C-ROTULUS a trabalhar com computadores num escritório",
+      "Modo mantenimiento:": "Modo de manutenção:",
+      "Cerrar menú de navegación": "Fechar menu de navegação",
+      "Ir al testimonio": "Ir para o depoimento",
+      "Estamos mejorando la web. Volvemos en unos minutos.":
+        "Estamos a melhorar o site. Voltamos em alguns minutos.",
+      "Un equipo profesional altamente calificado con +13 años de experiencia en el sector empresarial":
+        "Uma equipa profissional altamente qualificada com +13 anos de experiência no setor empresarial",
+      "Desde [2021] acompañamos a empresas en su transformación digital, combinando tecnología y servicios profesionales.":
+        "Desde [2021] acompanhamos empresas na sua transformação digital, combinando tecnologia e serviços profissionais.",
+      "Servicios tecnológicos para negocios. Desarrollo, automatización, redes y soporte con trato cercano.":
+        "Serviços tecnológicos para negócios. Desenvolvimento, automação, redes e suporte com trato próximo."
     }
   };
 
