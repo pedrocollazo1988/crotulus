@@ -94,6 +94,33 @@ Detalle completo en la seccion "Migracion a Next.js + PostgreSQL" (abajo).
 Si un cambio en `js/main.js` o `css/styles.css` "no se ve", casi siempre es cache del
 navegador. Solucion: subir el `?v=` en `index.html` (y en `README.md`). No es un bug del JS.
 
+Los `.min.{css,js}` (artefactos de `scripts/minify-assets.mjs`, en `.gitignore`) los
+regeneran `npm run build`, `npm run dev` y `tools/serve-next.sh`. Version actual: `20261031`.
+
+## Idioma del sitio publico (i18n es/en/pt)
+
+El selector de la cabecera traduce el sitio publico completo. Todo vive en
+`public/js/main.js`:
+- **Diccionario** `I18N_CLAVES.en` / `.pt`, indexado por el **texto origen en espanol**
+  (el objeto `es` va vacio), y `t(texto)`. Si no hay clave se conserva el original.
+  Para anadir un texto nuevo: una clave por idioma (mantener simetria `en`/`pt`).
+  Si se edita un texto en el HTML hay que renombrar su clave o se pierde la traduccion.
+- **DOM**: `aplicarIdiomaDOM()` recorre los nodos de texto (TreeWalker) y **conserva los
+  espacios de los extremos** (el HTML parte frases junto a `<strong>`, p. ej. las cifras
+  de los testimonios). Atributos con marcador `data-i18n-aria|ph|alt|title` (sin valor);
+  el original se guarda en `<marcador>-es`.
+- **Contenido de la BD**: al cambiar de idioma se vuelve a pintar (`loadContent`,
+  `loadBlog`, `loadTeam`, `aplicarAjustes`) y los renderers aplican `t()`.
+- **Validacion**: los mensajes se traducen al **mostrarse** (`setError`), no al definirlos.
+- Fechas y tiempos ("13 oct 2026", "4 min", prefijo "·") via `traducirPatron()` + `MESES_ABREV`.
+- Las `<option>` traducen su etiqueta pero **conservan el `value` en espanol**
+  (contrato con `ALLOWED_SERVICES`).
+- Idioma en `localStorage["crotulus_lang"]`; se actualizan `<html lang>`, `data-lang`,
+  el codigo del selector y `<title>`.
+- Prueba headless (CDP, `/usr/bin/chromium`): abrir la pagina, pulsar
+  `#langMenu [data-lang="en"]` y recoger los textos. Ojo con el heurista "sigue en
+  espanol": marca falsos positivos en portugues (palabras compartidas pt/es).
+
 ## Bug resuelto: JS del panel no interceptaba el submit
 
 Causa raiz: `site_base_url()` en `app/lib/helpers.php` solo miraba `$_SERVER['HTTPS']`.
