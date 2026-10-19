@@ -2148,15 +2148,31 @@ html.has-reveal-anim .cards .reveal.is-visible:nth-child(6) { transition-delay: 
   border-bottom-color: var(--color-line);
 }
 .theme-dark .brand { box-shadow: 0 6px 18px rgba(0,0,0,.35); }
-.theme-dark .primary-nav,
+/* Cabecera con scroll: la regla base la pinta en blanco; en modo noche debe
+   oscurecerse igual que la cabecera en reposo. */
+.theme-dark .site-header.is-scrolled {
+  background: rgba(12,27,38,.94);
+  box-shadow: 0 10px 34px rgba(0,0,0,.38);
+}
+/* Desplegables (idioma y busqueda) y panel de navegacion movil: superficie
+   solida oscura. En ESCRITORIO el menu va sobre la propia cabecera (fondo
+   transparente) para que las pastillas no floten dentro de una caja. */
 .theme-dark .lang__menu,
 .theme-dark .search-panel { background: var(--color-white); border-color: var(--color-line); }
 .theme-dark .search-panel__form { background: var(--color-bg-alt); }
 .theme-dark .nav-link { color: var(--color-ink); }
 .theme-dark .nav-link:hover,
-.theme-dark .nav-link.is-active { color: #fff; background: rgba(46,134,184,.22); }
+.theme-dark .nav-link.is-active { color: #fff; background: rgba(95,168,201,.26); }
 .theme-dark .tool-btn { background: var(--color-white); border-color: var(--color-line); color: var(--color-ink); }
-.theme-dark .tool-btn:hover { background: rgba(46,134,184,.22); color: #fff; }
+.theme-dark .tool-btn:hover { background: rgba(95,168,201,.24); border-color: rgba(95,168,201,.45); color: #fff; }
+/* El CTA de la cabecera es un boton azul: sobre la cabecera oscura se pinta
+   en blanco con texto azul, igual que en el hero y el pie (si no, el degradado
+   azul se funde con el fondo y el boton parece "descuadrado"). */
+.theme-dark .btn--nav-cta { background: #fff; color: var(--color-primary); box-shadow: 0 6px 16px rgba(0,0,0,.30); }
+.theme-dark .btn--nav-cta:hover { background: var(--color-ice); color: var(--color-primary-dark); }
+@media (max-width: 1259px) {
+  .theme-dark .primary-nav { background: var(--color-white); border-color: var(--color-line); }
+}
 /* Secciones claras: en modo noche pasan a azul muy oscuro con el mismo
    lenguaje de "combinacion azul" (degradado sutil azul sobre fondo oscuro). */
 .theme-dark .section--alt,

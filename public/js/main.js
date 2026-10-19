@@ -450,8 +450,10 @@
     if (s.mapa_embed && /^https:\/\//.test(s.mapa_embed)) {
       var cont = $("#contactMap");
       if (cont) {
-        cont.innerHTML = '<iframe src="' + s.mapa_embed + '" width="100%" height="360" style="border:0" '
-          + 'loading="lazy" title="Mapa de ubicación de C-ROTULUS" '
+        // El iframe se inyecta al aplicar los ajustes (puede ser despues de
+        // aplicarIdiomaDOM), por eso su title se traduce aqui directamente.
+        cont.innerHTML = '<iframe src="' + esc(s.mapa_embed) + '" width="100%" height="360" style="border:0" '
+          + 'loading="lazy" title="' + esc(t("Mapa con la ubicación de C-ROTULUS S.U.R.L. en Artemisa")) + '" '
           + 'referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>';
       }
     }
@@ -624,8 +626,11 @@
         var loggedIn = !!(data && data.ok && data.logged_in);
         var navLink = document.getElementById("navAuthLink");
         if (navLink) {
+          // Se deja el texto en español y se deja traducir al árbol del DOM:
+          // así el enlace sigue el idioma activo también en cambios posteriores.
           navLink.textContent = loggedIn ? "Mi cuenta" : "Acceder";
           navLink.setAttribute("href", loggedIn ? ACCOUNT_URL : LOGIN_URL);
+          aplicarIdiomaDOM();
         }
         cargarTestimoniosUsuarios(true);
       })
@@ -1207,7 +1212,7 @@
             if (el) setFieldError(form, el, data.fields[name]);
           });
         }
-        status.textContent = (data && data.error) || "No se pudo enviar. Inténtalo de nuevo o escríbenos por WhatsApp.";
+        status.textContent = t((data && data.error) || "No se pudo enviar. Inténtalo de nuevo o escríbenos por WhatsApp.");
         status.className = "form-status is-error";
         cargarCaptcha(form);
       })
@@ -1340,7 +1345,7 @@
     }
     if (clearBtn) clearBtn.hidden = true;
     if (hint) {
-      hint.textContent = "JPG, PNG o WebP. Se recorta en cuadrado y se optimiza antes de enviarse.";
+      hint.textContent = t("JPG, PNG o WebP. Se recorta en cuadrado y se optimiza antes de enviarse.");
       hint.classList.remove("is-error");
     }
   }
@@ -1477,7 +1482,7 @@
         .then(function (res) { return res.json().catch(function () { return { ok: res.ok }; }); })
         .then(function (data) {
           if (data && data.ok) {
-            status.textContent = data.message || "¡Gracias! Tu testimonio se revisará antes de publicarse.";
+            status.textContent = t(data.message || "¡Gracias! Tu testimonio se revisará antes de publicarse.");
             status.className = "form-status is-success";
             form.reset();
             pintarEstrellas(5);
@@ -1494,7 +1499,7 @@
               if (el) setFieldError(form, el, data.fields[name]);
             });
           }
-          status.textContent = (data && data.error) || "No se pudo enviar. Inténtalo de nuevo en unos minutos.";
+          status.textContent = t((data && data.error) || "No se pudo enviar. Inténtalo de nuevo en unos minutos.");
           status.className = "form-status is-error";
           cargarCaptcha(form);
         })
@@ -1549,7 +1554,7 @@
       "Proyectos": "Projects", "Proceso": "Process", "Testimonios": "Testimonials",
       "Sección": "Section", "Servicio": "Service", "Proyecto": "Project",
       "Opinión": "Review", "Testimonio": "Testimonial",
-      "Acceder": "Sign in", "Contacto": "Contact", "Opiniones": "Reviews",
+      "Acceder": "Sign in", "Mi cuenta": "My account", "Contacto": "Contact", "Opiniones": "Reviews",
       "Blog": "Blog", "Ubicación": "Location", "Preguntas frecuentes": "FAQ",
       "Español": "Español", "English": "English", "Português": "Português",
       "Saltar al contenido principal": "Skip to main content",
@@ -1981,7 +1986,7 @@
       "Proyectos": "Projetos", "Proceso": "Processo", "Testimonios": "Depoimentos",
       "Sección": "Secção", "Servicio": "Serviço", "Proyecto": "Projeto",
       "Opinión": "Avaliação", "Testimonio": "Depoimento",
-      "Acceder": "Entrar", "Contacto": "Contato", "Opiniones": "Opiniões",
+      "Acceder": "Entrar", "Mi cuenta": "A minha conta", "Contacto": "Contato", "Opiniones": "Opiniões",
       "Blog": "Blog", "Ubicación": "Localização", "Preguntas frecuentes": "Perguntas frequentes",
       "Español": "Español", "English": "English", "Português": "Português",
       "Saltar al contenido principal": "Saltar para o conteúdo principal",
