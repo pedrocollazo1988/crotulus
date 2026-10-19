@@ -65,32 +65,32 @@
    ========================================================================== */
 :root {
   /* --- Paleta de marca (colores del cliente) ------------------------------
-     ANCLA: azul petroleo #136493 (color principal de marca). El azul hielo
+     ANCLA: azul petroleo #0B5A93 (color principal de marca). El azul hielo
      #C5E2F2 se usa en fondos suaves y textos claros sobre azul, y el gris
-     #BDBDBD en bordes/placa neutra. Cambia solo estos valores para recolorear
+     #D9D9D9 en bordes/placa neutra. Cambia solo estos valores para recolorear
      todo el sitio de golpe. --- */
-  --color-primary:      #136493;   /* Azul petroleo (marca, acciones y acentos) */
-  --color-primary-dark: #0E4E75;   /* Azul petroleo oscurecido (hover y degradados) */
-  --color-primary-soft: #E7F1F8;   /* Azul muy claro para fondos suaves */
+  --color-primary:      #0B5A93;   /* Azul de marca (referencia hsl(205 86% 31%)) */
+  --color-primary-dark: #08456F;   /* Azul oscurecido (hover y degradados) */
+  --color-primary-soft: #E7F3FB;   /* Azul muy claro para fondos suaves */
   /* Texto de enlaces y acentos: en modo dia es el azul de marca; en modo
      noche se aclara para conservar el contraste AA sobre fondo oscuro. */
-  --color-link:         #136493;
-  --color-link-strong:  #0E4E75;
-  --color-navy:         #0B2E45;   /* Azul profundo (fondos oscuros y pie) */
-  --color-navy-soft:    #103C58;   /* Azul profundo algo más claro (tarjetas oscuras) */
-  --color-accent:       #2E86B8;   /* Azul de apoyo (acentos y nodos del circuito) */
-  --color-accent-soft:  #5FA8C9;   /* Azul de apoyo claro (degradados y detalles) */
-  --color-amber:        #5FA8C9;   /* Alias del azul de apoyo (compatibilidad) */
-  --color-ice:          #C5E2F2;   /* Azul hielo (fondos suaves y texto claro sobre azul) */
-  --color-steel:        #BDBDBD;   /* Gris neutro (bordes, placa del logo, detalles) */
+  --color-link:         #0B5A93;
+  --color-link-strong:  #08456F;
+  --color-navy:         #0B3A5C;   /* Azul profundo (fondos oscuros y pie) */
+  --color-navy-soft:    #12496F;   /* Azul profundo algo más claro (tarjetas oscuras) */
+  --color-accent:       #1E6FA8;   /* Azul de apoyo (acentos y nodos del circuito) */
+  --color-accent-soft:  #5B9CC9;   /* Azul de apoyo claro (degradados y detalles) */
+  --color-amber:        #5B9CC9;   /* Alias del azul de apoyo (compatibilidad) */
+  --color-ice:          #C7E2F5;   /* Azul hielo (fondos suaves y texto claro sobre azul) */
+  --color-steel:        #D9D9D9;   /* Gris neutro de bordes (referencia) */
   --color-steel-dark:   #3F4A52;   /* Gris oscuro azulado (fondo del pie) */
-  --color-ink:          #17303F;   /* Textos de cuerpo (contraste alto) */
-  --color-heading:      #136493;   /* Azul petroleo para titulos (mas marca) */
-  --color-heading-gray: #63717B;   /* Gris para etiquetas y secundarios (legible) */
-  --color-ink-soft:     #4F6474;   /* Gris azulado para textos secundarios */
-  --color-line:         #DDE7EE;   /* Lineas y bordes suaves */
+  --color-ink:          #1F2937;   /* Textos de cuerpo (referencia gray-800) */
+  --color-heading:      #1F2937;   /* Titulares oscuros (referencia) */
+  --color-heading-gray: #6B7280;   /* Gris para etiquetas y secundarios (legible) */
+  --color-ink-soft:     #5F6D82;   /* Gris azulado para textos secundarios (AA >= 4.9 sobre fondos claros) */
+  --color-line:         #D9D9D9;   /* Lineas y bordes suaves (referencia) */
   --color-bg:           #FFFFFF;   /* Fondo base */
-  --color-bg-alt:       #F4F8FB;   /* Fondo de secciones alternas */
+  --color-bg-alt:       #F6F8FA;   /* Fondo de secciones alternas (bg-muted/30) */
   --color-white:        #FFFFFF;
   --color-success:      #12805C;
   --color-error:        #C0392B;
@@ -172,58 +172,41 @@ p { margin: 0 0 1rem; }
 /* Seccion base = BLANCA y lisa (sin "bolas" ni fondo animado), para que el
    fondo decorativo global (.bg-fx) no se transparente por las secciones claras.
    Alterna con .section--blue (azul con bolas en movimiento) y .section--soft. */
-.section { padding: 3.25rem 0; background: var(--color-bg); }
-/* Seccion con fondo gris muy suave (sin el azul de .section--blue). Se usa en
-   Ubicacion para alternar sin recargar visualmente. */
+.section { padding: 5rem 0; background: var(--color-bg); }
+@media (min-width: 900px) { .section { padding: 7rem 0; } }
+/* Seccion con fondo gris muy suave (bg-muted/30 de la referencia). */
 .section--soft { background: var(--color-bg-alt); }
-/* Secciones "azules": ahora son la combinacion CLARA (azul claro + blanco) de
-   la marca. El azul PROFUNDO (navy) queda reservado para el hero y el pie, que
-   son las dos superficies de contraste del sitio. El contenido va sobre una
-   capa con z-index 1. */
+/* Las secciones "azules" heredadas pasan al mismo gris suave de la referencia:
+   el diseno alterna blanco liso y gris muy claro, y reserva el azul de marca
+   para los botones, los acentos y la banda de llamada a la accion. */
 .section--alt,
 .section--blue {
   position: relative;
-  overflow: hidden;
-  contain: layout paint;
   color: var(--color-ink);
-  /* Combinacion azul claro + blanco: fondo claro con un suave degradado azul. */
-  background: linear-gradient(165deg, #FFFFFF 0%, var(--color-primary-soft) 48%, #D6EAF6 100%);
-  border-top: 1px solid rgba(19,100,147,.10);
-  border-bottom: 1px solid rgba(19,100,147,.10);
+  background: var(--color-bg-alt);
 }
 
-.section__head { max-width: 720px; margin: 0 auto 2rem; text-align: center; }
-.section__title { font-size: clamp(1.45rem, 1.1rem + 2.2vw, 2.1rem); }
-/* Regla de acento bajo el titulo de seccion (marca, combina azul + gris) */
-.section__head .section__title::after {
-  content: "";
-  display: block;
-  width: 54px; height: 4px;
-  margin: .7rem auto 0;
-  border-radius: var(--radius-pill);
-  background: linear-gradient(90deg, var(--color-primary), var(--color-accent), var(--color-amber));
-}
-.section__head--left { text-align: left; }
-.section__head--left .section__title::after { margin-inline: 0; }
-.section__lead { color: var(--color-ink-soft); margin: 0; }
+/* Cabecera de seccion: alineada a la izquierda, como la referencia (el texto
+   de apoyo va debajo del titular). */
+.section__head { max-width: 42rem; margin: 0 0 3rem; text-align: left; }
+.section__head--center { margin-inline: auto; text-align: center; }
+.section__title { font-size: clamp(1.6rem, 1.2rem + 2.4vw, 2.25rem); letter-spacing: -.02em; }
+.section__lead { color: var(--color-ink-soft); margin: .75rem 0 0; font-size: 1.05rem; }
 /* Llamada a la acción centrada bajo la cabecera de una sección. */
 .section__cta { text-align: center; margin: 1.25rem 0 1.75rem; }
 
 .eyebrow {
-  display: inline-block;
+  display: block;
   font-family: var(--font-alt);
-  font-size: .82rem;
-  font-weight: 400;
-  letter-spacing: .12em;
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: .1em;
   text-transform: uppercase;
-  color: var(--color-link);
-  background: var(--color-primary-soft);
-  padding: .3rem .75rem;
-  border-radius: var(--radius-pill);
-  margin: 0 0 .9rem;
+  color: var(--color-primary);
+  margin: 0 0 .6rem;
 }
 
-.text-accent { color: var(--color-link); }
+.text-accent { color: var(--color-primary); }
 
 /* ==========================================================================
    CABECERA DE PÁGINA INTERNA (empresa.html) Y MIGAS DE PAN
@@ -272,53 +255,22 @@ p { margin: 0 0 1rem; }
    - ::after  -> brillo suave que "respira".
    Todo con transform/opacity para no penalizar el rendimiento.
    ========================================================================== */
+/* La decoracion de puntos y halos se retiro: la referencia usa fondos lisos.
+   Se conserva la animacion de puntos SOLO para el hero (superficie oscura). */
 .section--alt::before,
-.section--blue::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: .5;
-  background-image:
-    radial-gradient(circle at 18% 22%, rgba(19,100,147,.22) 0 3px, transparent 4px),
-    radial-gradient(circle at 72% 40%, rgba(46,134,184,.28) 0 2px, transparent 3px),
-    radial-gradient(circle at 40% 78%, rgba(19,100,147,.16) 0 2px, transparent 3px),
-    radial-gradient(circle at 88% 82%, rgba(46,134,184,.22) 0 2px, transparent 3px);
-  background-size: 240px 240px, 300px 300px, 360px 360px, 420px 420px;
-}
+.section--blue::before { content: none; }
 .section--alt::after,
-.section--blue::after {
-  content: "";
-  position: absolute;
-  z-index: 0;
-  width: 60vmax; height: 60vmax;
-  right: -20vmax; top: -28vmax;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(46,134,184,.18), transparent 65%);
-  pointer-events: none;
-  animation: section-glow 16s ease-in-out infinite;
-}
+.section--blue::after { content: none; }
 .section--alt > .container,
 .section--blue > .container { position: relative; z-index: 1; }
-@keyframes section-glow {
-  0%, 100% { transform: translate3d(0,0,0) scale(1); opacity: .75; }
-  50%      { transform: translate3d(-3%, 4%, 0) scale(1.08); opacity: 1; }
-}
 
-/* Puntos tipo "estrellas" sobre el azul: la capa ::before de cada superficie
-   azul (hero, secciones alternas y pie) lleva cuatro tramas de puntos; aquí
-   se les da un centelleo y una deriva muy suaves. Solo se animan transform y
-   opacity (capas de la GPU) y cada superficie puede reutilizar la misma
-   animación con un desfase distinto. */
-.section--alt::before,
-.section--blue::before,
+/* Puntos tipo "estrellas" sobre el azul del hero: su capa ::before lleva
+   cuatro tramas de puntos con un centelleo y una deriva muy suaves. */
 .hero::before {
   will-change: transform, opacity;
-  animation: stars-drift 26s ease-in-out infinite;
+  animation: stars-drift 22s ease-in-out infinite;
+  animation-delay: -11s;
 }
-/* Ritmos distintos por superficie para que no centelleen sincronizadas. */
-.section--blue::before { animation-duration: 30s; animation-delay: -6s; }
-.hero::before { animation-duration: 22s; animation-delay: -11s; }
 @keyframes stars-drift {
   0%   { transform: translate3d(0, 0, 0) scale(1);         opacity: .35; }
   50%  { transform: translate3d(-2.5%, -2.5%, 0) scale(1.04); opacity: .7; }
@@ -330,82 +282,9 @@ p { margin: 0 0 1rem; }
 .is-offscreen::after { animation-play-state: paused !important; }
 
 
-/* Secciones claras (azul claro + blanco): los titulos y textos vuelven a los
-   colores de marca oscuros; las tarjetas blancas ganan una sombra suave para
-   que floten sobre el degradado. */
-.section--alt .section__head .section__title,
-.section--blue .section__head .section__title { color: var(--color-heading); }
-.section--alt .section__head .section__lead,
-.section--blue .section__head .section__lead { color: var(--color-ink-soft); }
-.section--alt .section__title::after,
-.section--blue .section__title::after { box-shadow: 0 0 14px rgba(46,134,184,.45); }
-/* Etiqueta "eyebrow" sobre el fondo claro: chip azul claro solido. */
-.section--alt .eyebrow,
-.section--blue .eyebrow {
-  color: var(--color-primary-dark);
-  background: rgba(255,255,255,.85);
-  border: 1px solid rgba(19,100,147,.16);
-}
-/* Tarjetas sobre el degradado claro: fondo blanco, texto oscuro y sombra
-   suave para que "floten" (antes sobre azul necesitaban borde luminoso). */
-.section--alt .card,
-.section--alt .step,
-.section--alt .review-card,
-.section--alt .accordion__item,
-.section--alt .google-reviews__summary,
-.section--alt .user-submit,
-.section--alt .project,
-.section--alt .post,
-.section--alt .testimonial__quote,
-.section--alt .contact-form,
-.section--alt .contact-info__item,
-.section--blue .card,
-.section--blue .step,
-.section--blue .review-card,
-.section--blue .accordion__item,
-.section--blue .google-reviews__summary,
-.section--blue .user-submit,
-.section--blue .project,
-.section--blue .post,
-.section--blue .testimonial__quote,
-.section--blue .contact-form,
-.section--blue .contact-info__item,
-.section--blue .mv-card,
-.section--blue .about__media img {
-  color: var(--color-ink);
-  border-color: var(--color-line);
-  box-shadow: 0 16px 34px rgba(11,46,69,.10);
-}
-/* Textos de la sección de presentación sobre el fondo claro. */
-.section--blue .about__subtitle { color: var(--color-heading); }
-.section--blue .about__body p { color: var(--color-ink); }
-.section--blue .mv-card p { color: var(--color-ink-soft); }
-.section--blue .value { color: var(--color-ink); }
-.section--blue .value__icon {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
-  color: #fff;
-}
+/* Las tarjetas ya no necesitan overrides: todas viven sobre blanco o gris
+   suave y comparten los estilos base. */
 
-/* Elementos de otras secciones que viven en la seccion clara: mantienen su
-   superficie blanca con texto oscuro (los estilos base de .project/.post/
-   .testimonial__quote/.contact-form/.contact-info ya son blancos; aqui solo se
-   iguala el borde y la sombra suave del resto de tarjetas). */
-.section--blue .project,
-.section--blue .post,
-.section--blue .testimonial__quote,
-.section--blue .contact-form,
-.section--blue .contact-info__item {
-  color: var(--color-ink);
-  border-color: var(--color-line);
-  box-shadow: 0 16px 34px rgba(11,46,69,.10);
-}
-/* Enlace "Ver caso" y etiqueta de proyecto: sobre el fondo claro se mantienen
-   los colores de marca (ya no hace falta aclararlos). */
-.section--alt .project__tag,
-.section--blue .project__tag {
-  color: var(--color-link);
-  background: var(--color-primary-soft);
-}
 
 /* ==========================================================================
    FONDO ANIMADO (decorativo, ligero)
@@ -421,22 +300,24 @@ p { margin: 0 0 1rem; }
   overflow: hidden;
   pointer-events: none;
 }
+/* Halos muy tenues: la referencia usa fondos lisos, asi que solo se deja una
+   insinuacion de color en las esquinas. */
 .bg-fx__blob {
   position: absolute;
   border-radius: 50%;
-  opacity: .5;
+  opacity: .22;
   will-change: transform;
   animation: bg-float 26s ease-in-out infinite;
 }
 .bg-fx__blob--a {
   width: 48vmax; height: 48vmax;
   top: -22vmax; left: -14vmax;
-  background: radial-gradient(circle, rgba(19,100,147,.22), transparent 68%);
+  background: radial-gradient(circle, rgba(11,90,147,.20), transparent 68%);
 }
 .bg-fx__blob--b {
   width: 42vmax; height: 42vmax;
   bottom: -20vmax; right: -12vmax;
-  background: radial-gradient(circle, rgba(46,134,184,.20), transparent 68%);
+  background: radial-gradient(circle, rgba(30,111,168,.16), transparent 68%);
   animation-duration: 34s;
   animation-direction: reverse;
 }
@@ -445,8 +326,8 @@ p { margin: 0 0 1rem; }
   inset: -1px;
   opacity: .5;
   background-image:
-    linear-gradient(rgba(19,100,147,.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(19,100,147,.045) 1px, transparent 1px);
+    linear-gradient(rgba(11,90,147,.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(11,90,147,.045) 1px, transparent 1px);
   background-size: 44px 44px;
   -webkit-mask: radial-gradient(circle at 50% 30%, #000 0%, transparent 78%);
   mask: radial-gradient(circle at 50% 30%, #000 0%, transparent 78%);
@@ -482,45 +363,30 @@ p { margin: 0 0 1rem; }
   align-items: center;
   justify-content: center;
   gap: .5rem;
-  font-family: var(--font-alt);
-  font-weight: 400;
-  font-size: 1rem;
-  letter-spacing: .04em;
-  padding: .7rem 1.2rem;
-  border: 2px solid transparent;
-  border-radius: var(--radius-pill);
-  transition: transform var(--transition), box-shadow var(--transition), background var(--transition), color var(--transition);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: .95rem;
+  letter-spacing: 0;
+  padding: .75rem 1.4rem;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  transition: background var(--transition), color var(--transition), box-shadow var(--transition), border-color var(--transition), transform var(--transition);
   text-decoration: none;
-  line-height: 1;
+  line-height: 1.2;
+  white-space: nowrap;
 }
-.btn:hover { text-decoration: none; transform: translateY(-2px); }
-.btn:active { transform: translateY(0); }
+.btn:hover { text-decoration: none; }
+.btn:active { transform: translateY(1px); }
 
 .btn--primary {
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  background: var(--color-primary);
   color: #fff;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 1px 2px rgba(11,90,147,.25);
 }
-.btn--primary:hover { box-shadow: var(--shadow-md); }
-/* Barrido de brillo al pasar el ratón (solo transform: no repinta el layout) */
-.btn--primary::after {
-  content: "";
-  position: absolute;
-  top: 0; bottom: 0;
-  width: 40%;
-  left: -60%;
-  background: linear-gradient(100deg, transparent, rgba(255,255,255,.45), transparent);
-  transform: skewX(-18deg);
-  pointer-events: none;
-  transition: left .6s cubic-bezier(.2,.7,.3,1);
-}
-.btn--primary:hover::after { left: 120%; }
+.btn--primary:hover { background: var(--color-primary-dark); box-shadow: 0 6px 18px rgba(11,90,147,.28); }
 /* Sobre las dos superficies OSCURAS (hero y pie) el boton principal no puede
    ser azul: se invertiria con el fondo. Se pinta en blanco con texto azul, una
-   combinacion limpia y de maximo contraste dentro de la paleta de marca. Las
-   secciones claras (.section--blue/--alt) conservan el boton azul normal. */
+   combinacion limpia y de maximo contraste dentro de la paleta de marca. */
 .hero .btn--primary,
 .site-footer .btn--primary {
   background: #fff;
@@ -535,7 +401,7 @@ p { margin: 0 0 1rem; }
 
 .btn--ghost {
   background: transparent;
-  color: var(--color-link);
+  color: var(--color-primary);
   border-color: var(--color-line);
 }
 .btn--ghost:hover { border-color: var(--color-primary); background: var(--color-primary-soft); }
@@ -597,9 +463,9 @@ p { margin: 0 0 1rem; }
   display: none;
   align-items: center;
   gap: .4rem;
-  padding: .55rem 1rem;
-  font-size: .9rem;
-  border-radius: var(--radius-pill);
+  padding: .5rem 1rem;
+  font-size: .875rem;
+  border-radius: var(--radius-sm);
   white-space: nowrap;
 }
 
@@ -714,7 +580,7 @@ p { margin: 0 0 1rem; }
   color: var(--color-ink);
   transition: color var(--transition), background var(--transition), border-color var(--transition), transform var(--transition);
 }
-.tool-btn:hover { color: var(--color-link); border-color: rgba(19,100,147,.35); background: var(--color-primary-soft); transform: translateY(-1px); }
+.tool-btn:hover { color: var(--color-link); border-color: rgba(11,90,147,.35); background: var(--color-primary-soft); transform: translateY(-1px); }
 .tool-btn:focus-visible { outline: 3px solid var(--color-accent); outline-offset: 2px; }
 .tool-btn__code { font-family: var(--font-alt); font-weight: 700; font-size: .72rem; letter-spacing: .04em; }
 /* Iconos sol/luna del boton de tema: se muestra uno segun el modo. */
@@ -801,7 +667,7 @@ p { margin: 0 0 1rem; }
   letter-spacing: .05em;
   color: var(--color-link);
   background: var(--color-primary-soft);
-  border: 1px solid rgba(19,100,147,.16);
+  border: 1px solid rgba(11,90,147,.16);
   border-radius: var(--radius-pill);
   padding: .1rem .5rem;
 }
@@ -831,9 +697,9 @@ p { margin: 0 0 1rem; }
   opacity: .55;
   background-image:
     radial-gradient(circle at 18% 22%, rgba(255,255,255,.45) 0 3px, transparent 4px),
-    radial-gradient(circle at 72% 40%, rgba(95,168,201,.55) 0 2px, transparent 3px),
+    radial-gradient(circle at 72% 40%, rgba(91,156,201,.55) 0 2px, transparent 3px),
     radial-gradient(circle at 40% 78%, rgba(255,255,255,.30) 0 2px, transparent 3px),
-    radial-gradient(circle at 88% 82%, rgba(95,168,201,.45) 0 2px, transparent 3px);
+    radial-gradient(circle at 88% 82%, rgba(91,156,201,.45) 0 2px, transparent 3px);
   background-size: 240px 240px, 300px 300px, 360px 360px, 420px 420px;
 }
 /* Halo animado que "respira" detrás del contenido */
@@ -844,7 +710,7 @@ p { margin: 0 0 1rem; }
   width: 60vmax; height: 60vmax;
   right: -18vmax; top: -30vmax;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(95,168,201,.35), transparent 65%);
+  background: radial-gradient(circle, rgba(91,156,201,.35), transparent 65%);
   animation: hero-glow 14s ease-in-out infinite;
 }
 @keyframes hero-glow {
@@ -880,13 +746,13 @@ p { margin: 0 0 1rem; }
   width: 8px; height: 8px;
   border-radius: 50%;
   background: var(--color-accent);
-  box-shadow: 0 0 0 0 rgba(46,134,184,.65);
+  box-shadow: 0 0 0 0 rgba(30,111,168,.65);
   animation: pulse-dot 2.2s ease-out infinite;
 }
 @keyframes pulse-dot {
-  0%   { box-shadow: 0 0 0 0 rgba(46,134,184,.6); }
-  70%  { box-shadow: 0 0 0 8px rgba(46,134,184,0); }
-  100% { box-shadow: 0 0 0 0 rgba(46,134,184,0); }
+  0%   { box-shadow: 0 0 0 0 rgba(30,111,168,.6); }
+  70%  { box-shadow: 0 0 0 8px rgba(30,111,168,0); }
+  100% { box-shadow: 0 0 0 0 rgba(30,111,168,0); }
 }
 
 .hero__title {
@@ -1012,7 +878,7 @@ p { margin: 0 0 1rem; }
   border-radius: 10px;
   color: var(--color-link);
   background: linear-gradient(135deg, var(--color-primary-soft), var(--color-ice));
-  border: 1px solid rgba(19,100,147,.16);
+  border: 1px solid rgba(11,90,147,.16);
 }
 .flow__step--sign .flow__ico { color: #fff; background: linear-gradient(135deg, var(--color-primary), var(--color-accent)); border-color: transparent; }
 .flow__text { min-width: 0; display: flex; flex-direction: column; }
@@ -1045,7 +911,7 @@ p { margin: 0 0 1rem; }
   display: flex; align-items: center; gap: .8rem;
   margin-top: .85rem;
   padding: .55rem .7rem;
-  border: 1px dashed rgba(19,100,147,.30);
+  border: 1px dashed rgba(11,90,147,.30);
   border-radius: var(--radius-sm);
   background: rgba(231,241,248,.5);
   color: var(--color-primary-dark);
@@ -1136,52 +1002,34 @@ html.has-reveal-anim .hero__media .flow {
   background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
   color: #fff;
   font-size: .8rem; font-weight: 700;
-  box-shadow: 0 4px 12px rgba(19,100,147,.24);
+  box-shadow: 0 4px 12px rgba(11,90,147,.24);
 }
 
 /* --- Servicios (tarjetas) --- */
-.cards { display: grid; gap: 1.1rem; }
+.cards { display: grid; gap: 1.25rem; }
 .card {
   position: relative;
   background: var(--color-white);
   border: 1px solid var(--color-line);
-  border-radius: var(--radius);
-  padding: 1.25rem;
-  box-shadow: var(--shadow-sm);
+  border-radius: 16px;
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+  transition: border-color var(--transition), box-shadow var(--transition);
 }
-/* Borde superior con degradado de marca, visible al pasar el ratón */
-.card::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-accent), var(--color-amber));
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--transition);
-}
-.card:hover { transform: translateY(-6px); box-shadow: 0 22px 46px rgba(11,46,69,.14); border-color: rgba(19,100,147,.30); }
-.card:hover::before { transform: scaleX(1); }
+.card:hover { border-color: rgba(11,90,147,.40); box-shadow: 0 12px 30px rgba(15,23,42,.08); }
 .card__icon {
   width: 48px; height: 48px;
   display: grid; place-items: center;
   border-radius: 12px;
-  background: linear-gradient(135deg, var(--color-primary-soft), var(--color-amber));
-  color: var(--color-link);
-  margin-bottom: .9rem;
-  transition: transform var(--transition), background var(--transition), color var(--transition);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  margin-bottom: 1.25rem;
+  transition: transform var(--transition);
 }
-.card:hover .card__icon {
-  transform: translateY(-2px) scale(1.05);
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
-  color: #fff;
-}
-.card__title { font-size: 1.08rem; margin-bottom: .35rem; }
-.card__text { color: var(--color-ink-soft); font-size: .93rem; }
+.card:hover .card__icon { transform: scale(1.05); }
+.card__title { font-size: 1.1rem; margin-bottom: .5rem; }
+.card__text { color: var(--color-ink-soft); font-size: .95rem; }
 .card__list { margin: 0 0 1rem; display: grid; gap: .3rem; }
 .card__list li {
   position: relative;
@@ -1199,43 +1047,27 @@ html.has-reveal-anim .hero__media .flow {
 }
 .card .btn { margin-top: auto; align-self: flex-start; }
 
-/* --- Proceso (4 pasos) --- */
+/* --- Proceso (pasos) --- */
 .steps { display: grid; gap: 1.25rem; counter-reset: step; }
 .step {
   position: relative;
   background: var(--color-white);
   border: 1px solid var(--color-line);
-  border-radius: var(--radius);
-  padding: 1.3rem 1.25rem 1.25rem 1.3rem;
-  box-shadow: var(--shadow-sm);
-  overflow: hidden;
-  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: border-color var(--transition), box-shadow var(--transition);
 }
-.step:hover { transform: translateY(-4px); box-shadow: 0 20px 42px rgba(11,46,69,.12); border-color: rgba(19,100,147,.28); }
+.step:hover { border-color: rgba(11,90,147,.40); box-shadow: 0 12px 30px rgba(15,23,42,.08); }
 .step__num {
   display: grid; place-items: center;
-  width: 42px; height: 42px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
-  color: #fff;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
   font-family: var(--font-head);
   font-weight: 700;
-  font-size: 1.15rem;
+  font-size: 1rem;
   margin-bottom: .9rem;
-  box-shadow: 0 8px 20px rgba(19,100,147,.28);
-}
-/* Número grande de fondo, como marca de agua */
-.step::after {
-  content: attr(data-step);
-  position: absolute;
-  right: -6px; top: -18px;
-  font-family: var(--font-head);
-  font-weight: 800;
-  font-size: 4.6rem;
-  line-height: 1;
-  color: var(--color-link);
-  opacity: .06;
-  pointer-events: none;
 }
 .step__title { font-size: 1.02rem; margin-bottom: .3rem; }
 .step__text { margin: 0; color: var(--color-ink-soft); font-size: .95rem; }
@@ -1255,7 +1087,7 @@ html.has-reveal-anim .hero__media .flow {
   flex-direction: column;
   transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
 }
-.team-card:hover { transform: translateY(-6px); box-shadow: 0 22px 46px rgba(11,46,69,.14); border-color: rgba(19,100,147,.30); }
+.team-card:hover { border-color: rgba(11,90,147,.40); box-shadow: 0 12px 30px rgba(15,23,42,.08); }
 .team-card__media { aspect-ratio: 1 / 1; background: var(--color-primary-soft); overflow: hidden; }
 .team-card__media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s cubic-bezier(.2,.7,.3,1); }
 .team-card:hover .team-card__media img { transform: scale(1.04); }
@@ -1292,7 +1124,7 @@ html.has-reveal-anim .hero__media .flow {
   flex-direction: column;
   transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
 }
-.post:hover { transform: translateY(-6px); box-shadow: 0 22px 46px rgba(11,46,69,.14); border-color: rgba(19,100,147,.30); }
+.post:hover { border-color: rgba(11,90,147,.40); box-shadow: 0 12px 30px rgba(15,23,42,.08); }
 .post__media { display: block; aspect-ratio: 16 / 10; background: var(--color-primary-soft); overflow: hidden; }
 .post__media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s cubic-bezier(.2,.7,.3,1); }
 .post:hover .post__media img { transform: scale(1.05); }
@@ -1357,7 +1189,7 @@ html.has-reveal-anim .hero__media .flow {
   height: 3px;
   background: linear-gradient(90deg, var(--color-primary), var(--color-accent), var(--color-amber));
 }
-.testimonial__quote:hover { transform: translateY(-4px); box-shadow: 0 20px 44px rgba(11,46,69,.13); border-color: rgba(19,100,147,.28); }
+.testimonial__quote:hover { border-color: rgba(11,90,147,.40); box-shadow: 0 12px 30px rgba(15,23,42,.08); }
 .testimonial__quote p { font-size: .98rem; color: var(--color-ink); margin: 0; line-height: 1.6; }
 
 /* Cabecera de la tarjeta: estrellas + sello de "cliente verificado" */
@@ -1395,7 +1227,7 @@ html.has-reveal-anim .hero__media .flow {
   color: #fff;
   font-family: var(--font-head);
   font-weight: 700;
-  box-shadow: 0 6px 16px rgba(19,100,147,.28);
+  box-shadow: 0 6px 16px rgba(11,90,147,.28);
 }
 img.testimonial__avatar {
   object-fit: cover;
@@ -1421,7 +1253,7 @@ img.testimonial__avatar {
   box-shadow: var(--shadow-sm);
   transition: background var(--transition), color var(--transition), transform var(--transition), box-shadow var(--transition);
 }
-.carousel-btn:hover { background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); color: #fff; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(19,100,147,.28); }
+.carousel-btn:hover { background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); color: #fff; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(11,90,147,.28); }
 .carousel-dots { display: flex; gap: .25rem; }
 /* Botón de 44x44 (área táctil accesible) con el punto visual centrado. */
 .carousel-dots button {
@@ -1568,9 +1400,9 @@ img.testimonial__avatar {
   box-shadow: var(--shadow-sm);
   transition: border-color var(--transition), box-shadow var(--transition);
 }
-.accordion__item:hover { border-color: rgba(19,100,147,.28); }
+.accordion__item:hover { border-color: rgba(11,90,147,.40); }
 .accordion__item:has(.accordion__trigger[aria-expanded="true"]) {
-  border-color: rgba(19,100,147,.35);
+  border-color: rgba(11,90,147,.35);
   box-shadow: 0 12px 30px rgba(11,46,69,.10);
 }
 .accordion__heading { margin: 0; }
@@ -1655,7 +1487,7 @@ img.testimonial__avatar {
 .field textarea:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(19,100,147,.18);
+  box-shadow: 0 0 0 3px rgba(11,90,147,.18);
 }
 .field input[aria-invalid="true"],
 .field select[aria-invalid="true"],
@@ -1834,13 +1666,13 @@ img.testimonial__avatar {
   border: none;
   background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
   color: #fff;
-  box-shadow: 0 10px 24px rgba(19,100,147,.38);
+  box-shadow: 0 10px 24px rgba(11,90,147,.38);
   opacity: 0;
   transform: translateY(10px);
   transition: opacity var(--transition), transform var(--transition), box-shadow var(--transition);
 }
 .back-top.is-visible { opacity: 1; transform: translateY(0); }
-.back-top:hover { box-shadow: 0 14px 30px rgba(19,100,147,.5); }
+.back-top:hover { box-shadow: 0 14px 30px rgba(11,90,147,.5); }
 
 /* ==========================================================================
    13. ANIMACIONES DE APARICION AL HACER SCROLL
@@ -1901,7 +1733,7 @@ html.has-reveal-anim .cards .reveal.is-visible:nth-child(6) { transition-delay: 
   flex-direction: column;
   transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
 }
-.project:hover { transform: translateY(-6px); box-shadow: 0 22px 46px rgba(11,46,69,.14); border-color: rgba(19,100,147,.30); }
+.project:hover { border-color: rgba(11,90,147,.40); box-shadow: 0 12px 30px rgba(15,23,42,.08); }
 .project__media { aspect-ratio: 16 / 10; background: var(--color-primary-soft); overflow: hidden; }
 .project__media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s cubic-bezier(.2,.7,.3,1); }
 .project:hover .project__media img { transform: scale(1.05); }
@@ -1949,7 +1781,7 @@ html.has-reveal-anim .cards .reveal.is-visible:nth-child(6) { transition-delay: 
   .about__grid { grid-template-columns: .9fr 1.1fr; align-items: start; gap: 3rem; }
   .cards { grid-template-columns: repeat(3, 1fr); }
   .projects { grid-template-columns: repeat(3, 1fr); }
-  .steps { grid-template-columns: repeat(4, 1fr); }
+  .steps { grid-template-columns: repeat(3, 1fr); }
   .team { grid-template-columns: repeat(4, 1fr); }
   .blog { grid-template-columns: repeat(3, 1fr); }
   .contact__grid { grid-template-columns: 1.15fr .85fr; gap: 2.5rem; }
@@ -1957,6 +1789,13 @@ html.has-reveal-anim .cards .reveal.is-visible:nth-child(6) { transition-delay: 
   .site-footer__grid { grid-template-columns: 1.4fr 1fr 1fr 1fr; }
   .brand__img { height: 52px; }
 
+}
+
+/* Los 5 pasos solo caben en una fila cuando el ancho util supera el
+   min-content de la tarjeta mas ancha (~176 px por palabra larga). Entre 900
+   y 1023 px se quedan en 3 columnas; si no, la rejilla desborda la pagina. */
+@media (min-width: 1024px) {
+  .steps { grid-template-columns: repeat(5, 1fr); }
 }
 
 /* ==========================================================================
@@ -1967,11 +1806,10 @@ html.has-reveal-anim .cards .reveal.is-visible:nth-child(6) { transition-delay: 
    horizontal de la cabecera.
    ========================================================================== */
 /* --- Escritorio: menú en horizontal ------------------------------------- */
-/* Menú horizontal: el grid "logo | menú | acciones" necesita ~1205 px de
-   contenido (logo 157 + 10 enlaces 789 + acciones 219 + separaciones). Por eso
-   solo se activa a partir de 1260 px y el contenedor de la cabecera se ensancha
-   a 1320 px para darle holgura; con 1140 px el menú desbordaba la página.
-   Por debajo se conserva la navegación móvil (hamburguesa). */
+/* Menú horizontal: el grid "logo | menú | acciones" necesita ~1085 px de
+   contenido (logo 157 + 7 enlaces 650 + acciones 219 + separaciones). Se activa
+   a partir de 1260 px y el contenedor de la cabecera se ensancha a 1320 px para
+   darle holgura. Por debajo se conserva la navegación móvil (hamburguesa). */
 @media (min-width: 1260px) {
   .site-header__inner {
     display: grid;
@@ -1996,10 +1834,10 @@ html.has-reveal-anim .cards .reveal.is-visible:nth-child(6) { transition-delay: 
   .primary-nav__list li + li { border-top: none; }
   .nav-link {
     display: inline-flex;
-    padding: .45rem .55rem;
-    font-size: .76rem;
-    letter-spacing: .02em;
-    border-radius: var(--radius-pill);
+    padding: .5rem .75rem;
+    font-size: .875rem;
+    letter-spacing: 0;
+    border-radius: var(--radius-sm);
     white-space: nowrap;
   }
   /* En horizontal el punto-guía estorba: se oculta */
@@ -2074,7 +1912,7 @@ html.has-reveal-anim .cards .reveal.is-visible:nth-child(6) { transition-delay: 
   border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 1.25rem 1.35rem;
   transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
 }
-.review-card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(11,46,69,.12); border-color: rgba(19,100,147,.26); }
+.review-card:hover { border-color: rgba(11,90,147,.40); box-shadow: 0 12px 30px rgba(15,23,42,.08); }
 .review-card__head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: .5rem; }
 .review-card__author { font-weight: 600; }
 .review-card__meta { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin-bottom: .4rem; }
@@ -2136,7 +1974,7 @@ html.has-reveal-anim .cards .reveal.is-visible:nth-child(6) { transition-delay: 
   --color-heading:      #8FC4E6;
   --color-heading-gray: #9DB4C4;
   --color-line:         #274052;
-  --color-primary-soft: #17303F;
+  --color-primary-soft: #1F2937;
   --color-link:         #A8D3EE;   /* enlaces y acentos sobre fondo oscuro */
   --color-link-strong:  #D6E8F4;
   --color-success:      #4CC79B;   /* verde legible sobre superficie oscura */
@@ -2162,9 +2000,9 @@ html.has-reveal-anim .cards .reveal.is-visible:nth-child(6) { transition-delay: 
 .theme-dark .search-panel__form { background: var(--color-bg-alt); }
 .theme-dark .nav-link { color: var(--color-ink); }
 .theme-dark .nav-link:hover,
-.theme-dark .nav-link.is-active { color: #fff; background: rgba(95,168,201,.26); }
+.theme-dark .nav-link.is-active { color: #fff; background: rgba(91,156,201,.26); }
 .theme-dark .tool-btn { background: var(--color-white); border-color: var(--color-line); color: var(--color-ink); }
-.theme-dark .tool-btn:hover { background: rgba(95,168,201,.24); border-color: rgba(95,168,201,.45); color: #fff; }
+.theme-dark .tool-btn:hover { background: rgba(91,156,201,.24); border-color: rgba(91,156,201,.45); color: #fff; }
 /* El CTA de la cabecera es un boton azul: sobre la cabecera oscura se pinta
    en blanco con texto azul, igual que en el hero y el pie (si no, el degradado
    azul se funde con el fondo y el boton parece "descuadrado"). */
@@ -2178,22 +2016,22 @@ html.has-reveal-anim .cards .reveal.is-visible:nth-child(6) { transition-delay: 
 .theme-dark .section--alt,
 .theme-dark .section--blue {
   background: linear-gradient(165deg, #122634 0%, #10202C 55%, #0E1B26 100%);
-  border-top-color: rgba(95,168,201,.16);
-  border-bottom-color: rgba(95,168,201,.16);
+  border-top-color: rgba(91,156,201,.16);
+  border-bottom-color: rgba(91,156,201,.16);
 }
 .theme-dark .section--alt::before,
 .theme-dark .section--blue::before {
   background-image:
-    radial-gradient(circle at 18% 22%, rgba(95,168,201,.30) 0 3px, transparent 4px),
-    radial-gradient(circle at 72% 40%, rgba(46,134,184,.34) 0 2px, transparent 3px),
-    radial-gradient(circle at 40% 78%, rgba(95,168,201,.20) 0 2px, transparent 3px),
-    radial-gradient(circle at 88% 82%, rgba(46,134,184,.28) 0 2px, transparent 3px);
+    radial-gradient(circle at 18% 22%, rgba(91,156,201,.30) 0 3px, transparent 4px),
+    radial-gradient(circle at 72% 40%, rgba(30,111,168,.34) 0 2px, transparent 3px),
+    radial-gradient(circle at 40% 78%, rgba(91,156,201,.20) 0 2px, transparent 3px),
+    radial-gradient(circle at 88% 82%, rgba(30,111,168,.28) 0 2px, transparent 3px);
 }
 .theme-dark .section--alt .eyebrow,
 .theme-dark .section--blue .eyebrow {
   color: var(--color-ice);
-  background: rgba(46,134,184,.20);
-  border-color: rgba(95,168,201,.35);
+  background: rgba(30,111,168,.20);
+  border-color: rgba(91,156,201,.35);
 }
 .theme-dark .section--alt .card,
 .theme-dark .section--alt .step,
@@ -2225,31 +2063,31 @@ html.has-reveal-anim .cards .reveal.is-visible:nth-child(6) { transition-delay: 
 .theme-dark .post__text,
 .theme-dark .section__lead,
 .theme-dark .step__text { color: var(--color-ink-soft); }
-.theme-dark .eyebrow { color: var(--color-ice); background: rgba(46,134,184,.20); }
+.theme-dark .eyebrow { color: var(--color-ice); background: rgba(30,111,168,.20); }
 .theme-dark .flow {
   background: rgba(18,38,52,.97);
-  border-color: rgba(95,168,201,.30);
+  border-color: rgba(91,156,201,.30);
 }
 .theme-dark .flow__signature {
-  background: rgba(46,134,184,.14);
-  border-color: rgba(95,168,201,.40);
+  background: rgba(30,111,168,.14);
+  border-color: rgba(91,156,201,.40);
 }
 .theme-dark input,
 .theme-dark textarea,
 .theme-dark select { background: var(--color-bg-alt); color: var(--color-ink); border-color: var(--color-line); }
 .theme-dark .btn--ghost { color: var(--color-ice); border-color: var(--color-line); }
-.theme-dark .btn--ghost:hover { background: rgba(46,134,184,.22); border-color: var(--color-accent); color: #fff; }
+.theme-dark .btn--ghost:hover { background: rgba(30,111,168,.22); border-color: var(--color-accent); color: #fff; }
 
 /* Chips y controles cuyo fondo NO es una variable (degradado o color fijo):
    en modo noche necesitan su propio ajuste para que el texto claro se lea. */
 .theme-dark .project__tag {
-  background: rgba(46,134,184,.20);
-  border: 1px solid rgba(95,168,201,.35);
+  background: rgba(30,111,168,.20);
+  border: 1px solid rgba(91,156,201,.35);
 }
 .theme-dark .captcha__challenge {
   color: var(--color-ice);
-  background: rgba(46,134,184,.20);
-  border-color: rgba(95,168,201,.35);
+  background: rgba(30,111,168,.20);
+  border-color: rgba(91,156,201,.35);
 }
 .theme-dark .flow__signature { color: var(--color-ice); }
 /* Los contenedores de icono llevan un degradado claro (--color-amber no cambia
@@ -2258,8 +2096,8 @@ html.has-reveal-anim .cards .reveal.is-visible:nth-child(6) { transition-delay: 
 .theme-dark .card__icon,
 .theme-dark .flow__step:not(.flow__step--sign) .flow__ico {
   color: var(--color-link);
-  background: rgba(46,134,184,.20);
-  border: 1px solid rgba(95,168,201,.35);
+  background: rgba(30,111,168,.20);
+  border: 1px solid rgba(91,156,201,.35);
 }
 .theme-dark .flow__live,
 .theme-dark .flow__stamp {
@@ -2270,6 +2108,26 @@ html.has-reveal-anim .cards .reveal.is-visible:nth-child(6) { transition-delay: 
 .theme-dark .accordion__icon::after { background: var(--color-ice); }
 .theme-dark .review-card--google { border-top-color: #4285F4; }
 .theme-dark .review-card--tp { border-left-color: #00875A; }
+
+/* Textos de marca sobre superficie oscura: el azul de marca (#0B5A93) apenas
+   alcanza 2:1 sobre el fondo noche, asi que cualquier elemento que lo use como
+   color de TEXTO se repinta con --color-link (azul hielo). */
+.theme-dark .eyebrow,
+.theme-dark .text-accent,
+.theme-dark .card__link,
+.theme-dark .project__link,
+.theme-dark .project__result,
+.theme-dark .value-card__title,
+.theme-dark .statbar .stat__num,
+.theme-dark .hero__title .text-accent,
+.theme-dark .hero__badge,
+.theme-dark .hero__note svg,
+.theme-dark .card__icon,
+.theme-dark .step__num { color: var(--color-link); }
+.theme-dark .btn--ghost { color: var(--color-link); border-color: var(--color-line); }
+.theme-dark .btn--ghost:hover { background: rgba(30,111,168,.22); border-color: var(--color-accent); color: #fff; }
+.theme-dark .captcha__refresh { background: var(--color-bg-alt); color: var(--color-link); }
+.theme-dark .captcha__refresh:hover { background: var(--color-link); color: var(--color-navy); }
 
 /* ==========================================================================
    ACCESIBILIDAD: foco visible y preferencia de movimiento reducido
@@ -2317,3 +2175,173 @@ html.has-reveal-anim .cards .reveal.is-visible:nth-child(6) { transition-delay: 
   text-align: center;
 }
 .maintenance-banner strong { color: #4D3A00; }
+
+/* ============================================================================
+   15. ADAPTACION AL DISENO DE REFERENCIA (base44)
+   ----------------------------------------------------------------------------
+   Capa final que alinea el sitio con la maqueta de referencia:
+   - Hero CLARO (blanco) con reticula de circuitos y halos azules suaves.
+   - Barra de cifras unica (.statbar) en vez de lista suelta.
+   - Tarjetas de valores (.value-card) para mision/vision/valores.
+   - Banda de llamada a la accion azul (.cta-band).
+   - Cabeceras de seccion alineadas a la izquierda.
+   Se mantienen intactos los ganchos del panel/API y el modo noche.
+   ========================================================================== */
+
+/* --- Reticula de circuitos (fondo decorativo del hero claro) --- */
+.circuit-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(217,217,217,.40) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(217,217,217,.40) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 10%, transparent 75%);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 10%, transparent 75%);
+}
+
+/* --- HERO claro --- */
+.hero {
+  padding: 7rem 0 4.5rem;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  isolation: isolate;
+}
+.hero::before { content: none; }
+.hero::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 40rem; height: 40rem;
+  right: -10rem; top: -14rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(11,90,147,.10), transparent 70%);
+  animation: none;
+}
+.hero__grid { align-items: center; }
+.hero__badge {
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+  border: 1px solid rgba(11,90,147,.20);
+  backdrop-filter: none;
+  font-weight: 500;
+}
+.hero__badge::before { background: var(--color-primary); animation: none; }
+.hero__title { color: var(--color-ink); font-weight: 800; letter-spacing: -.03em; line-height: 1.08; }
+/* La palabra destacada mantiene el azul de marca, sin degradado animado. */
+.hero__title .text-accent {
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  color: var(--color-primary);
+  animation: none;
+}
+.hero__subtitle { color: var(--color-ink-soft); font-size: 1.08rem; }
+.btn--outline-light {
+  background: transparent;
+  color: var(--color-ink);
+  border-color: var(--color-line);
+  backdrop-filter: none;
+}
+.btn--outline-light:hover { background: var(--color-bg-alt); border-color: var(--color-ink-soft); color: var(--color-ink); }
+.hero__scroll { color: var(--color-ink-soft); }
+.hero__scroll:hover { color: var(--color-primary); background: var(--color-primary-soft); }
+/* En el hero claro el boton principal recupera su azul de marca. */
+.hero .btn--primary { background: var(--color-primary); color: #fff; box-shadow: 0 1px 2px rgba(11,90,147,.25); }
+.hero .btn--primary:hover { background: var(--color-primary-dark); color: #fff; }
+.hero__media img { box-shadow: 0 18px 50px rgba(15,23,42,.14); border: 1px solid var(--color-line); }
+.hero__media:hover img { box-shadow: 0 24px 60px rgba(15,23,42,.18); }
+/* La tarjeta del agente IA pasa a superficie clara sobre fondo claro. */
+.flow { border: 1px solid var(--color-line); box-shadow: 0 18px 50px rgba(15,23,42,.12); }
+
+/* --- Barra de cifras (.statbar): fila unica con separadores --- */
+.statbar {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  margin-top: 3rem;
+  background: var(--color-line);
+  border: 1px solid var(--color-line);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.statbar > * {
+  background: var(--color-white);
+  padding: 1.5rem;
+  text-align: center;
+}
+.statbar .stat { align-items: center; }
+.statbar .stat__num { color: var(--color-primary); font-size: 2rem; }
+.statbar .stat__label { color: var(--color-ink-soft); }
+@media (min-width: 900px) { .statbar { grid-template-columns: repeat(4, 1fr); } }
+
+/* --- Tarjetas de valores / mision / vision --- */
+.value-card {
+  background: var(--color-white);
+  border: 1px solid var(--color-line);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: border-color var(--transition);
+}
+.value-card:hover { border-color: rgba(11,90,147,.40); }
+.value-card__title { font-size: 1rem; margin-bottom: .5rem; color: var(--color-primary); }
+.value-card p { margin: 0; color: var(--color-ink-soft); font-size: .95rem; }
+.values-grid { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+@media (min-width: 640px) { .values-grid { grid-template-columns: repeat(2, 1fr); } }
+
+/* --- Banda de llamada a la accion azul --- */
+.cta-band {
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 24px;
+  padding: 3rem 2rem;
+  text-align: center;
+}
+.cta-band h2 { color: #fff; font-size: clamp(1.5rem, 1.1rem + 2vw, 2rem); margin-bottom: .75rem; }
+.cta-band p { color: rgba(255,255,255,.88); max-width: 42rem; margin: 0 auto 1.75rem; }
+.cta-band .btn { margin: 0 .3rem; }
+.cta-band .btn--primary { background: #fff; color: var(--color-primary); }
+.cta-band .btn--primary:hover { background: var(--color-ice); color: var(--color-primary-dark); }
+.cta-band .btn--outline-light { background: transparent; color: #fff; border-color: rgba(255,255,255,.5); }
+.cta-band .btn--outline-light:hover { background: rgba(255,255,255,.14); border-color: #fff; color: #fff; }
+
+/* --- Cabecera de la pagina interna (empresa.html) mas sobria --- */
+.page-hero { background: var(--color-bg-alt); border-bottom: 1px solid var(--color-line); }
+.page-hero__lead { color: var(--color-ink-soft); }
+
+/* --- Ajustes responsive de la adaptacion (ganan a los @media anteriores) --- */
+.about__grid--split { gap: 2.5rem; }
+@media (min-width: 900px) {
+  .hero { padding: 6.5rem 0 4rem; }
+  .about__grid--split { grid-template-columns: 1.15fr .85fr; align-items: center; gap: 4rem; }
+}
+@media (max-width: 899px) {
+  .hero { padding: 5.5rem 0 3.5rem; }
+  .about__media { order: -1; }
+}
+
+/* --- Aviso bajo los botones del hero (icono + texto) --- */
+.hero__note {
+  display: flex; align-items: center; gap: .5rem;
+  margin: 1.25rem 0 0;
+  font-size: .9rem; color: var(--color-ink-soft);
+}
+.hero__note svg { color: var(--color-primary); flex: none; }
+
+/* --- Enlace "Saber mas" de las tarjetas de servicio (referencia) --- */
+.card__link {
+  display: inline-flex; align-items: center; gap: .35rem;
+  margin-top: auto; padding-top: .5rem;
+  font-size: .92rem; font-weight: 600; color: var(--color-primary);
+}
+.card__link:hover { text-decoration: none; gap: .55rem; }
+.card__link svg { transition: transform var(--transition); }
+
+/* --- Resultado destacado en las tarjetas de proyecto (referencia) --- */
+.project__result {
+  margin: .35rem 0 .85rem;
+  font-size: .88rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}

@@ -269,15 +269,18 @@
     return '<article class="card"><div class="card__icon" aria-hidden="true">' + ICONO_SVG + '</div>'
       + '<h3 class="card__title">' + esc(t(it.title)) + '</h3>'
       + '<p class="card__text">' + esc(t(it.body || it.subtitle)) + '</p>'
-      + '<a class="btn btn--ghost" href="#contacto" data-service="' + esc(it.title) + '">' + esc(t("Consultar")) + '</a></article>';
+      + '<a class="card__link" href="#contacto" data-service="' + esc(it.title) + '">' + esc(t("Saber más"))
+      + ' <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg></a></article>';
   }
   function itemProyecto(it) {
     var meta = it.meta || {};
     var img  = meta.image ? meta.image : "assets/img/proyecto-web.jpg";
+    var resultado = meta.resultado ? '<p class="project__result">' + esc(t(meta.resultado)) + '</p>' : '';
     return '<article class="project"><div class="project__media">' + fotoResponsive(img, t(it.title), 800, 500) + '</div>'
       + '<div class="project__body"><span class="project__tag">' + esc(t(it.subtitle)) + '</span>'
       + '<h3 class="project__title">' + esc(t(it.title)) + '</h3>'
       + '<p class="project__text">' + esc(t(it.body)) + '</p>'
+      + resultado
       + '<a class="project__link" href="#contacto">' + esc(t("Ver caso")) + ' &rarr;</a></div></article>';
   }
   /* Etiqueta de valoración reutilizable (estrellas + aria en el idioma activo). */
@@ -554,15 +557,32 @@
       var el = document.querySelector(sel);
       if (el) el.setAttribute(attr, value);
     }
+    // Metadato traducible: guarda el original en espanol y aplica el idioma
+    // activo, para que el panel pueda cambiarlo sin perder la traduccion.
+    function setMetaI18n(sel, value) {
+      if (!value) return;
+      var el = document.querySelector(sel);
+      if (!el) return;
+      el.setAttribute("data-i18n-content-es", value);
+      var idioma = idiomaActivo();
+      el.setAttribute("content", idioma === "es" ? value : (t(value) || value));
+    }
     var name = s.site_name || "";
     if (name) {
-      TITULO_ES = name + " | Servicios tecnológicos para empresas";
-      aplicarTitulo();
       setMeta('meta[data-seo-name]', "content", name);
+      // El titulo generico es el de la portada; empresa.html tiene el suyo.
+      if (document.documentElement.getAttribute("data-page") !== "empresa") {
+        TITULO_ES = name + " | Servicios tecnológicos para empresas";
+        aplicarTitulo();
+      }
     }
     if (s.meta_description) {
-      setMeta('meta[data-seo-desc]', "content", s.meta_description);
-      setMeta('meta[data-seo-ogdesc]', "content", s.meta_description);
+      // El ajuste del panel describe la portada; empresa.html tiene su propia
+      // descripcion y no debe quedar pisada por la generica.
+      if (document.documentElement.getAttribute("data-page") !== "empresa") {
+        setMetaI18n('meta[data-seo-desc]', s.meta_description);
+        setMetaI18n('meta[data-seo-ogdesc]', s.meta_description);
+      }
     }
     if (s.meta_keywords) {
       setMeta('meta[data-seo-keywords]', "content", s.meta_keywords);
@@ -940,16 +960,18 @@
     nums.forEach(function (n) { observer.observe(n); });
   }
 
-  /* Anima una cifra hasta el valor de data-count (y deja el "+" final).
+  /* Anima una cifra hasta el valor de data-count. El sufijo final se toma de
+     data-suffix ("+" por defecto; p. ej. "%" en la cifra de satisfaccion).
      Se usa al entrar en pantalla y también al aplicar valores de la BD. */
   function animarStat(el) {
     var target = parseInt(el.getAttribute("data-count"), 10) || 0;
-    if (prefersReduced) { el.textContent = target + "+"; return; }
+    var suffix = el.hasAttribute("data-suffix") ? el.getAttribute("data-suffix") : "+";
+    if (prefersReduced) { el.textContent = target + suffix; return; }
     var duration = 1200, start = null;
     requestAnimationFrame(function step(ts) {
       if (!start) start = ts;
       var p = Math.min((ts - start) / duration, 1);
-      el.textContent = Math.floor(p * target) + (p === 1 ? "+" : "");
+      el.textContent = Math.floor(p * target) + (p === 1 ? suffix : "");
       if (p < 1) requestAnimationFrame(step);
     });
   }
@@ -1549,6 +1571,81 @@
   var I18N = {
     es: {},
     en: {
+      // --- Rediseno de referencia (base44) ---
+      "Nosotros": "About us",
+      "Innovación tecnológica en Artemisa": "Technology innovation in Artemisa",
+      "Potenciamos tu infraestructura digital con tecnología que funciona": "We power your digital infrastructure with technology that works",
+      "infraestructura digital": "digital infrastructure",
+      "Soluciones informáticas, automatización con IA, redes y soporte para negocios en Cuba. Te acompañamos de la idea al resultado.": "IT solutions, AI automation, networks and support for businesses in Cuba. We accompany you from idea to result.",
+      "Ver servicios": "View services",
+      "Proyectos activos: 12 · Soporte en menos de 24 h": "Active projects: 12 · Support in under 24 h",
+      "clientes activos": "active clients",
+      "satisfacción": "satisfaction",
+      "Un aliado tecnológico con base en Artemisa": "A technology partner based in Artemisa",
+      "Confianza": "Trust",
+      "Innovación": "Innovation",
+      "Cercanía": "Closeness",
+      "Eficiencia": "Efficiency",
+      "Cumplimos lo que prometemos y cuidamos cada dato.": "We keep our promises and protect every piece of data.",
+      "Adoptamos IA y nuevas tecnologías con criterio.": "We adopt AI and new technologies with judgement.",
+      "Acompañamos a cada cliente como un socio.": "We support every client as a partner.",
+      "Entregamos resultados medibles y a tiempo.": "We deliver measurable results on time.",
+      "Soluciones completas para tu negocio": "Complete solutions for your business",
+      "Desde la infraestructura hasta la inteligencia artificial: cubrimos todo el ciclo tecnológico.": "From infrastructure to artificial intelligence: we cover the entire technology cycle.",
+      "Soporte y mantenimiento": "Support and maintenance",
+      "Soporte técnico preventivo y correctivo con tiempos de respuesta rápidos.": "Preventive and corrective technical support with fast response times.",
+      "Consultoría": "Consulting",
+      "Diagnóstico tecnológico y hoja de ruta clara para tu transformación digital.": "Technology assessment and a clear roadmap for your digital transformation.",
+      "Diseño e impresiones": "Design and printing",
+      "Identidad visual, material gráfico e impresión de gran formato.": "Visual identity, graphic material and large-format printing.",
+      "Instalación de redes": "Network installation",
+      "Cableado estructurado, Wi-Fi de alto rendimiento y configuración segura.": "Structured cabling, high-performance Wi-Fi and secure configuration.",
+      "Automatización con IA": "AI automation",
+      "Automatiza tareas repetitivas y toma mejores decisiones con inteligencia artificial.": "Automate repetitive tasks and make better decisions with artificial intelligence.",
+      "Soluciones informáticas": "IT solutions",
+      "Sistemas a medida, punto de venta y gestión empresarial adaptados a tu operación.": "Custom systems, point of sale and business management tailored to your operation.",
+      "Saber más": "Learn more",
+      "Resultados que respaldan nuestra palabra": "Results that back our word",
+      "Casos reales donde la tecnología marcó la diferencia.": "Real cases where technology made the difference.",
+      "Telecomunicaciones": "Telecommunications",
+      "Logística": "Logistics",
+      "Red corporativa multi-sede": "Multi-site corporate network",
+      "Cableado estructurado y Wi-Fi segmentado para una institución con tres sedes.": "Structured cabling and segmented Wi-Fi for an institution with three sites.",
+      "Cobertura del 99% y conectividad segura entre sedes.": "99% coverage and secure connectivity between sites.",
+      "Automatización de inventario con IA": "AI-driven inventory automation",
+      "Predicción de demanda y reabastecimiento automático para un distribuidor regional.": "Demand forecasting and automatic replenishment for a regional distributor.",
+      "Quiebres de stock reducidos en un 60% y rotación optimizada.": "Stockouts cut by 60% and optimised turnover.",
+      "Modernización de punto de venta": "Point-of-sale modernisation",
+      "Sistema integrado de ventas e inventario para una cadena de tiendas en Artemisa.": "Integrated sales and inventory system for a store chain in Artemisa.",
+      "Reducción del 40% en errores de inventario y facturación 3× más rápida.": "40% fewer inventory errors and 3× faster billing.",
+      "Un proceso claro, en cinco pasos": "A clear process, in five steps",
+      "Entendemos tu negocio y detectamos oportunidades.": "We understand your business and spot opportunities.",
+      "Diseñamos una solución clara con alcance y costo.": "We design a clear solution with scope and cost.",
+      "Ejecutamos la solución con calidad y a tiempo.": "We deliver the solution with quality and on time.",
+      "Capacitación": "Training",
+      "Tu equipo domina la nueva tecnología.": "Your team masters the new technology.",
+      "Acompañamiento continuo tras el lanzamiento.": "Ongoing support after launch.",
+      "Gerente · Tienda La Artemiseña": "Manager · La Artemiseña Store",
+      "C-ROTULUS transformó nuestra forma de vender. El sistema de punto de venta es rápido y el soporte siempre está disponible.": "C-ROTULUS transformed the way we sell. The point-of-sale system is fast and support is always available.",
+      "Sistema de ventas 3× más rápido": "3× faster sales system",
+      "Contáctenos": "Contact us",
+      "Cuéntanos qué necesitas y te contactamos": "Tell us what you need and we will get in touch",
+      "Responde en menos de 24 horas hábiles. Sin compromiso.": "We reply within 24 business hours. No obligation.",
+      "Atienden negocios fuera de Artemisa": "Do you serve businesses outside Artemisa",
+      "¿Atienden negocios fuera de Artemisa?": "Do you serve businesses outside Artemisa?",
+      "Sí. Tenemos base en Artemisa pero acompañamos clientes en todo el occidente de Cuba. Para proyectos lejanos combinamos visitas con soporte remoto.": "Yes. We are based in Artemisa but support clients across western Cuba. For distant projects we combine visits with remote support.",
+      "¿Cuánto tarda un proyecto típico?": "How long does a typical project take?",
+      "Depende del alcance. Una instalación de red o punto de venta suele tomar de 1 a 3 semanas; proyectos con automatización de IA entre 4 y 8 semanas. Siempre entregamos un cronograma en la propuesta.": "It depends on the scope. A network or point-of-sale installation usually takes 1 to 3 weeks; AI automation projects take 4 to 8 weeks. We always provide a schedule in the proposal.",
+      "¿Ofrecen soporte después de la entrega?": "Do you offer support after delivery?",
+      "Sí. Todos los proyectos incluyen un periodo de garantía y ofrecemos planes de soporte preventivo y correctivo con tiempos de respuesta definidos.": "Yes. All projects include a warranty period and we offer preventive and corrective support plans with defined response times.",
+      "¿Trabajan con equipos y software que ya tenemos?": "Do you work with the equipment and software we already have?",
+      "En la mayoría de los casos, sí. Hacemos un diagnóstico inicial para aprovechar tu infraestructura existente y recomendamos cambios solo cuando aportan valor real.": "In most cases, yes. We run an initial assessment to make the most of your existing infrastructure and only recommend changes that add real value.",
+      "¿Cómo solicito un presupuesto?": "How do I request a quote?",
+      "Completa el formulario de contacto o escríbenos por WhatsApp. Te respondemos en menos de 24 horas hábiles con una primera propuesta.": "Fill in the contact form or message us on WhatsApp. We reply within 24 business hours with a first proposal.",
+      "¿Sus soluciones funcionan sin conexión a Internet?": "Do your solutions work without an Internet connection?",
+      "Diseñamos sistemas que operan en redes locales sin depender de Internet, ideal para entornos con conectividad limitada. La nube se usa solo cuando aporta ventajas.": "We design systems that run on local networks without relying on the Internet, ideal for environments with limited connectivity. The cloud is used only when it adds value.",
+      "Desde 2017 acompañamos a pymes e instituciones cubanas a modernizar su infraestructura, automatizar procesos y tomar decisiones con datos.": "Since 2017 we have helped Cuban SMEs and institutions modernise their infrastructure, automate processes and make data-driven decisions.",
+
       // --- Navegación y cabecera ---
       "Inicio": "Home", "Empresa": "Company", "Servicios": "Services",
       "Proyectos": "Projects", "Proceso": "Process", "Testimonios": "Testimonials",
@@ -1753,6 +1850,8 @@
         "C-ROTULUS was born from a simple idea: technology should not be a headache. We started by solving small IT problems for nearby businesses and, over time, expanded our service to design, deploy and maintain our clients' entire digital infrastructure.",
       "Hoy trabajamos con pymes y autónomos que necesitan soluciones claras, seguras y sin sorpresas: desde una web que convierte visitas en clientes hasta la automatización de tareas con inteligencia artificial o la protección de su red.":
         "Today we work with SMEs and freelancers who need clear, secure solutions with no surprises: from a website that turns visits into customers to task automation with artificial intelligence or protecting their network.",
+      "Hoy trabajamos con pymes e instituciones que necesitan soluciones claras, seguras y sin sorpresas: desde la instalación de una red hasta la automatización de tareas con inteligencia artificial o la modernización de su punto de venta.":
+        "Today we work with SMEs and institutions that need clear, secure solutions with no surprises: from setting up a network to automating tasks with artificial intelligence or modernising their point of sale.",
       "Nuestros valores": "Our values",
       "Cercanía y transparencia": "Closeness and transparency",
       "Compromiso con los plazos": "Commitment to deadlines",
@@ -1761,9 +1860,13 @@
       "Misión": "Mission",
       "Aportar tecnología fiable y comprensible que permita a las empresas trabajar mejor, con más seguridad y menos costes ocultos.":
         "Provide reliable, understandable technology that lets companies work better, with more security and fewer hidden costs.",
+      "Proveer soluciones informáticas confiables y accesibles que impulsen la productividad y la competitividad de los negocios en Cuba.":
+        "Provide reliable, accessible IT solutions that boost the productivity and competitiveness of businesses in Cuba.",
       "Visión": "Vision",
       "Ser el socio tecnológico de referencia de las pymes de nuestro entorno, reconocidos por la cercanía y la calidad del servicio.":
         "To be the benchmark technology partner for SMEs in our area, known for our closeness and service quality.",
+      "Ser el aliado tecnológico de referencia en el occidente del país, reconocido por nuestra calidad, cercanía y compromiso con los resultados.":
+        "To be the benchmark technology partner in western Cuba, known for our quality, closeness and commitment to results.",
       "¿Hablamos de tu proyecto?": "Shall we talk about your project?",
       "Cuéntanos qué necesitas y te propondremos la mejor solución, sin compromiso.":
         "Tell us what you need and we will propose the best solution, with no obligation.",
@@ -1952,6 +2055,18 @@
         "C-ROTULUS S.U.R.L. | Technology services for businesses",
       "Empresa | C-ROTULUS S.U.R.L. — Sobre nosotros y equipo":
         "Company | C-ROTULUS S.U.R.L. — About us and team",
+      // Metadatos SEO (etiquetas <meta>): se traducen con data-i18n-content.
+      "Empresa | C-ROTULUS S.U.R.L.": "Company | C-ROTULUS S.U.R.L.",
+      "C-ROTULUS S.U.R.L. desarrolla software web, automatización con IA, redes, ciberseguridad y soporte técnico para empresas. Soluciones claras, seguras y a medida.":
+        "C-ROTULUS S.U.R.L. develops web software, AI automation, networks, cybersecurity and technical support for businesses. Clear, secure and tailored solutions.",
+      "Software web, automatización con IA, redes, ciberseguridad y soporte técnico. Tecnología clara que impulsa tu negocio.":
+        "Web software, AI automation, networks, cybersecurity and technical support. Clear technology that boosts your business.",
+      "Conoce a C-ROTULUS S.U.R.L.: nuestra historia, misión, visión y valores, y el equipo de profesionales que diseña y mantiene la tecnología de tu empresa.":
+        "Meet C-ROTULUS S.U.R.L.: our history, mission, vision and values, and the team of professionals who design and maintain your company's technology.",
+      "Nuestra historia, misión, visión, valores y el equipo detrás de C-ROTULUS.":
+        "Our history, mission, vision, values and the team behind C-ROTULUS.",
+      "Servicios tecnológicos para pymes y autónomos: desarrollo web, automatización e IA, redes, soporte y mantenimiento.":
+        "Technology services for SMEs and freelancers: web development, AI automation, networks, support and maintenance.",
       // --- Textos editables desde el panel (Ajustes - Textos). Si el propietario
       //     los cambia, hay que actualizar su clave aqui o se pierde la traduccion.
       "Empresa de servicios tecnológicos para negocios": "Technology services company for businesses",
@@ -1981,6 +2096,81 @@
         "A highly qualified professional team. These are the people who will assist you and work on your project.",
     },
     pt: {
+      // --- Rediseno de referencia (base44) ---
+      "Nosotros": "Sobre nós",
+      "Innovación tecnológica en Artemisa": "Inovação tecnológica em Artemisa",
+      "Potenciamos tu infraestructura digital con tecnología que funciona": "Impulsionamos a sua infraestrutura digital com tecnologia que funciona",
+      "infraestructura digital": "infraestrutura digital",
+      "Soluciones informáticas, automatización con IA, redes y soporte para negocios en Cuba. Te acompañamos de la idea al resultado.": "Soluções informáticas, automação com IA, redes e suporte para negócios em Cuba. Acompanhamos da ideia ao resultado.",
+      "Ver servicios": "Ver serviços",
+      "Proyectos activos: 12 · Soporte en menos de 24 h": "Projetos ativos: 12 · Suporte em menos de 24 h",
+      "clientes activos": "clientes ativos",
+      "satisfacción": "satisfação",
+      "Un aliado tecnológico con base en Artemisa": "Um parceiro tecnológico com base em Artemisa",
+      "Confianza": "Confiança",
+      "Innovación": "Inovação",
+      "Cercanía": "Proximidade",
+      "Eficiencia": "Eficiência",
+      "Cumplimos lo que prometemos y cuidamos cada dato.": "Cumprimos o que prometemos e cuidamos de cada dado.",
+      "Adoptamos IA y nuevas tecnologías con criterio.": "Adotamos IA e novas tecnologias com critério.",
+      "Acompañamos a cada cliente como un socio.": "Acompanhamos cada cliente como um parceiro.",
+      "Entregamos resultados medibles y a tiempo.": "Entregamos resultados mensuráveis e a tempo.",
+      "Soluciones completas para tu negocio": "Soluções completas para o seu negócio",
+      "Desde la infraestructura hasta la inteligencia artificial: cubrimos todo el ciclo tecnológico.": "Da infraestrutura à inteligência artificial: cobrimos todo o ciclo tecnológico.",
+      "Soporte y mantenimiento": "Suporte e manutenção",
+      "Soporte técnico preventivo y correctivo con tiempos de respuesta rápidos.": "Suporte técnico preventivo e corretivo com tempos de resposta rápidos.",
+      "Consultoría": "Consultoria",
+      "Diagnóstico tecnológico y hoja de ruta clara para tu transformación digital.": "Diagnóstico tecnológico e um roteiro claro para a sua transformação digital.",
+      "Diseño e impresiones": "Design e impressões",
+      "Identidad visual, material gráfico e impresión de gran formato.": "Identidade visual, material gráfico e impressão de grande formato.",
+      "Instalación de redes": "Instalação de redes",
+      "Cableado estructurado, Wi-Fi de alto rendimiento y configuración segura.": "Cabeamento estruturado, Wi-Fi de alto desempenho e configuração segura.",
+      "Automatización con IA": "Automação com IA",
+      "Automatiza tareas repetitivas y toma mejores decisiones con inteligencia artificial.": "Automatize tarefas repetitivas e tome melhores decisões com inteligência artificial.",
+      "Soluciones informáticas": "Soluções informáticas",
+      "Sistemas a medida, punto de venta y gestión empresarial adaptados a tu operación.": "Sistemas à medida, ponto de venda e gestão empresarial adaptados à sua operação.",
+      "Saber más": "Saber mais",
+      "Resultados que respaldan nuestra palabra": "Resultados que sustentam a nossa palavra",
+      "Casos reales donde la tecnología marcó la diferencia.": "Casos reais em que a tecnologia fez a diferença.",
+      "Telecomunicaciones": "Telecomunicações",
+      "Logística": "Logística",
+      "Red corporativa multi-sede": "Rede corporativa multi-site",
+      "Cableado estructurado y Wi-Fi segmentado para una institución con tres sedes.": "Cabeamento estruturado e Wi-Fi segmentado para uma instituição com três unidades.",
+      "Cobertura del 99% y conectividad segura entre sedes.": "Cobertura de 99% e conectividade segura entre unidades.",
+      "Automatización de inventario con IA": "Automação de inventário com IA",
+      "Predicción de demanda y reabastecimiento automático para un distribuidor regional.": "Previsão de procura e reabastecimento automático para um distribuidor regional.",
+      "Quiebres de stock reducidos en un 60% y rotación optimizada.": "Rupturas de stock reduzidas em 60% e rotação otimizada.",
+      "Modernización de punto de venta": "Modernização do ponto de venda",
+      "Sistema integrado de ventas e inventario para una cadena de tiendas en Artemisa.": "Sistema integrado de vendas e inventário para uma cadeia de lojas em Artemisa.",
+      "Reducción del 40% en errores de inventario y facturación 3× más rápida.": "Redução de 40% nos erros de inventário e faturação 3× mais rápida.",
+      "Un proceso claro, en cinco pasos": "Um processo claro, em cinco passos",
+      "Entendemos tu negocio y detectamos oportunidades.": "Compreendemos o seu negócio e identificamos oportunidades.",
+      "Diseñamos una solución clara con alcance y costo.": "Desenhamos uma solução clara com âmbito e custo.",
+      "Ejecutamos la solución con calidad y a tiempo.": "Executamos a solução com qualidade e a tempo.",
+      "Capacitación": "Formação",
+      "Tu equipo domina la nueva tecnología.": "A sua equipa domina a nova tecnologia.",
+      "Acompañamiento continuo tras el lanzamiento.": "Acompanhamento contínuo após o lançamento.",
+      "Gerente · Tienda La Artemiseña": "Gerente · Loja La Artemiseña",
+      "C-ROTULUS transformó nuestra forma de vender. El sistema de punto de venta es rápido y el soporte siempre está disponible.": "A C-ROTULUS transformou a nossa forma de vender. O sistema de ponto de venda é rápido e o suporte está sempre disponível.",
+      "Sistema de ventas 3× más rápido": "Sistema de vendas 3× mais rápido",
+      "Contáctenos": "Contacte-nos",
+      "Cuéntanos qué necesitas y te contactamos": "Diga-nos o que precisa e contactamos consigo",
+      "Responde en menos de 24 horas hábiles. Sin compromiso.": "Responde em menos de 24 horas úteis. Sem compromisso.",
+      "Atienden negocios fuera de Artemisa": "Atendem negócios fora de Artemisa",
+      "¿Atienden negocios fuera de Artemisa?": "Atendem negócios fora de Artemisa?",
+      "Sí. Tenemos base en Artemisa pero acompañamos clientes en todo el occidente de Cuba. Para proyectos lejanos combinamos visitas con soporte remoto.": "Sim. Estamos sediados em Artemisa mas acompanhamos clientes em todo o ocidente de Cuba. Para projetos distantes combinamos visitas com suporte remoto.",
+      "¿Cuánto tarda un proyecto típico?": "Quanto tempo demora um projeto típico?",
+      "Depende del alcance. Una instalación de red o punto de venta suele tomar de 1 a 3 semanas; proyectos con automatización de IA entre 4 y 8 semanas. Siempre entregamos un cronograma en la propuesta.": "Depende do âmbito. Uma instalação de rede ou ponto de venda demora normalmente 1 a 3 semanas; projetos com automação de IA entre 4 e 8 semanas. Entregamos sempre um cronograma na proposta.",
+      "¿Ofrecen soporte después de la entrega?": "Oferecem suporte após a entrega?",
+      "Sí. Todos los proyectos incluyen un periodo de garantía y ofrecemos planes de soporte preventivo y correctivo con tiempos de respuesta definidos.": "Sim. Todos os projetos incluem um período de garantia e oferecemos planos de suporte preventivo e corretivo com tempos de resposta definidos.",
+      "¿Trabajan con equipos y software que ya tenemos?": "Trabalham com os equipamentos e software que já temos?",
+      "En la mayoría de los casos, sí. Hacemos un diagnóstico inicial para aprovechar tu infraestructura existente y recomendamos cambios solo cuando aportan valor real.": "Na maioria dos casos, sim. Fazemos um diagnóstico inicial para aproveitar a sua infraestrutura existente e recomendamos mudanças apenas quando trazem valor real.",
+      "¿Cómo solicito un presupuesto?": "Como solicito um orçamento?",
+      "Completa el formulario de contacto o escríbenos por WhatsApp. Te respondemos en menos de 24 horas hábiles con una primera propuesta.": "Preencha o formulário de contacto ou escreva-nos por WhatsApp. Respondemos em menos de 24 horas úteis com uma primeira proposta.",
+      "¿Sus soluciones funcionan sin conexión a Internet?": "As vossas soluções funcionam sem ligação à Internet?",
+      "Diseñamos sistemas que operan en redes locales sin depender de Internet, ideal para entornos con conectividad limitada. La nube se usa solo cuando aporta ventajas.": "Desenhamos sistemas que operam em redes locais sem depender da Internet, ideal para ambientes com conectividade limitada. A nuvem é usada apenas quando traz vantagens.",
+      "Desde 2017 acompañamos a pymes e instituciones cubanas a modernizar su infraestructura, automatizar procesos y tomar decisiones con datos.": "Desde 2017 ajudamos PME e instituições cubanas a modernizar a sua infraestrutura, automatizar processos e tomar decisões com dados.",
+
       // --- Navegação e cabeçalho ---
       "Inicio": "Início", "Empresa": "Empresa", "Servicios": "Serviços",
       "Proyectos": "Projetos", "Proceso": "Processo", "Testimonios": "Depoimentos",
@@ -2185,6 +2375,8 @@
         "A C-ROTULUS nasceu de uma ideia simples: a tecnologia não devia ser uma dor de cabeça. Começámos por resolver pequenos problemas informáticos para negócios da nossa zona e, com o tempo, ampliámos o serviço até desenhar, implementar e manter toda a infraestrutura digital dos nossos clientes.",
       "Hoy trabajamos con pymes y autónomos que necesitan soluciones claras, seguras y sin sorpresas: desde una web que convierte visitas en clientes hasta la automatización de tareas con inteligencia artificial o la protección de su red.":
         "Hoje trabalhamos com PMEs e autónomos que precisam de soluções claras, seguras e sem surpresas: desde um site que converte visitas em clientes até à automação de tarefas com inteligência artificial ou à proteção da sua rede.",
+      "Hoy trabajamos con pymes e instituciones que necesitan soluciones claras, seguras y sin sorpresas: desde la instalación de una red hasta la automatización de tareas con inteligencia artificial o la modernización de su punto de venta.":
+        "Hoje trabalhamos com PMEs e instituições que precisam de soluções claras, seguras e sem surpresas: desde a instalação de uma rede até à automação de tarefas com inteligência artificial ou à modernização do seu ponto de venda.",
       "Nuestros valores": "Os nossos valores",
       "Cercanía y transparencia": "Proximidade e transparência",
       "Compromiso con los plazos": "Compromisso com os prazos",
@@ -2193,9 +2385,13 @@
       "Misión": "Missão",
       "Aportar tecnología fiable y comprensible que permita a las empresas trabajar mejor, con más seguridad y menos costes ocultos.":
         "Fornecer tecnologia fiável e compreensível que permita às empresas trabalhar melhor, com mais segurança e menos custos ocultos.",
+      "Proveer soluciones informáticas confiables y accesibles que impulsen la productividad y la competitividad de los negocios en Cuba.":
+        "Fornecer soluções informáticas fiáveis e acessíveis que impulsionem a produtividade e a competitividade dos negócios em Cuba.",
       "Visión": "Visão",
       "Ser el socio tecnológico de referencia de las pymes de nuestro entorno, reconocidos por la cercanía y la calidad del servicio.":
         "Ser o parceiro tecnológico de referência das PMEs da nossa zona, reconhecidos pela proximidade e pela qualidade do serviço.",
+      "Ser el aliado tecnológico de referencia en el occidente del país, reconocido por nuestra calidad, cercanía y compromiso con los resultados.":
+        "Ser o parceiro tecnológico de referência no ocidente de Cuba, reconhecido pela nossa qualidade, proximidade e compromisso com os resultados.",
       "¿Hablamos de tu proyecto?": "Falamos do seu projeto?",
       "Cuéntanos qué necesitas y te propondremos la mejor solución, sin compromiso.":
         "Diga-nos o que precisa e proporemos a melhor solução, sem compromisso.",
@@ -2384,6 +2580,18 @@
         "C-ROTULUS S.U.R.L. | Serviços tecnológicos para empresas",
       "Empresa | C-ROTULUS S.U.R.L. — Sobre nosotros y equipo":
         "Empresa | C-ROTULUS S.U.R.L. — Sobre nós e equipa",
+      // Metadatos SEO (etiquetas <meta>): se traducen con data-i18n-content.
+      "Empresa | C-ROTULUS S.U.R.L.": "Empresa | C-ROTULUS S.U.R.L.",
+      "C-ROTULUS S.U.R.L. desarrolla software web, automatización con IA, redes, ciberseguridad y soporte técnico para empresas. Soluciones claras, seguras y a medida.":
+        "A C-ROTULUS S.U.R.L. desenvolve software web, automação com IA, redes, cibersegurança e suporte técnico para empresas. Soluções claras, seguras e à medida.",
+      "Software web, automatización con IA, redes, ciberseguridad y soporte técnico. Tecnología clara que impulsa tu negocio.":
+        "Software web, automação com IA, redes, cibersegurança e suporte técnico. Tecnologia clara que impulsiona o seu negócio.",
+      "Conoce a C-ROTULUS S.U.R.L.: nuestra historia, misión, visión y valores, y el equipo de profesionales que diseña y mantiene la tecnología de tu empresa.":
+        "Conheça a C-ROTULUS S.U.R.L.: a nossa história, missão, visão e valores, e a equipa de profissionais que concebe e mantém a tecnologia da sua empresa.",
+      "Nuestra historia, misión, visión, valores y el equipo detrás de C-ROTULUS.":
+        "A nossa história, missão, visão, valores e a equipa por trás da C-ROTULUS.",
+      "Servicios tecnológicos para pymes y autónomos: desarrollo web, automatización e IA, redes, soporte y mantenimiento.":
+        "Serviços tecnológicos para PMEs e profissionais independentes: desenvolvimento web, automação com IA, redes, suporte e manutenção.",
       "Empresa de servicios tecnológicos para negocios": "Empresa de serviços tecnológicos para negócios",
       "Innovación a tu alcance, tecnología a tu servicio": "Inovação ao seu alcance, tecnologia ao seu serviço",
       "Ayudamos a negocios en el proceso de transformación digital con soluciones informáticas a la medida, automatización con IA, redes y y comunicaciones, servicios técnicos a equipos, consultoría, diseño e impresiones y soporte técnico 24/7.":
@@ -2468,7 +2676,8 @@
     ["data-i18n-aria", "aria-label"],
     ["data-i18n-ph", "placeholder"],
     ["data-i18n-alt", "alt"],
-    ["data-i18n-title", "title"]
+    ["data-i18n-title", "title"],
+    ["data-i18n-content", "content"]
   ];
 
   var I18N_IGNORAR = { SCRIPT: 1, STYLE: 1, NOSCRIPT: 1 };

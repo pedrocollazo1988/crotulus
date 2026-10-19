@@ -17,46 +17,46 @@ const DEFAULTS: Dict = {
   og_image: "assets/img/og-image.jpg",
 
   // Portada (hero)
-  hero_badge: "Agencia de servicios tecnológicos · Pymes y autónomos",
-  hero_title: "Tecnología clara que hace crecer tu negocio",
-  hero_title_accent: "hace crecer",
+  hero_badge: "Innovación tecnológica en Artemisa",
+  hero_title: "Potenciamos tu infraestructura digital con tecnología que funciona",
+  hero_title_accent: "infraestructura digital",
   hero_subtitle:
-    "Ayudamos a pymes y autónomos a digitalizarse con desarrollo web, automatización e IA, redes seguras y soporte continuo. Menos problemas, más tiempo para lo que importa.",
-  hero_cta1_label: "Solicitar servicios",
-  hero_cta2_label: "Escríbenos por WhatsApp",
+    "Soluciones informáticas, automatización con IA, redes y soporte para negocios en Cuba. Te acompañamos de la idea al resultado.",
+  hero_cta1_label: "Solicitar presupuesto",
+  hero_cta2_label: "Ver servicios",
   hero_image: "assets/img/hero-tech.jpg",
   hero_image_alt:
     "Equipo de C-ROTULUS trabajando con ordenadores en una oficina",
 
   // Cifras
-  stat1_value: "12", stat1_label: "años de experiencia",
-  stat2_value: "180", stat2_label: "clientes satisfechos",
-  stat3_value: "350", stat3_label: "proyectos entregados",
-  stat4_value: "24", stat4_label: "horas de respuesta",
+  stat1_value: "8", stat1_label: "años de experiencia",
+  stat2_value: "120", stat2_label: "proyectos entregados",
+  stat3_value: "80", stat3_label: "clientes activos",
+  stat4_value: "98", stat4_label: "satisfacción",
 
   // Cabeceras de seccion
   about_eyebrow: "Sobre nosotros",
-  about_title: "Un equipo cercano con soluciones serias",
+  about_title: "Un aliado tecnológico con base en Artemisa",
   about_lead:
-    "Desde [AÑO DE FUNDACIÓN] acompañamos a empresas en su transformación digital, combinando tecnología y trato humano.",
+    "Desde 2017 acompañamos a pymes e instituciones cubanas a modernizar su infraestructura, automatizar procesos y tomar decisiones con datos.",
   team_eyebrow: "Equipo",
   team_title: "Las personas detrás de C-ROTULUS",
   team_lead:
     "Un equipo pequeño, cercano y especializado. Estas son las personas que te atenderán y trabajarán en tu proyecto.",
   services_eyebrow: "Servicios",
-  services_title: "Todo lo que tu empresa necesita, en un solo equipo",
+  services_title: "Soluciones completas para tu negocio",
   services_lead:
-    "Servicios de ejemplo fáciles de editar. Cada tarjeta incluye icono, descripción, contenido y botón de consulta.",
+    "Desde la infraestructura hasta la inteligencia artificial: cubrimos todo el ciclo tecnológico.",
   projects_eyebrow: "Proyectos",
-  projects_title: "Trabajos que ya están dando resultados",
+  projects_title: "Resultados que respaldan nuestra palabra",
   projects_lead:
-    "Una muestra de proyectos de ejemplo. Sustituye las imágenes, los textos y las etiquetas por tus casos reales.",
+    "Casos reales donde la tecnología marcó la diferencia.",
   blog_eyebrow: "Blog",
   blog_title: "Ideas y consejos para tu negocio",
   blog_lead:
     "Publicamos guías sencillas sobre tecnología, seguridad y productividad. Sin tecnicismos innecesarios.",
   process_eyebrow: "Cómo trabajamos",
-  process_title: "Un proceso simple, en cuatro pasos",
+  process_title: "Un proceso claro, en cinco pasos",
   process_lead:
     "Sin sorpresas: te acompañamos desde la primera conversación hasta el soporte del día a día.",
   testimonials_eyebrow: "Testimonios",
@@ -70,10 +70,10 @@ const DEFAULTS: Dict = {
   trustpilot_title: "Lo que dicen en Trustpilot",
   trustpilot_lead:
     "Opiniones reales de clientes publicadas en nuestra ficha de Trustpilot.",
-  contact_eyebrow: "Contacto",
-  contact_title: "Cuéntanos tu proyecto",
+  contact_eyebrow: "Contáctenos",
+  contact_title: "Cuéntanos qué necesitas y te contactamos",
   contact_lead:
-    "Rellena el formulario y te respondemos en menos de 24 horas laborables.",
+    "Responde en menos de 24 horas hábiles. Sin compromiso.",
   location_eyebrow: "Ubicación",
   location_title: "Dónde estamos y cómo contactarnos",
   location_lead:

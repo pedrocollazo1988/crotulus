@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-page="empresa">
 <head>
   <!-- ============================================================
        C-ROTULUS S.U.R.L. - Página "Empresa"
@@ -20,7 +20,7 @@
   <!-- ============ SEO BÁSICO ============
        EDITAR: sustituye "www.c-rotulus.example" por tu dominio real. -->
   <title>Empresa | C-ROTULUS S.U.R.L. — Sobre nosotros y equipo</title>
-  <meta name="description" content="Conoce a C-ROTULUS S.U.R.L.: nuestra historia, misión, visión y valores, y el equipo de profesionales que diseña y mantiene la tecnología de tu empresa." data-seo-desc>
+  <meta name="description" content="Conoce a C-ROTULUS S.U.R.L.: nuestra historia, misión, visión y valores, y el equipo de profesionales que diseña y mantiene la tecnología de tu empresa." data-seo-desc data-i18n-content>
   <meta name="keywords" content="C-ROTULUS, empresa tecnológica, sobre nosotros, equipo, misión, visión, valores" data-seo-keywords>
   <link rel="canonical" href="https://www.c-rotulus.example/empresa.html">
   <link rel="sitemap" type="application/xml" title="Sitemap" href="sitemap.xml" data-i18n-title>
@@ -29,8 +29,8 @@
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_ES">
   <meta property="og:site_name" content="C-ROTULUS S.U.R.L." data-seo-name>
-  <meta property="og:title" content="Empresa | C-ROTULUS S.U.R.L." data-seo-title>
-  <meta property="og:description" content="Nuestra historia, misión, visión, valores y el equipo detrás de C-ROTULUS." data-seo-ogdesc>
+  <meta property="og:title" content="Empresa | C-ROTULUS S.U.R.L." data-seo-title data-i18n-content>
+  <meta property="og:description" content="Nuestra historia, misión, visión, valores y el equipo detrás de C-ROTULUS." data-seo-ogdesc data-i18n-content>
   <meta property="og:url" content="https://www.c-rotulus.example/empresa.html" data-seo-url>
   <meta property="og:image" content="https://www.c-rotulus.example/assets/img/og-image.jpg" data-seo-image>
   <meta property="og:image:width" content="1200">
@@ -48,7 +48,7 @@
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Inter-latin.woff2" crossorigin>
 
   <!-- ============ ESTILOS ============ -->
-  <link rel="stylesheet" href="css/styles.min.css?v=20261031c">
+  <link rel="stylesheet" href="css/styles.min.css?v=20261032b">
 
   <!-- ============ DATOS ESTRUCTURADOS: Organización ============
        EDITAR: teléfono, correo, dirección y redes. -->
@@ -208,28 +208,41 @@
       <div class="container">
         <header class="section__head">
           <p class="eyebrow" data-site="about_eyebrow">Sobre nosotros</p>
-          <h2 class="section__title" data-site="about_title">Un equipo cercano con soluciones serias</h2>
-          <p class="section__lead" data-site="about_lead">Desde [AÑO DE FUNDACIÓN] acompañamos a empresas en su transformación digital, combinando tecnología y trato humano.</p>
+          <h2 class="section__title" data-site="about_title">Un aliado tecnológico con base en Artemisa</h2>
+          <p class="section__lead" data-site="about_lead">Desde 2017 acompañamos a pymes e instituciones cubanas a modernizar su infraestructura, automatizar procesos y tomar decisiones con datos.</p>
         </header>
 
-        <div class="about__grid">
+        <div class="about__grid about__grid--split">
+          <div>
+            <div class="about__body">
+              <!-- Historia. El panel puede sobrescribir este texto con la clave
+                   "about_body" (Ajustes · Textos). -->
+              <h3 class="about__subtitle">Nuestra historia</h3>
+              <p data-site="about_body">C-ROTULUS nació con una idea sencilla: la tecnología no debería ser un dolor de cabeza. Empezamos resolviendo pequeños problemas informáticos para negocios de nuestro entorno y, con el tiempo, ampliamos el servicio hasta diseñar, desplegar y mantener la infraestructura digital completa de nuestros clientes.</p>
+              <p>Hoy trabajamos con pymes e instituciones que necesitan soluciones claras, seguras y sin sorpresas: desde la instalación de una red hasta la automatización de tareas con inteligencia artificial o la modernización de su punto de venta.</p>
+            </div>
+
+            <div class="values-grid">
+              <article class="value-card">
+                <h3 class="value-card__title">Confianza</h3>
+                <p>Cumplimos lo que prometemos y cuidamos cada dato.</p>
+              </article>
+              <article class="value-card">
+                <h3 class="value-card__title">Innovación</h3>
+                <p>Adoptamos IA y nuevas tecnologías con criterio.</p>
+              </article>
+              <article class="value-card">
+                <h3 class="value-card__title">Cercanía</h3>
+                <p>Acompañamos a cada cliente como un socio.</p>
+              </article>
+              <article class="value-card">
+                <h3 class="value-card__title">Eficiencia</h3>
+                <p>Entregamos resultados medibles y a tiempo.</p>
+              </article>
+            </div>
+          </div>
           <div class="about__media">
             <img src="assets/img/equipo.svg" alt="Equipo de profesionales de C-ROTULUS trabajando en un proyecto" data-site-image="about_image" data-site-alt="about_image_alt" width="640" height="420" loading="lazy" decoding="async" data-i18n-alt>
-          </div>
-          <div class="about__body">
-            <!-- Historia. El panel puede sobrescribir este texto con la clave
-                 "about_body" (Ajustes · Textos). -->
-            <h3 class="about__subtitle">Nuestra historia</h3>
-            <p data-site="about_body">C-ROTULUS nació con una idea sencilla: la tecnología no debería ser un dolor de cabeza. Empezamos resolviendo pequeños problemas informáticos para negocios de nuestro entorno y, con el tiempo, ampliamos el servicio hasta diseñar, desplegar y mantener la infraestructura digital completa de nuestros clientes.</p>
-            <p>Hoy trabajamos con pymes y autónomos que necesitan soluciones claras, seguras y sin sorpresas: desde una web que convierte visitas en clientes hasta la automatización de tareas con inteligencia artificial o la protección de su red.</p>
-
-            <h3 class="about__subtitle">Nuestros valores</h3>
-            <ul class="values">
-              <li class="value"><span class="value__icon" aria-hidden="true">&#10003;</span> Cercanía y transparencia</li>
-              <li class="value"><span class="value__icon" aria-hidden="true">&#10003;</span> Compromiso con los plazos</li>
-              <li class="value"><span class="value__icon" aria-hidden="true">&#10003;</span> Calidad y seguridad</li>
-              <li class="value"><span class="value__icon" aria-hidden="true">&#10003;</span> Mejora continua</li>
-            </ul>
           </div>
         </div>
 
@@ -237,11 +250,11 @@
         <div class="mv-grid">
           <article class="mv-card">
             <h3 class="mv-card__title">Misión</h3>
-            <p>Aportar tecnología fiable y comprensible que permita a las empresas trabajar mejor, con más seguridad y menos costes ocultos.</p>
+            <p>Proveer soluciones informáticas confiables y accesibles que impulsen la productividad y la competitividad de los negocios en Cuba.</p>
           </article>
           <article class="mv-card">
             <h3 class="mv-card__title">Visión</h3>
-            <p>Ser el socio tecnológico de referencia de las pymes de nuestro entorno, reconocidos por la cercanía y la calidad del servicio.</p>
+            <p>Ser el aliado tecnológico de referencia en el occidente del país, reconocido por nuestra calidad, cercanía y compromiso con los resultados.</p>
           </article>
         </div>
       </div>
@@ -313,16 +326,16 @@
     </section>
 
     <!-- ==================== LLAMADA A LA ACCIÓN ==================== -->
-    <section class="section section--blue page-cta" id="empresa-cta">
+    <section class="section" id="empresa-cta">
       <div class="container">
-        <h2 class="section__title">¿Hablamos de tu proyecto?</h2>
-        <p class="section__lead">
-          Cuéntanos qué necesitas y te propondremos la mejor solución, sin compromiso.
-        </p>
-        <p>
-          <a class="btn btn--primary" href="index.html#contacto">Solicitar presupuesto</a>
-          <a class="btn btn--outline-light" href="https://wa.me/5359888821?text=Hola%20C-ROTULUS%2C%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n%20sobre%20sus%20servicios%20tecnol%C3%B3gicos." data-whatsapp-link target="_blank" rel="noopener">Escríbenos por WhatsApp</a>
-        </p>
+        <div class="cta-band">
+          <h2>¿Hablamos de tu proyecto?</h2>
+          <p>Cuéntanos qué necesitas y te propondremos la mejor solución, sin compromiso.</p>
+          <p>
+            <a class="btn btn--primary" href="index.html#contacto">Solicitar presupuesto</a>
+            <a class="btn btn--outline-light" href="index.html#servicios">Ver servicios</a>
+          </p>
+        </div>
       </div>
     </section>
   </main>
@@ -398,7 +411,7 @@
     <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 19V5M5 12l7-7 7 7"/></svg>
   </button>
 
-  <script src="js/main.min.js?v=20261031c" defer></script>
+  <script src="js/main.min.js?v=20261032b" defer></script>
 
   <!-- Widget de CreatuAgente (chat de atención al cliente).
        Inyecta su propio botón flotante abajo a la derecha; por eso el botón
