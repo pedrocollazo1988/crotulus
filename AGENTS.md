@@ -111,6 +111,15 @@ El selector de la cabecera traduce el sitio publico completo. Todo vive en
   el original se guarda en `<marcador>-es`.
 - **Contenido de la BD**: al cambiar de idioma se vuelve a pintar (`loadContent`,
   `loadBlog`, `loadTeam`, `aplicarAjustes`) y los renderers aplican `t()`.
+- **Ajustes del panel (Ajustes - Textos)**: el diccionario incluye tambien los textos
+  por defecto de `src/lib/defaults.ts` (hero, subtitulo, `about_*`, tagline del pie,
+  aviso de mantenimiento...). OJO: si el propietario edita un texto en el panel, la
+  clave en espanol cambia y **hay que actualizar la clave del diccionario** o ese texto
+  se queda sin traducir (el diccionario se indexa por el texto origen). Ya paso con el
+  hero de produccion.
+- **Atributos fijados en runtime por el JS** (no pasan por el TreeWalker) hay que
+  envolverlos con `t()` al asignarlos: `alt` de las imagenes de ajustes y `aria-label`
+  del boton de menu (abrir/cerrar) y de los puntos del carrusel de testimonios.
 - **Validacion**: los mensajes se traducen al **mostrarse** (`setError`), no al definirlos.
 - Fechas y tiempos ("13 oct 2026", "4 min", prefijo "·") via `traducirPatron()` + `MESES_ABREV`.
 - Las `<option>` traducen su etiqueta pero **conservan el `value` en espanol**
