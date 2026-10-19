@@ -1967,7 +1967,13 @@
       "Desde [2021] acompañamos a empresas en su transformación digital, combinando tecnología y servicios profesionales.":
         "Since [2021] we have supported businesses in their digital transformation, combining technology and professional services.",
       "Servicios tecnológicos para negocios. Desarrollo, automatización, redes y soporte con trato cercano.":
-        "Technology services for businesses. Development, automation, networks and support with a personal touch."
+        "Technology services for businesses. Development, automation, networks and support with a personal touch.",
+      "tecnología": "technology",
+      "Lunes a Viernes de 9:00 a.m. a 5:00 p.m.": "Monday to Friday, 9:00 am to 5:00 pm",
+      "Te acompañamos desde la primera conversación hasta el soporte del día a día.":
+        "We accompany you from the first conversation to day-to-day support.",
+      "Un equipo profesional y altamente calificado. Estas son las personas que te atenderán y trabajarán en tu proyecto.":
+        "A highly qualified professional team. These are the people who will assist you and work on your project.",
     },
     pt: {
       // --- Navegação e cabeçalho ---
@@ -2391,7 +2397,13 @@
       "Desde [2021] acompañamos a empresas en su transformación digital, combinando tecnología y servicios profesionales.":
         "Desde [2021] acompanhamos empresas na sua transformação digital, combinando tecnologia e serviços profissionais.",
       "Servicios tecnológicos para negocios. Desarrollo, automatización, redes y soporte con trato cercano.":
-        "Serviços tecnológicos para negócios. Desenvolvimento, automação, redes e suporte com trato próximo."
+        "Serviços tecnológicos para negócios. Desenvolvimento, automação, redes e suporte com trato próximo.",
+      "tecnología": "tecnologia",
+      "Lunes a Viernes de 9:00 a.m. a 5:00 p.m.": "Segunda a sexta, das 9:00 às 17:00",
+      "Te acompañamos desde la primera conversación hasta el soporte del día a día.":
+        "Acompanhamos-te desde a primeira conversa até ao suporte do dia a dia.",
+      "Un equipo profesional y altamente calificado. Estas son las personas que te atenderán y trabajarán en tu proyecto.":
+        "Uma equipa profissional altamente qualificada. Estas são as pessoas que o vão atender e trabalhar no seu projeto.",
     }
   };
 
