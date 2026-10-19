@@ -54,14 +54,14 @@ export async function GET(req: NextRequest) {
 
 function renderResult(title: string, message: string, ok: boolean): string {
   const base = e(url(""));
-  const color = ok ? "#136493" : "#B42318";
+  const color = ok ? "#0B5A93" : "#B42318";
   const site = e(getConfig().siteName);
   return `<!doctype html><html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${e(title)} · ${site}</title>
-<style>body{font-family:Arial,Helvetica,sans-serif;background:#F4F8FB;display:flex;min-height:100vh;align-items:center;justify-content:center;margin:0}
+<style>body{font-family:Arial,Helvetica,sans-serif;background:#F6F8FA;display:flex;min-height:100vh;align-items:center;justify-content:center;margin:0}
 .box{background:#fff;border-radius:16px;padding:40px;max-width:440px;text-align:center;box-shadow:0 10px 40px rgba(11,46,69,.10)}
-h1{color:${color};font-size:22px;margin:0 0 12px}p{color:#17303F;line-height:1.6}
-a.btn{display:inline-block;margin-top:18px;background:#136493;color:#fff;text-decoration:none;padding:12px 22px;border-radius:10px;font-weight:600}</style></head><body>
+h1{color:${color};font-size:22px;margin:0 0 12px}p{color:#1F2937;line-height:1.6}
+a.btn{display:inline-block;margin-top:18px;background:#0B5A93;color:#fff;text-decoration:none;padding:12px 22px;border-radius:10px;font-weight:600}</style></head><body>
 <div class="box"><h1>${e(title)}</h1><p>${e(message)}</p><a class="btn" href="${base}/admin/">Ir al panel</a></div></body></html>`;
 }

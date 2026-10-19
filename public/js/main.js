@@ -393,8 +393,17 @@
       if (val !== undefined && String(val).trim() !== "") {
         var num = li.querySelector(".stat__num");
         if (num) {
-          var n = parseInt(String(val).replace(/\D/g, ""), 10);
-          if (!isNaN(n)) { num.setAttribute("data-count", n); animarStat(num); }
+          var raw = String(val).trim();
+          var n = parseInt(raw.replace(/\D/g, ""), 10);
+          if (!isNaN(n)) {
+            // El sufijo sigue al dato: "%" solo si el valor o la etiqueta lo
+            // indican (satisfaccion); si no, "+". Asi una etiqueta como
+            // "horas de respuesta" no se pinta como "24%".
+            var sufijo = raw.indexOf("%") !== -1 || /satisfac/i.test(String(lbl || "")) ? "%" : "+";
+            num.setAttribute("data-count", n);
+            num.setAttribute("data-suffix", sufijo);
+            animarStat(num);
+          }
         }
       }
       if (lbl !== undefined && String(lbl).trim() !== "") {
@@ -1575,6 +1584,11 @@
       "Nosotros": "About us",
       "Innovación tecnológica en Artemisa": "Technology innovation in Artemisa",
       "Potenciamos tu infraestructura digital con tecnología que funciona": "We power your digital infrastructure with technology that works",
+      // Fragmentos del titular estatico (respaldo sin JS): el <h1> del HTML
+      // parte la frase en nodos de texto alrededor del <span> destacado, y el
+      // TreeWalker los traduce por separado.
+      "Potenciamos tu": "We power your",
+      "con tecnología que funciona": "with technology that works",
       "infraestructura digital": "digital infrastructure",
       "Soluciones informáticas, automatización con IA, redes y soporte para negocios en Cuba. Te acompañamos de la idea al resultado.": "IT solutions, AI automation, networks and support for businesses in Cuba. We accompany you from idea to result.",
       "Ver servicios": "View services",
@@ -2100,6 +2114,8 @@
       "Nosotros": "Sobre nós",
       "Innovación tecnológica en Artemisa": "Inovação tecnológica em Artemisa",
       "Potenciamos tu infraestructura digital con tecnología que funciona": "Impulsionamos a sua infraestrutura digital com tecnologia que funciona",
+      "Potenciamos tu": "Impulsionamos a sua",
+      "con tecnología que funciona": "com tecnologia que funciona",
       "infraestructura digital": "infraestrutura digital",
       "Soluciones informáticas, automatización con IA, redes y soporte para negocios en Cuba. Te acompañamos de la idea al resultado.": "Soluções informáticas, automação com IA, redes e suporte para negócios em Cuba. Acompanhamos da ideia ao resultado.",
       "Ver servicios": "Ver serviços",

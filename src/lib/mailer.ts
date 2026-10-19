@@ -43,12 +43,12 @@ export function mailerTemplate(title: string, content: string): string {
   const year = new Date().getFullYear();
   return `<!doctype html><html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<style>body{font-family:Arial,Helvetica,sans-serif;background:#F4F8FB;margin:0;padding:24px;color:#17303F}
+<style>body{font-family:Arial,Helvetica,sans-serif;background:#F6F8FA;margin:0;padding:24px;color:#1F2937}
 .card{max-width:560px;margin:0 auto;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 6px 24px rgba(11,46,69,.08)}
-.head{background:#136493;color:#fff;padding:20px 24px;font-size:18px;font-weight:700}
-.body{padding:24px;line-height:1.6}.btn{display:inline-block;background:#136493;color:#fff!important;
+.head{background:#0B5A93;color:#fff;padding:20px 24px;font-size:18px;font-weight:700}
+.body{padding:24px;line-height:1.6}.btn{display:inline-block;background:#0B5A93;color:#fff!important;
 text-decoration:none;padding:12px 20px;border-radius:10px;font-weight:600}
-.foot{padding:16px 24px;font-size:12px;color:#4F6474;border-top:1px solid #DDE7EE}</style></head><body>
+.foot{padding:16px 24px;font-size:12px;color:#5F6D82;border-top:1px solid #D9D9D9}</style></head><body>
 <div class="card"><div class="head">${site}</div><div class="body">
 <h1 style="font-size:20px;margin:0 0 12px">${escapeHtml(title)}</h1>${content}</div>
 <div class="foot">&copy; ${year} ${site}</div></div></body></html>`;

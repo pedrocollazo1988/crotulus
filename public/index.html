@@ -9,7 +9,7 @@
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#136493">
+  <meta name="theme-color" content="#0B5A93">
   <meta name="author" content="C-ROTULUS S.U.R.L.">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <meta name="geo.region" content="ES">
@@ -53,7 +53,7 @@
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Inter-latin.woff2" crossorigin>
 
   <!-- ============ ESTILOS ============ -->
-  <link rel="stylesheet" href="css/styles.min.css?v=20261032b">
+  <link rel="stylesheet" href="css/styles.min.css?v=20261032c">
 
   <!-- ============ DATOS ESTRUCTURADOS AutoRepair (JSON-LD) ============
        schema.org/AutoRepair (subtipo de LocalBusiness, ideal para servicios
@@ -238,7 +238,14 @@
           </p>
           <div class="hero__actions">
             <a class="btn btn--primary" href="#contacto" data-site="hero_cta1_label">Solicitar presupuesto</a>
-            <a class="btn btn--outline-light" href="#servicios" data-site="hero_cta2_label">Ver servicios</a>
+            <!-- Botón secundario = WhatsApp: es el campo «Botón de WhatsApp» del
+                 panel (hero_cta2_label). El href ya va escrito para que funcione
+                 sin JavaScript; setupWhatsAppLinks() lo regenera con el número
+                 de la BD. -->
+            <a class="btn btn--outline-light" href="https://wa.me/5359888821?text=Hola%20C-ROTULUS%2C%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n%20sobre%20sus%20servicios%20tecnol%C3%B3gicos." data-whatsapp-link target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12.04 2a9.9 9.9 0 0 0-8.5 15l-1.3 4.7 4.82-1.26A9.9 9.9 0 1 0 12.04 2Zm5.77 14.06c-.24.68-1.4 1.3-1.93 1.34-.5.05-.98.24-3.3-.7-2.77-1.1-4.53-3.94-4.67-4.12-.14-.19-1.12-1.5-1.12-2.86 0-1.36.72-2.03.97-2.3.24-.28.53-.35.71-.35l.51.01c.16 0 .39-.06.6.46.24.57.8 1.98.87 2.13.07.14.12.31.02.5-.09.19-.14.3-.28.47l-.42.49c-.14.14-.29.29-.12.57.16.28.73 1.2 1.57 1.95 1.08.96 1.98 1.26 2.26 1.4.28.14.44.12.6-.07.17-.19.7-.82.89-1.1.19-.28.37-.23.63-.14.26.1 1.66.78 1.94.92.28.14.47.21.54.33.07.12.07.68-.17 1.36Z"/></svg>
+              <span data-site="hero_cta2_label">Escríbenos por WhatsApp</span>
+            </a>
           </div>
           <p class="hero__note">
             <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m5 12 5 5L20 6"/></svg>
@@ -372,9 +379,9 @@
           </div>
           <div class="about__media">
             <picture>
-              <source type="image/avif" srcset="assets/img/hero-tech.avif?v=20261032b">
-              <source type="image/webp" srcset="assets/img/hero-tech.webp?v=20261032b">
-              <img src="assets/img/hero-tech.jpg?v=20261032b" width="800" height="800" alt="Equipo de C-ROTULUS trabajando en la infraestructura digital de un cliente" loading="lazy" decoding="async" data-i18n-alt data-site-image="about_image" data-site-alt="about_image_alt">
+              <source type="image/avif" srcset="assets/img/hero-tech.avif?v=20261032c">
+              <source type="image/webp" srcset="assets/img/hero-tech.webp?v=20261032c">
+              <img src="assets/img/hero-tech.jpg?v=20261032c" width="800" height="800" alt="Equipo de C-ROTULUS trabajando en la infraestructura digital de un cliente" loading="lazy" decoding="async" data-i18n-alt data-site-image="about_image" data-site-alt="about_image_alt">
             </picture>
           </div>
         </div>
@@ -468,9 +475,9 @@
           <article class="project reveal">
             <div class="project__media">
               <picture>
-                <source type="image/avif" srcset="assets/img/proyecto-redes.avif?v=20261032b">
-                <source type="image/webp" srcset="assets/img/proyecto-redes.webp?v=20261032b">
-                <img src="assets/img/proyecto-redes.jpg?v=20261032b" width="800" height="500" alt="Armario de comunicaciones con cableado de red profesional" loading="lazy" decoding="async" data-i18n-alt>
+                <source type="image/avif" srcset="assets/img/proyecto-redes.avif?v=20261032c">
+                <source type="image/webp" srcset="assets/img/proyecto-redes.webp?v=20261032c">
+                <img src="assets/img/proyecto-redes.jpg?v=20261032c" width="800" height="500" alt="Armario de comunicaciones con cableado de red profesional" loading="lazy" decoding="async" data-i18n-alt>
               </picture>
             </div>
             <div class="project__body">
@@ -486,9 +493,9 @@
           <article class="project reveal">
             <div class="project__media">
               <picture>
-                <source type="image/avif" srcset="assets/img/proyecto-ia.avif?v=20261032b">
-                <source type="image/webp" srcset="assets/img/proyecto-ia.webp?v=20261032b">
-                <img src="assets/img/proyecto-ia.jpg?v=20261032b" width="800" height="500" alt="Asistente virtual de inteligencia artificial atendiendo consultas" loading="lazy" decoding="async" data-i18n-alt>
+                <source type="image/avif" srcset="assets/img/proyecto-ia.avif?v=20261032c">
+                <source type="image/webp" srcset="assets/img/proyecto-ia.webp?v=20261032c">
+                <img src="assets/img/proyecto-ia.jpg?v=20261032c" width="800" height="500" alt="Asistente virtual de inteligencia artificial atendiendo consultas" loading="lazy" decoding="async" data-i18n-alt>
               </picture>
             </div>
             <div class="project__body">
@@ -504,9 +511,9 @@
           <article class="project reveal">
             <div class="project__media">
               <picture>
-                <source type="image/avif" srcset="assets/img/proyecto-web.avif?v=20261032b">
-                <source type="image/webp" srcset="assets/img/proyecto-web.webp?v=20261032b">
-                <img src="assets/img/proyecto-web.jpg?v=20261032b" width="800" height="500" alt="Comercio local con tienda online y catálogo de productos" loading="lazy" decoding="async" data-i18n-alt>
+                <source type="image/avif" srcset="assets/img/proyecto-web.avif?v=20261032c">
+                <source type="image/webp" srcset="assets/img/proyecto-web.webp?v=20261032c">
+                <img src="assets/img/proyecto-web.jpg?v=20261032c" width="800" height="500" alt="Comercio local con tienda online y catálogo de productos" loading="lazy" decoding="async" data-i18n-alt>
               </picture>
             </div>
             <div class="project__body">
@@ -536,9 +543,9 @@
           <article class="post">
             <a class="post__media" href="#blog" aria-label="Leer: Cómo la IA puede ahorrar horas a tu pyme" data-i18n-aria>
               <picture>
-                <source type="image/avif" srcset="assets/img/blog/automatizacion-ia-pymes.avif?v=20261032b">
-                <source type="image/webp" srcset="assets/img/blog/automatizacion-ia-pymes.webp?v=20261032b">
-                <img src="assets/img/blog/automatizacion-ia-pymes.jpg?v=20261032b" width="800" height="500" alt="Análisis de datos y gráficas para automatizar tareas con IA" loading="lazy" decoding="async" data-i18n-alt>
+                <source type="image/avif" srcset="assets/img/blog/automatizacion-ia-pymes.avif?v=20261032c">
+                <source type="image/webp" srcset="assets/img/blog/automatizacion-ia-pymes.webp?v=20261032c">
+                <img src="assets/img/blog/automatizacion-ia-pymes.jpg?v=20261032c" width="800" height="500" alt="Análisis de datos y gráficas para automatizar tareas con IA" loading="lazy" decoding="async" data-i18n-alt>
               </picture>
             </a>
             <div class="post__body">
@@ -553,9 +560,9 @@
           <article class="post">
             <a class="post__media" href="#blog" aria-label="Leer: Protege tu red: 5 medidas básicas" data-i18n-aria>
               <picture>
-                <source type="image/avif" srcset="assets/img/blog/seguridad-red-pyme.avif?v=20261032b">
-                <source type="image/webp" srcset="assets/img/blog/seguridad-red-pyme.webp?v=20261032b">
-                <img src="assets/img/blog/seguridad-red-pyme.jpg?v=20261032b" width="800" height="500" alt="Seguridad informática: candado y datos protegidos" loading="lazy" decoding="async" data-i18n-alt>
+                <source type="image/avif" srcset="assets/img/blog/seguridad-red-pyme.avif?v=20261032c">
+                <source type="image/webp" srcset="assets/img/blog/seguridad-red-pyme.webp?v=20261032c">
+                <img src="assets/img/blog/seguridad-red-pyme.jpg?v=20261032c" width="800" height="500" alt="Seguridad informática: candado y datos protegidos" loading="lazy" decoding="async" data-i18n-alt>
               </picture>
             </a>
             <div class="post__body">
@@ -570,9 +577,9 @@
           <article class="post">
             <a class="post__media" href="#blog" aria-label="Leer: Una web que convierte visitas en clientes" data-i18n-aria>
               <picture>
-                <source type="image/avif" srcset="assets/img/blog/web-que-convierte.avif?v=20261032b">
-                <source type="image/webp" srcset="assets/img/blog/web-que-convierte.webp?v=20261032b">
-                <img src="assets/img/blog/web-que-convierte.jpg?v=20261032b" width="800" height="500" alt="Programador desarrollando una web moderna" loading="lazy" decoding="async" data-i18n-alt>
+                <source type="image/avif" srcset="assets/img/blog/web-que-convierte.avif?v=20261032c">
+                <source type="image/webp" srcset="assets/img/blog/web-que-convierte.webp?v=20261032c">
+                <img src="assets/img/blog/web-que-convierte.jpg?v=20261032c" width="800" height="500" alt="Programador desarrollando una web moderna" loading="lazy" decoding="async" data-i18n-alt>
               </picture>
             </a>
             <div class="post__body">
@@ -1351,7 +1358,7 @@
   </button>
 
   <!-- ==================== SCRIPTS ==================== -->
-  <script src="js/main.min.js?v=20261032b" defer></script>
+  <script src="js/main.min.js?v=20261032c" defer></script>
 
   <!-- Widget de CreatuAgente (chat de atención al cliente).
        Inyecta su propio botón flotante abajo a la derecha; por eso el botón

@@ -23,7 +23,7 @@ const DEFAULTS: Dict = {
   hero_subtitle:
     "Soluciones informáticas, automatización con IA, redes y soporte para negocios en Cuba. Te acompañamos de la idea al resultado.",
   hero_cta1_label: "Solicitar presupuesto",
-  hero_cta2_label: "Ver servicios",
+  hero_cta2_label: "Escríbenos por WhatsApp",
   hero_image: "assets/img/hero-tech.jpg",
   hero_image_alt:
     "Equipo de C-ROTULUS trabajando con ordenadores en una oficina",

@@ -31,24 +31,28 @@
 }
 
 :root {
-  /* --- Paleta de marca (igual que la web, anclada al logo) --- */
-  --color-primary:      #136493;
-  --color-primary-dark: #0E4E75;
-  --color-primary-soft: #E7F1F8;
-  --color-accent:       #2E86B8;
-  --color-accent-soft:  #5FA8C9;
-  --color-ice:          #C5E2F2;
-  --color-steel:        #BDBDBD;
-  --color-ink:          #17303F;
-  --color-heading:      #136493;
-  --color-ink-soft:     #4F6474;
-  --color-line:         #DDE7EE;
+  /* --- Paleta de marca (identica a public/css/styles.css) --- */
+  --color-primary:      #0B5A93;
+  --color-primary-dark: #08456F;
+  --color-primary-soft: #E7F3FB;
+  --color-link:         #0B5A93;
+  --color-link-strong:  #08456F;
+  --color-navy:         #0B3A5C;
+  --color-accent:       #1E6FA8;
+  --color-accent-soft:  #5B9CC9;
+  --color-ice:          #C7E2F5;
+  --color-steel:        #D9D9D9;
+  --color-ink:          #1F2937;
+  --color-heading:      #1F2937;
+  --color-heading-gray: #6B7280;
+  --color-ink-soft:     #5F6D82;
+  --color-line:         #D9D9D9;
   --color-bg:           #FFFFFF;
-  --color-bg-alt:       #F4F8FB;
+  --color-bg-alt:       #F6F8FA;
   --color-success:      #12805C;
   --color-error:        #C0392B;
   --color-warning:      #B54708;
-  --color-footer:       #0B2E45;
+  --color-footer:       #0B3A5C;
 
   /* --- Tipografia (mismas familias que la web) --- */
   --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
@@ -223,7 +227,7 @@ table { width: 100%; border-collapse: collapse; }
 th, td { text-align: left; padding: .8rem .95rem; border-bottom: 1px solid var(--color-line); font-size: .93rem; vertical-align: top; }
 th { background: var(--color-primary-soft); color: var(--color-primary-dark); font-weight: 600; white-space: nowrap; }
 tr:last-child td { border-bottom: 0; }
-tbody tr:hover { background: #F4F8FB; }
+tbody tr:hover { background: var(--color-bg-alt); }
 
 /* ==========================================================================
    FORMULARIOS
@@ -250,7 +254,7 @@ input[type="text"], input[type="email"], input[type="password"], input[type="tel
 input::placeholder, textarea::placeholder { color: #9aa7b8; }
 input:focus, select:focus, textarea:focus {
   outline: none; border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(19,100,147,.15);
+  box-shadow: 0 0 0 3px rgba(11,90,147,.15);
 }
 input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="true"] {
   border-color: var(--color-error);
@@ -332,9 +336,9 @@ td .actions { flex-wrap: nowrap; }
   content: "";
   position: absolute; inset: 0; opacity: .55;
   background-image:
-    radial-gradient(circle at 18% 22%, rgba(95,168,201,.55) 0 3px, transparent 4px),
+    radial-gradient(circle at 18% 22%, rgba(91,156,201,.55) 0 3px, transparent 4px),
     radial-gradient(circle at 72% 40%, rgba(255,255,255,.35) 0 2px, transparent 3px),
-    radial-gradient(circle at 40% 78%, rgba(95,168,201,.4) 0 2px, transparent 3px),
+    radial-gradient(circle at 40% 78%, rgba(91,156,201,.4) 0 2px, transparent 3px),
     radial-gradient(circle at 88% 82%, rgba(255,255,255,.25) 0 2px, transparent 3px);
   background-size: 240px 240px, 300px 300px, 360px 360px, 420px 420px;
 }
@@ -365,7 +369,7 @@ td .actions { flex-wrap: nowrap; }
 .auth-aside h2 { color: #fff; font-size: 1.9rem; line-height: 1.25; }
 .auth-aside p { color: #CFE3F0; }
 .auth-aside ul { list-style: none; margin: 1.5rem 0 0; padding: 0; display: grid; gap: .7rem; }
-.auth-aside li { position: relative; padding-left: 1.9rem; color: #E7F1F8; }
+.auth-aside li { position: relative; padding-left: 1.9rem; color: var(--color-primary-soft); }
 .auth-aside li::before {
   content: "\2713";
   position: absolute; left: 0; top: 0;
@@ -396,7 +400,7 @@ td .actions { flex-wrap: nowrap; }
   padding: .72rem; border-radius: var(--radius-pill); font-weight: 600; text-decoration: none;
   transition: background var(--transition), border-color var(--transition);
 }
-.btn-google:hover { background: #F4F8FB; border-color: var(--color-primary); text-decoration: none; }
+.btn-google:hover { background: var(--color-bg-alt); border-color: var(--color-primary); text-decoration: none; }
 .btn-google img { width: 18px; height: 18px; }
 .btn-google.is-disabled { opacity: .55; cursor: not-allowed; background: #fff; }
 .btn-google.is-disabled:hover { border-color: var(--color-line); }
@@ -452,7 +456,7 @@ td .actions { flex-wrap: nowrap; }
   flex-wrap: wrap;
   gap: .35rem;
   padding: .35rem;
-  background: var(--color-bg-alt, #F4F8FB);
+  background: var(--color-bg-alt);
   border: 1px solid var(--color-line);
   border-radius: var(--radius-pill);
   margin-bottom: 1.5rem;
