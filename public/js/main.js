@@ -197,7 +197,7 @@
     var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(v || ""));
     if (!m) return "";
     var mes = parseInt(m[2], 10) - 1;
-    return parseInt(m[3], 10) + " " + (MESES[mes] || "") + " " + m[1];
+    return parseInt(m[3], 10) + " " + t(MESES[mes] || "") + " " + m[1];
   }
 
   function itemPost(it) {
@@ -206,14 +206,14 @@
     var meta = [];
     if (it.author) meta.push(esc(it.author));
     if (fecha) meta.push('<time datetime="' + esc(String(it.published_at).slice(0, 10)) + '">' + fecha + "</time>");
-    if (it.reading_minutes) meta.push(it.reading_minutes + " min");
+    if (it.reading_minutes) meta.push(it.reading_minutes + " " + t("min"));
     return '<article class="post">'
-      + '<a class="post__media" href="#blog" aria-label="Leer: ' + esc(it.title) + '">'
-      + fotoResponsive(img, it.title, 800, 500) + '</a>'
+      + '<a class="post__media" href="#blog" aria-label="' + esc(t("Leer:")) + " " + esc(t(it.title)) + '">'
+      + fotoResponsive(img, t(it.title), 800, 500) + '</a>'
       + '<div class="post__body">'
-      + (it.category ? '<span class="post__tag">' + esc(it.category) + "</span>" : "")
-      + '<h3 class="post__title"><a href="#blog">' + esc(it.title) + "</a></h3>"
-      + '<p class="post__text">' + esc(it.excerpt || it.body) + "</p>"
+      + (it.category ? '<span class="post__tag">' + esc(t(it.category)) + "</span>" : "")
+      + '<h3 class="post__title"><a href="#blog">' + esc(t(it.title)) + "</a></h3>"
+      + '<p class="post__text">' + esc(t(it.excerpt || it.body)) + "</p>"
       + '<p class="post__meta">' + meta.join(" &middot; ") + "</p>"
       + "</div></article>";
   }
@@ -221,13 +221,13 @@
   function itemMiembro(it) {
     var img = it.avatar ? esc(it.avatar) : "";
     var media = img
-      ? '<div class="team-card__media"><img src="' + img + '" alt="Retrato de ' + esc(it.name) + '" width="400" height="400" loading="lazy" decoding="async"></div>'
+      ? '<div class="team-card__media"><img src="' + img + '" alt="' + esc(t("Retrato de")) + " " + esc(it.name) + '" width="400" height="400" loading="lazy" decoding="async"></div>'
       : "";
     return '<article class="team-card">' + media
       + '<div class="team-card__body">'
       + '<h3 class="team-card__name">' + esc(it.name) + "</h3>"
-      + '<p class="team-card__role">' + esc(it.role) + "</p>"
-      + '<p class="team-card__bio">' + esc(it.bio) + "</p>"
+      + '<p class="team-card__role">' + esc(t(it.role)) + "</p>"
+      + '<p class="team-card__bio">' + esc(t(it.bio)) + "</p>"
       + (it.email ? '<a class="team-card__mail" href="mailto:' + esc(it.email) + '">' + esc(it.email) + "</a>" : "")
       + "</div></article>";
   }
@@ -267,52 +267,57 @@
 
   function itemServicio(it) {
     return '<article class="card"><div class="card__icon" aria-hidden="true">' + ICONO_SVG + '</div>'
-      + '<h3 class="card__title">' + esc(it.title) + '</h3>'
-      + '<p class="card__text">' + esc(it.body || it.subtitle) + '</p>'
-      + '<a class="btn btn--ghost" href="#contacto" data-service="' + esc(it.title) + '">Consultar</a></article>';
+      + '<h3 class="card__title">' + esc(t(it.title)) + '</h3>'
+      + '<p class="card__text">' + esc(t(it.body || it.subtitle)) + '</p>'
+      + '<a class="btn btn--ghost" href="#contacto" data-service="' + esc(it.title) + '">' + esc(t("Consultar")) + '</a></article>';
   }
   function itemProyecto(it) {
     var meta = it.meta || {};
     var img  = meta.image ? meta.image : "assets/img/proyecto-web.jpg";
-    return '<article class="project"><div class="project__media">' + fotoResponsive(img, it.title, 800, 500) + '</div>'
-      + '<div class="project__body"><span class="project__tag">' + esc(it.subtitle) + '</span>'
-      + '<h3 class="project__title">' + esc(it.title) + '</h3>'
-      + '<p class="project__text">' + esc(it.body) + '</p>'
-      + '<a class="project__link" href="#contacto">Ver caso &rarr;</a></div></article>';
+    return '<article class="project"><div class="project__media">' + fotoResponsive(img, t(it.title), 800, 500) + '</div>'
+      + '<div class="project__body"><span class="project__tag">' + esc(t(it.subtitle)) + '</span>'
+      + '<h3 class="project__title">' + esc(t(it.title)) + '</h3>'
+      + '<p class="project__text">' + esc(t(it.body)) + '</p>'
+      + '<a class="project__link" href="#contacto">' + esc(t("Ver caso")) + ' &rarr;</a></div></article>';
+  }
+  /* Etiqueta de valoración reutilizable (estrellas + aria en el idioma activo). */
+  function ratingHTML(estrellas, clase) {
+    return '<span class="' + (clase || "testimonial__rating") + '" role="img" aria-label="'
+      + esc(t("Valoración:")) + " " + estrellas + " " + esc(t("de 5 estrellas")) + '">'
+      + new Array(estrellas + 1).join('<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="m12 2 3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>')
+      + '</span>';
   }
   function itemTestimonio(it) {
     var meta = it.meta || {};
     var avatar = meta.photo
-      ? fotoResponsive(meta.photo, "Foto de " + it.title, 96, 96, "testimonial__avatar")
+      ? fotoResponsive(meta.photo, t("Foto de") + " " + it.title, 96, 96, "testimonial__avatar")
       : '<span class="testimonial__avatar" aria-hidden="true">' + iniciales(it.title) + '</span>';
     var estrellas = meta.rating ? Math.max(1, Math.min(5, parseInt(meta.rating, 10) || 5)) : 5;
-    var rating = '<span class="testimonial__rating" role="img" aria-label="Valoración: ' + estrellas + ' de 5 estrellas">'
-      + new Array(estrellas + 1).join('<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="m12 2 3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>')
-      + '</span>';
+    var rating = ratingHTML(estrellas);
     var badge = '<span class="testimonial__badge">'
       + '<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="m5 12 5 5L20 6"/></svg>'
-      + 'Cliente verificado</span>';
+      + esc(t("Cliente verificado")) + '</span>';
     var resultado = meta.resultado
-      ? '<p class="testimonial__result">' + esc(meta.resultado) + '</p>' : '';
+      ? '<p class="testimonial__result">' + esc(t(meta.resultado)) + '</p>' : '';
     return '<li class="testimonial"><blockquote class="testimonial__quote">'
       + '<div class="testimonial__top">' + rating + badge + '</div>'
-      + '<p class="testimonial__text">&laquo;' + esc(it.body) + '&raquo;</p>'
+      + '<p class="testimonial__text">&laquo;' + esc(t(it.body)) + '&raquo;</p>'
       + resultado
       + '</blockquote>'
       + '<footer class="testimonial__author">' + avatar
-      + '<cite><strong>' + esc(it.title) + '</strong><span>' + esc(it.subtitle || meta.cargo || "") + '</span></cite></footer></li>';
+      + '<cite><strong>' + esc(it.title) + '</strong><span>' + esc(t(it.subtitle || meta.cargo || "")) + '</span></cite></footer></li>';
   }
   function itemFaq(it) {
     var id = "faq-" + esc(it.id);
     return '<div class="accordion__item"><h3 class="accordion__heading">'
-      + '<button class="accordion__trigger" type="button" aria-expanded="false" aria-controls="' + id + '">' + esc(it.title)
+      + '<button class="accordion__trigger" type="button" aria-expanded="false" aria-controls="' + id + '">' + esc(t(it.title))
       + '<span class="accordion__icon" aria-hidden="true"></span></button></h3>'
-      + '<div class="accordion__panel" id="' + id + '" role="region"><p>' + esc(it.body) + '</p></div></div>';
+      + '<div class="accordion__panel" id="' + id + '" role="region"><p>' + esc(t(it.body)) + '</p></div></div>';
   }
   function itemProceso(it, idx) {
     return '<li class="step"><span class="step__num" aria-hidden="true">' + (idx + 1) + '</span>'
-      + '<h3 class="step__title">' + esc(it.title) + '</h3>'
-      + '<p class="step__text">' + esc(it.body || it.subtitle) + '</p></li>';
+      + '<h3 class="step__title">' + esc(t(it.title)) + '</h3>'
+      + '<p class="step__text">' + esc(t(it.body || it.subtitle)) + '</p></li>';
   }
 
   /* ==========================================================================
@@ -352,17 +357,18 @@
     // Textos marcados con data-site="clave"
     $$("[data-site]").forEach(function (el) {
       var key = el.getAttribute("data-site");
-      if (s[key] !== undefined && String(s[key]).trim() !== "") el.textContent = s[key];
+      if (s[key] !== undefined && String(s[key]).trim() !== "") el.textContent = t(s[key]);
     });
     if (direccion) {
-      $$("[data-site-direccion]").forEach(function (el) { el.textContent = direccion; });
+      $$("[data-site-direccion]").forEach(function (el) { el.textContent = t(direccion); });
     }
 
     // Titular del hero: texto + palabra destacada con degradado
     $$("[data-site-title]").forEach(function (el) {
       var texto = s[el.getAttribute("data-site-title")];
       if (texto === undefined || String(texto).trim() === "") return;
-      var accent = s[el.getAttribute("data-site-accent")] || "";
+      texto = t(texto);
+      var accent = t(s[el.getAttribute("data-site-accent")] || "");
       el.textContent = "";
       if (accent && String(texto).indexOf(accent) !== -1) {
         var partes = String(texto).split(accent);
@@ -390,7 +396,7 @@
       }
       if (lbl !== undefined && String(lbl).trim() !== "") {
         var lab = li.querySelector(".stat__label");
-        if (lab) lab.textContent = lbl;
+        if (lab) lab.textContent = t(lbl);
       }
     });
 
@@ -423,12 +429,12 @@
       if (texto === undefined || String(texto).trim() === "") return;
       el.textContent = "";
       String(texto).split("·").forEach(function (parte, i) {
-        var t = parte.trim();
-        if (t === "") return;
+        var etiqueta = t(parte.trim());
+        if (etiqueta === "") return;
         if (i > 0) el.appendChild(document.createTextNode(" · "));
         var a = document.createElement("a");
         a.href = "#contacto";
-        a.textContent = t;
+        a.textContent = etiqueta;
         el.appendChild(a);
       });
     });
@@ -548,7 +554,8 @@
     }
     var name = s.site_name || "";
     if (name) {
-      document.title = name + " | Servicios tecnológicos para empresas";
+      TITULO_ES = name + " | Servicios tecnológicos para empresas";
+      aplicarTitulo();
       setMeta('meta[data-seo-name]', "content", name);
     }
     if (s.meta_description) {
@@ -664,20 +671,18 @@
         var track = document.querySelector(".testimonials__track");
         if (!track || !data.items || !data.items.length) return;
         $$("[data-user-testimonial]", track).forEach(function (li) { li.remove(); });
-        var html = data.items.map(function (t) {
-          var avatar = t.photo
-            ? fotoResponsive(t.photo, "Foto de " + t.author_name, 96, 96, "testimonial__avatar")
-            : '<span class="testimonial__avatar" aria-hidden="true">' + iniciales(t.author_name) + '</span>';
-          var estrellas = Math.max(1, Math.min(5, parseInt(t.rating, 10) || 5));
-          var rating = '<span class="testimonial__rating" role="img" aria-label="Valoración: ' + estrellas + ' de 5 estrellas">'
-            + new Array(estrellas + 1).join('<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="m12 2 3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z"/></svg>')
-            + '</span>';
-          var rol = t.role ? '<span>' + esc(t.role) + '</span>' : '<span>Cliente</span>';
+        var html = data.items.map(function (it) {
+          var avatar = it.photo
+            ? fotoResponsive(it.photo, t("Foto de") + " " + it.author_name, 96, 96, "testimonial__avatar")
+            : '<span class="testimonial__avatar" aria-hidden="true">' + iniciales(it.author_name) + '</span>';
+          var estrellas = Math.max(1, Math.min(5, parseInt(it.rating, 10) || 5));
+          var rating = ratingHTML(estrellas);
+          var rol = it.role ? '<span>' + esc(it.role) + '</span>' : '<span>' + esc(t("Cliente")) + '</span>';
           return '<li class="testimonial" data-user-testimonial><blockquote class="testimonial__quote">'
             + '<div class="testimonial__top">' + rating + '</div>'
-            + '<p class="testimonial__text">&laquo;' + esc(t.comment) + '&raquo;</p>'
+            + '<p class="testimonial__text">&laquo;' + esc(it.comment) + '&raquo;</p>'
             + '</blockquote><footer class="testimonial__author">' + avatar
-            + '<cite><strong>' + esc(t.author_name) + '</strong>' + rol + '</cite></footer></li>';
+            + '<cite><strong>' + esc(it.author_name) + '</strong>' + rol + '</cite></footer></li>';
         }).join("");
         track.insertAdjacentHTML("beforeend", html);
         if (typeof setupCarousel === "function") setupCarousel();
@@ -1072,7 +1077,7 @@
       var box = $('[data-error-for="' + input.id + '"]', form);
       if (msg) {
         input.setAttribute("aria-invalid", "true");
-        if (box) box.textContent = msg;
+        if (box) box.textContent = t(msg);
         return false;
       }
       input.removeAttribute("aria-invalid");
@@ -1116,7 +1121,7 @@
         if (!validar(el)) { ok = false; if (!primero) primero = el; }
       });
       if (!ok) {
-        status.textContent = "Revisa los campos marcados en rojo.";
+        status.textContent = t("Revisa los campos marcados en rojo.");
         status.className = "form-status is-error";
         primero && primero.focus();
         return;
@@ -1124,19 +1129,19 @@
 
       // Anti-spam: si el campo trampa tiene valor, simulamos exito y no enviamos.
       if (form.querySelector('[name="_gotcha"]').value !== "") {
-        status.textContent = "Mensaje enviado. Gracias.";
+        status.textContent = t("Mensaje enviado. Gracias.");
         status.className = "form-status is-success";
         form.reset();
         return;
       }
 
       // Envío al endpoint (backend propio o servicio externo compatible)
-      status.textContent = "Enviando...";
+      status.textContent = t("Enviando...");
       status.className = "form-status";
 
       // Si es un servicio externo sin configurar, avisamos en vez de fallar en silencio.
       if (FORM_ENDPOINT.indexOf("TU_ID") !== -1) {
-        status.textContent = "Formulario no configurado: sustituye TU_ID en js/main.js y en el action del formulario.";
+        status.textContent = t("Formulario no configurado: sustituye TU_ID en js/main.js y en el action del formulario.");
         status.className = "form-status is-error";
         return;
       }
@@ -1155,7 +1160,7 @@
     var campo = $('input[name="captcha"]', scope);
     if (!q || !token) return;
 
-    q.textContent = "Cargando reto…";
+    q.textContent = t("Cargando reto…");
     fetch(API_BASE + "index?action=captcha", { headers: { "Accept": "application/json" } })
       .then(function (r) { return r.json(); })
       .then(function (d) {
@@ -1164,10 +1169,10 @@
           token.value = d.token || "";
           if (campo) campo.value = "";
         } else {
-          q.textContent = "Verificacion no disponible";
+          q.textContent = t("Verificacion no disponible");
         }
       })
-      .catch(function () { q.textContent = "Verificacion no disponible"; });
+      .catch(function () { q.textContent = t("Verificacion no disponible"); });
   }
 
   /* Envía el formulario al backend. Obtiene un token CSRF antes de enviar
@@ -1189,7 +1194,7 @@
       .then(function (res) { return res.json().catch(function () { return { ok: res.ok }; }); })
       .then(function (data) {
         if (data && data.ok) {
-          status.textContent = "Gracias, hemos recibido tu mensaje. Te responderemos en menos de 24 horas laborables.";
+          status.textContent = t("Gracias, hemos recibido tu mensaje. Te responderemos en menos de 24 horas laborables.");
           status.className = "form-status is-success";
           form.reset();
           cargarCaptcha(form);
@@ -1207,7 +1212,7 @@
         cargarCaptcha(form);
       })
       .catch(function () {
-        status.textContent = "No se pudo enviar. Inténtalo de nuevo o escríbenos por WhatsApp.";
+        status.textContent = t("No se pudo enviar. Inténtalo de nuevo o escríbenos por WhatsApp.");
         status.className = "form-status is-error";
         cargarCaptcha(form);
       });
@@ -1265,10 +1270,10 @@
     function procesar(archivo) {
       if (!archivo) return;
       if (!/^image\/(jpeg|png|webp)$/i.test(archivo.type)) {
-        aviso("Formato no válido. Usa JPG, PNG o WebP.", true);
+        aviso(t("Formato no válido. Usa JPG, PNG o WebP."), true);
         return;
       }
-      aviso("Procesando la imagen…", false);
+      aviso(t("Procesando la imagen…"), false);
       // FileReader (data URL) en vez de createObjectURL: la CSP del sitio
       // (img-src 'self' data: https:) no permite blob:.
       var lector = new FileReader();
@@ -1286,24 +1291,24 @@
           if (data.length > MAX_BYTES) {
             dataInput.value = "";
             pintar("");
-            aviso("La imagen es demasiado grande. Prueba con otra más ligera.", true);
+            aviso(t("La imagen es demasiado grande. Prueba con otra más ligera."), true);
             return;
           }
           dataInput.value = data;
           pintar(data);
-          aviso("Foto lista. Se publicará junto a tu testimonio.", false);
+          aviso(t("Foto lista. Se publicará junto a tu testimonio."), false);
         };
         img.onerror = function () {
           dataInput.value = "";
           pintar("");
-          aviso("No se pudo leer la imagen. Prueba con otra.", true);
+          aviso(t("No se pudo leer la imagen. Prueba con otra."), true);
         };
         img.src = String(lector.result);
       };
       lector.onerror = function () {
         dataInput.value = "";
         pintar("");
-        aviso("No se pudo leer la imagen. Prueba con otra.", true);
+        aviso(t("No se pudo leer la imagen. Prueba con otra."), true);
       };
       lector.readAsDataURL(archivo);
     }
@@ -1314,7 +1319,7 @@
         file.value = "";
         dataInput.value = "";
         pintar("");
-        aviso("JPG, PNG o WebP. Se recorta en cuadrado y se optimiza antes de enviarse.", false);
+        aviso(t("JPG, PNG o WebP. Se recorta en cuadrado y se optimiza antes de enviarse."), false);
       });
     }
     pintar(dataInput.value);
@@ -1361,7 +1366,7 @@
         b.setAttribute("tabindex", n === valor ? "0" : "-1");
       });
       ratingInput.value = valor;
-      if (ratingValue) ratingValue.textContent = valor + " de 5";
+      if (ratingValue) ratingValue.textContent = valor + " " + t("de 5");
     }
     if (ratingBox) {
       pintarEstrellas(5);
@@ -1406,7 +1411,7 @@
       var box = $('[data-error-for="' + input.id + '"]', form);
       if (msg) {
         input.setAttribute("aria-invalid", "true");
-        if (box) box.textContent = msg;
+        if (box) box.textContent = t(msg);
         return false;
       }
       input.removeAttribute("aria-invalid");
@@ -1441,7 +1446,7 @@
         if (!validar(el)) { ok = false; if (!primero) primero = el; }
       });
       if (!ok) {
-        status.textContent = "Revisa los campos marcados en rojo.";
+        status.textContent = t("Revisa los campos marcados en rojo.");
         status.className = "form-status is-error";
         primero && primero.focus();
         return;
@@ -1449,7 +1454,7 @@
 
       // Campo trampa: si un bot lo rellena, simulamos éxito y no enviamos.
       if ($('[name="_gotcha"]', form).value !== "") {
-        status.textContent = "¡Gracias! Tu testimonio se revisará antes de publicarse.";
+        status.textContent = t("¡Gracias! Tu testimonio se revisará antes de publicarse.");
         status.className = "form-status is-success";
         form.reset();
         pintarEstrellas(5);
@@ -1457,7 +1462,7 @@
         return;
       }
 
-      status.textContent = "Enviando…";
+      status.textContent = t("Enviando…");
       status.className = "form-status";
 
       var datos = new FormData(form);
@@ -1494,7 +1499,7 @@
           cargarCaptcha(form);
         })
         .catch(function () {
-          status.textContent = "No se pudo enviar. Inténtalo de nuevo en unos minutos.";
+          status.textContent = t("No se pudo enviar. Inténtalo de nuevo en unos minutos.");
           status.className = "form-status is-error";
           cargarCaptcha(form);
         });
@@ -1520,73 +1525,974 @@
      - Tema: alterna día/noche con la clase .theme-dark en <html>.
      ========================================================================== */
 
-  /* Diccionario de navegación. El contenido editable (servicios, blog...) vive
-     en la base de datos y se mantiene en su idioma original. */
+  /* ==========================================================================
+     IDIOMA (es / en / pt)
+     --------------------------------------------------------------------------
+     El diccionario traduce TODO el texto visible del sitio: la interfaz
+     (cabecera, botones, formularios, pie), los textos de ejemplo del HTML y los
+     textos que llegan desde la base de datos (ajustes y contenido editable).
+
+     La clave del diccionario es el propio texto en español. Así no hace falta
+     marcar cada nodo a mano: se traduce el texto literal y también los atributos
+     (aria-label, placeholder, alt, title). Lo que no tenga traducción se queda
+     tal cual (por ejemplo, los nombres propios y los datos de contacto).
+
+     El contenido editable de la BD se traduce por diccionario: al cambiar de
+     idioma se vuelve a pintar (loadContent/loadBlog/loadTeam/aplicarAjustes),
+     ya que cada render traduce el texto con t().
+     ========================================================================== */
   var I18N = {
-    es: {
-      nav_home: "Inicio", nav_company: "Empresa", nav_services: "Servicios",
-      nav_projects: "Proyectos", nav_process: "Proceso", nav_testimonials: "Testimonios",
-      nav_faq: "FAQ", nav_login: "Acceder", nav_contact: "Contacto",
-      aria_search: "Buscar en el sitio", aria_lang: "Idioma del sitio",
-      aria_theme: "Cambiar a modo noche", aria_close: "Cerrar búsqueda",
-      search_placeholder: "Buscar en el sitio: servicios, proyectos, blog, preguntas…",
-      no_results: "Sin resultados. Prueba con otra palabra."
-    },
+    es: {},
     en: {
-      nav_home: "Home", nav_company: "Company", nav_services: "Services",
-      nav_projects: "Projects", nav_process: "Process", nav_testimonials: "Testimonials",
-      nav_faq: "FAQ", nav_login: "Sign in", nav_contact: "Contact",
-      aria_search: "Search the site", aria_lang: "Site language",
-      aria_theme: "Switch to dark mode", aria_close: "Close search",
-      search_placeholder: "Search the site: services, projects, blog, questions…",
-      no_results: "No results. Try another word."
+      // --- Navegación y cabecera ---
+      "Inicio": "Home", "Empresa": "Company", "Servicios": "Services",
+      "Proyectos": "Projects", "Proceso": "Process", "Testimonios": "Testimonials",
+      "Sección": "Section", "Servicio": "Service", "Proyecto": "Project",
+      "Opinión": "Review", "Testimonio": "Testimonial",
+      "Acceder": "Sign in", "Contacto": "Contact", "Opiniones": "Reviews",
+      "Blog": "Blog", "Ubicación": "Location", "Preguntas frecuentes": "FAQ",
+      "Español": "Español", "English": "English", "Português": "Português",
+      "Saltar al contenido principal": "Skip to main content",
+      "Buscar en el sitio": "Search the site",
+      "Idioma del sitio": "Site language",
+      "Cambiar a modo noche": "Switch to dark mode",
+      "Cambiar a modo día": "Switch to light mode",
+      "Cerrar búsqueda": "Close search",
+      "Abrir menú de navegación": "Open navigation menu",
+      "Navegación principal": "Main navigation",
+      "C-ROTULUS, ir al inicio": "C-ROTULUS, go to home",
+      "Buscar en el sitio: servicios, proyectos, blog, preguntas…":
+        "Search the site: services, projects, blog, questions…",
+      "Sin resultados. Prueba con otra palabra.": "No results. Try another word.",
+      "Enlaces rápidos": "Quick links", "Síguenos": "Follow us",
+      "Ruta de navegación": "Breadcrumb", "Sitemap": "Sitemap",
+      "Redes sociales de C-ROTULUS": "C-ROTULUS social media",
+      "Volver arriba": "Back to top",
+
+      // --- Hero ---
+      "Agencia de servicios tecnológicos · Pymes y autónomos":
+        "Technology services agency · SMEs and freelancers",
+      "Tecnología clara que hace crecer tu negocio":
+        "Clear technology that grows your business",
+      "Ayudamos a pymes y autónomos a digitalizarse con desarrollo web, automatización e IA, redes seguras y soporte continuo. Menos problemas, más tiempo para lo que importa.":
+        "We help SMEs and freelancers go digital with web development, automation and AI, secure networks and ongoing support. Fewer problems, more time for what matters.",
+      "Solicitar servicios": "Request services",
+      "Escríbenos por WhatsApp": "Message us on WhatsApp",
+      "Descubre mas": "Discover more", "Descubre más": "Discover more",
+      "Bajar a la seccion Servicios": "Go down to the Services section",
+      "Cifras de confianza": "Key figures",
+      "años de experiencia": "years of experience",
+      "clientes satisfechos": "satisfied clients",
+      "proyectos entregados": "projects delivered",
+      "horas de respuesta": "hours response time",
+
+      // --- Maqueta del agente IA (hero) ---
+      "Agente IA · Facturas y firmas": "AI agent · Invoices and signatures",
+      "en vivo": "live", "Entrada": "Input",
+      "factura-2026-0412.pdf recibida por correo": "invoice-2026-0412.pdf received by email",
+      "Lectura IA": "AI reading",
+      "emisor, NIF, importe y fecha extraídos (OCR)": "issuer, VAT no., amount and date extracted (OCR)",
+      "Validación": "Validation",
+      "coincide con el pedido · sin duplicados": "matches the order · no duplicates",
+      "Firma digital": "Digital signature",
+      "sellada con certificado de la empresa": "sealed with the company certificate",
+      "Firmado": "Signed", "4 pasos · 8 s · 0 errores": "4 steps · 8 s · 0 errors",
+      "Agente de IA que recibe una factura, extrae los datos, valida, la firma digitalmente y la archiva automáticamente":
+        "AI agent that receives an invoice, extracts the data, validates it, signs it digitally and files it automatically",
+
+      // --- Cabeceras de sección ---
+      "Sobre nosotros": "About us", "Equipo": "Team", "Cómo trabajamos": "How we work",
+      "Reseñas verificadas": "Verified reviews",
+      "Un equipo cercano con soluciones serias": "A close-knit team with serious solutions",
+      "Las personas detrás de C-ROTULUS": "The people behind C-ROTULUS",
+      "Todo lo que tu empresa necesita, en un solo equipo":
+        "Everything your company needs, from one team",
+      "Trabajos que ya están dando resultados": "Work that is already delivering results",
+      "Ideas y consejos para tu negocio": "Ideas and tips for your business",
+      "Un proceso simple, en cuatro pasos": "A simple process, in four steps",
+      "Lo que opinan nuestros clientes": "What our clients say",
+      "Lo que opinan de nosotros en Google": "What people say about us on Google",
+      "Lo que dicen en Trustpilot": "What they say on Trustpilot",
+      "Cuéntanos tu proyecto": "Tell us about your project",
+      "Dónde estamos y cómo contactarnos": "Where we are and how to reach us",
+      "Resolvemos tus dudas": "We answer your questions",
+      "Servicios de ejemplo fáciles de editar. Cada tarjeta incluye icono, descripción, contenido y botón de consulta.":
+        "Sample services, easy to edit. Each card includes an icon, description, content and a query button.",
+      "Una muestra de proyectos de ejemplo. Sustituye las imágenes, los textos y las etiquetas por tus casos reales.":
+        "A sample of example projects. Replace the images, texts and tags with your real cases.",
+      "Publicamos guías sencillas sobre tecnología, seguridad y productividad. Sin tecnicismos innecesarios.":
+        "We publish simple guides on technology, security and productivity. No unnecessary jargon.",
+      "Sin sorpresas: te acompañamos desde la primera conversación hasta el soporte del día a día.":
+        "No surprises: we support you from the first conversation to day-to-day support.",
+      "Opiniones de clientes reales. Comparte la tuya en un minuto, sin crear ninguna cuenta.":
+        "Reviews from real clients. Share yours in a minute, without creating an account.",
+      "Reseñas reales de clientes publicadas en nuestra ficha de Google. Puedes leerlas todas en un clic.":
+        "Real customer reviews published on our Google listing. Read them all in one click.",
+      "Opiniones reales de clientes publicadas en nuestra ficha de Trustpilot.":
+        "Real customer reviews published on our Trustpilot listing.",
+      "Rellena el formulario y te respondemos en menos de 24 horas laborables.":
+        "Fill in the form and we will reply within 24 working hours.",
+      "Visítanos, llámanos o escríbenos. Estamos a tu disposición en horario de oficina.":
+        "Visit us, call us or write to us. We are here during office hours.",
+      "Mostramos las preguntas más relevantes, ordenadas automáticamente por su importancia.":
+        "We show the most relevant questions, automatically sorted by importance.",
+      "Desde [AÑO DE FUNDACIÓN] acompañamos a empresas en su transformación digital, combinando tecnología y trato humano.":
+        "Since [FOUNDING YEAR] we have supported companies in their digital transformation, combining technology and a human touch.",
+      "Un equipo pequeño, cercano y especializado. Estas son las personas que te atenderán y trabajarán en tu proyecto.":
+        "A small, close-knit and specialised team. These are the people who will assist you and work on your project.",
+
+      // --- Botones y textos comunes ---
+      "Consultar": "Ask us", "Ver caso": "View case", "Deja tu testimonio": "Leave your review",
+      "Ver todas en Google": "See all on Google",
+      "Ver todas en Trustpilot": "See all on Trustpilot",
+      "Basado en": "Based on", "reseñas": "reviews",
+      "Enviar solicitud": "Send request",
+      "Al enviar aceptas nuestra política de privacidad.":
+        "By sending you accept our privacy policy.",
+      "Inicia sesión para proponer una pregunta": "Sign in to suggest a question",
+      "Cómo llegar en Google Maps": "Get directions on Google Maps",
+      "C-ROTULUS S.U.R.L. Todos los derechos reservados.":
+        "C-ROTULUS S.U.R.L. All rights reserved.",
+      "Aviso legal · Privacidad · Cookies": "Legal notice · Privacy · Cookies",
+      "Servicios tecnológicos para empresas. Desarrollo, automatización, redes y soporte con trato cercano.":
+        "Technology services for businesses. Development, automation, networks and support with a close touch.",
+
+      // --- Formularios ---
+      "Tu experiencia ayuda a otros": "Your experience helps others",
+      "Cuéntanos cómo fue trabajar con nosotros. Tu testimonio se publica en la portada y ayuda a otras empresas a decidirse. No necesitas cuenta.":
+        "Tell us what it was like working with us. Your review is published on the homepage and helps other companies decide. No account needed.",
+      "Se revisa antes de publicarse.": "It is reviewed before publishing.",
+      "Puedes firmar con tu nombre y empresa.": "You can sign with your name and company.",
+      "Tu correo no se muestra nunca.": "Your email is never shown.",
+      "Tu nombre *": "Your name *",
+      "Cargo y empresa": "Role and company", "(opcional)": "(optional)",
+      "Tu valoración *": "Your rating *",
+      "Tu foto": "Your photo", "Elegir imagen": "Choose image", "Quitar": "Remove",
+      "JPG, PNG o WebP. Se recorta en cuadrado y se optimiza antes de enviarse.":
+        "JPG, PNG or WebP. It is cropped to a square and optimised before sending.",
+      "Tu experiencia *": "Your experience *",
+      "Verificacion de seguridad *": "Security check *",
+      "Verificación de seguridad *": "Security check *",
+      "Cargando reto…": "Loading challenge…",
+      "Resuelve la operacion para demostrar que eres una persona.":
+        "Solve the operation to prove you are a person.",
+      "Resuelve la operación para demostrar que eres una persona.":
+        "Solve the operation to prove you are a person.",
+      "No rellenar": "Do not fill in",
+      "Publicar mi testimonio": "Publish my review",
+      "Nombre y apellidos *": "Full name *",
+      "Correo electrónico *": "Email *",
+      "Teléfono *": "Phone *",
+      "Servicio de interés *": "Service of interest *",
+      "Selecciona un servicio": "Select a service",
+      "Mensaje *": "Message *",
+      "Otro": "Other",
+      "Desarrollo web y aplicaciones": "Web development and applications",
+      "Automatización y agentes de IA": "Automation and AI agents",
+      "Soporte técnico": "Technical support",
+      "Redes y ciberseguridad": "Networks and cybersecurity",
+      "Consultoría tecnológica": "Technology consulting",
+      "Mantenimiento integral": "Full maintenance",
+      "Ej.: María Pérez": "E.g.: María Pérez",
+      "Ej.: Gerente · Distribuciones ML": "E.g.: Manager · Distribuciones ML",
+      "¿Qué problema tenías y cómo lo resolvimos?": "What problem did you have and how did we solve it?",
+      "Generar otro reto de seguridad": "Generate another security challenge",
+      "Testimonio anterior": "Previous review", "Testimonio siguiente": "Next review",
+      "Seleccionar testimonio": "Select review",
+      "Testimonios de clientes": "Customer reviews",
+      "Valoración: 5 de 5 estrellas": "Rating: 5 out of 5 stars",
+      "de 5": "out of 5",
+      "Escribe tu nombre.": "Enter your name.",
+      "Escribe un correo válido.": "Enter a valid email.",
+      "Escribe un teléfono válido (mín. 9 dígitos).": "Enter a valid phone (min. 9 digits).",
+      "Selecciona un servicio.": "Select a service.",
+      "Cuéntanos un poco más (mín. 10 caracteres).": "Tell us a bit more (min. 10 characters).",
+      "Escribe tu nombre (mín. 2 caracteres).": "Enter your name (min. 2 characters).",
+      "Resuelve la operacion de seguridad.": "Solve the security operation.",
+      "Resuelve la operación de seguridad.": "Solve the security operation.",
+      "Revisa los campos marcados en rojo.": "Check the fields marked in red.",
+      "Enviando...": "Sending…", "Enviando…": "Sending…",
+      "Mensaje enviado. Gracias.": "Message sent. Thank you.",
+      "Gracias, hemos recibido tu mensaje. Te responderemos en menos de 24 horas laborables.":
+        "Thank you, we have received your message. We will reply within 24 working hours.",
+      "¡Gracias! Tu testimonio se revisará antes de publicarse.":
+        "Thank you! Your review will be checked before publishing.",
+      "No se pudo enviar. Inténtalo de nuevo o escríbenos por WhatsApp.":
+        "It could not be sent. Try again or message us on WhatsApp.",
+      "No se pudo enviar. Inténtalo de nuevo en unos minutos.":
+        "It could not be sent. Try again in a few minutes.",
+      "Verificacion no disponible": "Verification unavailable",
+      "Verificación no disponible": "Verification unavailable",
+      "Sin conexión con Google en este momento: te mostramos las últimas reseñas guardadas.":
+        "No connection to Google right now: we are showing the last saved reviews.",
+      "Mostrando las últimas reseñas guardadas de Trustpilot.":
+        "Showing the last saved Trustpilot reviews.",
+      "Formato no válido. Usa JPG, PNG o WebP.": "Invalid format. Use JPG, PNG or WebP.",
+      "Procesando la imagen…": "Processing the image…",
+      "La imagen es demasiado grande. Prueba con otra más ligera.":
+        "The image is too large. Try a lighter one.",
+      "No se pudo leer la imagen. Prueba con otra.": "The image could not be read. Try another one.",
+      "Foto lista. Se publicará junto a tu testimonio.":
+        "Photo ready. It will be published with your review.",
+      "Formulario no configurado: sustituye TU_ID en js/main.js y en el action del formulario.":
+        "Form not configured: replace TU_ID in js/main.js and in the form action.",
+      "Mapa con la ubicación de C-ROTULUS S.U.R.L. en Artemisa":
+        "Map with the location of C-ROTULUS S.U.R.L. in Artemisa",
+
+      // --- Empresa ---
+      "Quiénes somos": "Who we are",
+      "Somos C-ROTULUS S.U.R.L., una empresa de servicios tecnológicos. Conoce nuestra historia, lo que nos mueve y al equipo que estará a tu lado.":
+        "We are C-ROTULUS S.U.R.L., a technology services company. Get to know our history, what drives us and the team that will be by your side.",
+      "Nuestra historia": "Our story",
+      "C-ROTULUS nació con una idea sencilla: la tecnología no debería ser un dolor de cabeza. Empezamos resolviendo pequeños problemas informáticos para negocios de nuestro entorno y, con el tiempo, ampliamos el servicio hasta diseñar, desplegar y mantener la infraestructura digital completa de nuestros clientes.":
+        "C-ROTULUS was born from a simple idea: technology should not be a headache. We started by solving small IT problems for nearby businesses and, over time, expanded our service to design, deploy and maintain our clients' entire digital infrastructure.",
+      "Hoy trabajamos con pymes y autónomos que necesitan soluciones claras, seguras y sin sorpresas: desde una web que convierte visitas en clientes hasta la automatización de tareas con inteligencia artificial o la protección de su red.":
+        "Today we work with SMEs and freelancers who need clear, secure solutions with no surprises: from a website that turns visits into customers to task automation with artificial intelligence or protecting their network.",
+      "Nuestros valores": "Our values",
+      "Cercanía y transparencia": "Closeness and transparency",
+      "Compromiso con los plazos": "Commitment to deadlines",
+      "Calidad y seguridad": "Quality and security",
+      "Mejora continua": "Continuous improvement",
+      "Misión": "Mission",
+      "Aportar tecnología fiable y comprensible que permita a las empresas trabajar mejor, con más seguridad y menos costes ocultos.":
+        "Provide reliable, understandable technology that lets companies work better, with more security and fewer hidden costs.",
+      "Visión": "Vision",
+      "Ser el socio tecnológico de referencia de las pymes de nuestro entorno, reconocidos por la cercanía y la calidad del servicio.":
+        "To be the benchmark technology partner for SMEs in our area, known for our closeness and service quality.",
+      "¿Hablamos de tu proyecto?": "Shall we talk about your project?",
+      "Cuéntanos qué necesitas y te propondremos la mejor solución, sin compromiso.":
+        "Tell us what you need and we will propose the best solution, with no obligation.",
+      "Solicitar presupuesto": "Request a quote",
+
+      // --- Contacto (datos) ---
+      "Teléfonos": "Phones", "Correo": "Email", "Dirección": "Address", "Horario": "Hours",
+      "Lunes a Viernes de 9:00 am a 5:00 pm": "Monday to Friday, 9:00 am to 5:00 pm",
+      "Datos de contacto": "Contact details",
+
+      // --- Contenido editable (BD) ---
+      "Diseño y programación": "Design and programming",
+      "Productividad": "Productivity", "Atención continua": "Ongoing support",
+      "Infraestructura": "Infrastructure", "Estrategia": "Strategy",
+      "Continuidad": "Continuity",
+      "Webs corporativas, tiendas online y aplicaciones a medida rápidas y fáciles de gestionar.":
+        "Corporate websites, online stores and custom applications that are fast and easy to manage.",
+      "Automatizamos tareas repetitivas y creamos asistentes que atienden, filtran y organizan información.":
+        "We automate repetitive tasks and build assistants that handle, filter and organise information.",
+      "Atención rápida para tu equipo: incidencias, equipos y software resueltos sin perder tiempo.":
+        "Fast support for your team: incidents, devices and software sorted without wasting time.",
+      "Infraestructura de red estable y protegida, con copias de seguridad y planes de contingencia.":
+        "A stable, protected network infrastructure, with backups and contingency plans.",
+      "Analizamos qué necesitas de verdad y trazamos un plan realista, con presupuesto claro.":
+        "We analyse what you really need and draw up a realistic plan, with a clear budget.",
+      "Nos ocupamos de que todo siga funcionando: actualizaciones, monitorización y mejoras continuas.":
+        "We make sure everything keeps running: updates, monitoring and continuous improvements.",
+      "Diseño responsive": "Responsive design", "Panel autogestionable": "Self-managed panel",
+      "SEO técnico incluido": "Technical SEO included",
+      "Chatbots y asistentes": "Chatbots and assistants",
+      "Integración entre herramientas": "Integration between tools",
+      "Informes automáticos": "Automatic reports",
+      "Helpdesk multicanal": "Multichannel helpdesk",
+      "Soporte remoto y presencial": "Remote and on-site support",
+      "Tiempos de respuesta acordados": "Agreed response times",
+      "Wi-Fi y cableado profesional": "Professional Wi-Fi and cabling",
+      "Firewall y antivirus gestionado": "Managed firewall and antivirus",
+      "Copias de seguridad": "Backups",
+      "Auditoría de sistemas": "Systems audit",
+      "Plan de digitalización": "Digitalisation plan",
+      "Optimización de costes": "Cost optimisation",
+      "Monitorización 24/7": "24/7 monitoring",
+      "Actualizaciones de seguridad": "Security updates",
+      "Informe mensual": "Monthly report",
+      "Desarrollo web": "Web development", "Automatización e IA": "Automation and AI",
+      "Redes y seguridad": "Networks and security", "Automatización": "Automation",
+      "Seguridad": "Security",
+      "Tienda online para distribuidora local": "Online store for a local distributor",
+      "Catálogo de más de 2.000 referencias, pago integrado y panel de gestión para el equipo.":
+        "A catalogue of over 2,000 items, integrated payment and a management panel for the team.",
+      "Asistente que atiende consultas 24/7": "Assistant that handles queries 24/7",
+      "Un agente de IA que responde dudas frecuentes y deriva las incidencias al equipo humano.":
+        "An AI agent that answers frequent questions and passes incidents to the human team.",
+      "Renovación de red en oficinas": "Office network upgrade",
+      "Cableado, Wi-Fi profesional y firewall gestionado para 60 puestos de trabajo.":
+        "Cabling, professional Wi-Fi and a managed firewall for 60 workstations.",
+      "Cómo la IA puede ahorrar horas a tu pyme": "How AI can save your SME hours",
+      "Descubre qué tareas conviene automatizar primero y cómo empezar sin complicaciones.":
+        "Find out which tasks are worth automating first and how to start without complications.",
+      "Protege tu red: 5 medidas básicas": "Protect your network: 5 basic measures",
+      "Cinco acciones sencillas que reducen drásticamente el riesgo de un incidente.":
+        "Five simple actions that drastically reduce the risk of an incident.",
+      "Una web que convierte visitas en clientes": "A website that turns visits into customers",
+      "Qué debe tener tu web para que quien llega termine contactando contigo.":
+        "What your website needs so that visitors end up contacting you.",
+      "Diagnóstico": "Diagnosis", "Propuesta": "Proposal",
+      "Implementación": "Implementation", "Soporte": "Support",
+      "Escuchamos tus necesidades y analizamos el estado actual de tu tecnología.":
+        "We listen to your needs and analyse the current state of your technology.",
+      "Recibes una solución clara, con alcance, plazos y precio cerrado.":
+        "You receive a clear solution, with scope, deadlines and a fixed price.",
+      "Ejecutamos el proyecto con seguimiento y pruebas antes de la entrega.":
+        "We run the project with monitoring and testing before delivery.",
+      "Te acompañamos después: mantenimiento, mejoras y atención cuando lo necesites.":
+        "We stay with you afterwards: maintenance, improvements and support whenever you need it.",
+      "Nos renovaron la web y automatizaron los presupuestos. Ahora ahorramos varias horas cada semana y todo es mucho más claro.":
+        "They revamped our website and automated our quotes. We now save several hours a week and everything is much clearer.",
+      "En una semana teníamos la red y las copias de seguridad funcionando. El soporte responde siempre rápido.":
+        "Within a week our network and backups were up and running. Support always responds quickly.",
+      "Un asistente de IA atiende nuestras consultas fuera de horario. Ha mejorado la atención al cliente notablemente.":
+        "An AI assistant handles our queries outside office hours. Customer service has improved noticeably.",
+      "Gerente · Distribuciones ML": "Manager · Distribuciones ML",
+      "Director · Talleres Ruiz": "Director · Talleres Ruiz",
+      "Fundadora · CliniSalud": "Founder · CliniSalud",
+      "de solicitudes online en 3 meses": "more online requests in 3 months",
+      "+40% de solicitudes online en 3 meses": "+40% more online enquiries in 3 months",
+      "0 incidencias críticas en 12 meses": "0 critical incidents in 12 months",
+      "70% de consultas resueltas sin espera": "70% of queries resolved with no wait",
+      "críticas en 12 meses": "critical incidents in 12 months",
+      "de consultas resueltas sin espera": "of queries resolved without waiting",
+      "¿Cuánto cuesta un proyecto?": "How much does a project cost?",
+      "Depende del alcance. Tras el diagnóstico gratuito te entregamos un presupuesto cerrado y sin compromiso, con todo detallado.":
+        "It depends on the scope. After the free diagnosis we give you a fixed, no-obligation quote, fully itemised.",
+      "¿Cuánto tardáis en entregar?": "How long do you take to deliver?",
+      "Una web corporativa suele estar en 2-4 semanas. Los proyectos de automatización o redes dependen del alcance; acordamos plazos antes de empezar.":
+        "A corporate website usually takes 2-4 weeks. Automation or network projects depend on the scope; we agree deadlines before starting.",
+      "¿Ofrecéis garantía?": "Do you offer a warranty?",
+      "Sí. Todo trabajo incluye garantía sobre lo entregado y, opcionalmente, un plan de mantenimiento para mantenerlo actualizado y seguro.":
+        "Yes. All work includes a warranty on what is delivered and, optionally, a maintenance plan to keep it updated and secure.",
+      "¿Qué incluye el soporte?": "What does support include?",
+      "Atención por teléfono, correo o WhatsApp, resolución de incidencias, actualizaciones de seguridad y asesoramiento según el plan contratado.":
+        "Support by phone, email or WhatsApp, incident resolution, security updates and advice according to the plan you choose.",
+      "¿Cómo puedo pagar?": "How can I pay?",
+      "Aceptamos transferencia bancaria y pago con tarjeta. En proyectos grandes, un anticipo al empezar y el resto a la entrega.":
+        "We accept bank transfer and card payment. On large projects, a deposit at the start and the rest on delivery.",
+      "¿Cómo empiezo?": "How do I start?",
+      "Escríbenos por el formulario o WhatsApp. Concertamos una llamada o reunión sin coste y te proponemos los siguientes pasos.":
+        "Write to us via the form or WhatsApp. We arrange a free call or meeting and suggest the next steps.",
+      "Directora de proyectos": "Project manager",
+      "Ingeniero de redes": "Network engineer",
+      "Especialista en IA": "AI specialist",
+      "Desarrollador web": "Web developer",
+      "Coordina cada proyecto de principio a fin y se asegura de que cumplimos plazos y presupuesto.":
+        "Coordinates every project from start to finish and makes sure we meet deadlines and budget.",
+      "Diseña y protege la infraestructura de red de nuestros clientes, con foco en la seguridad.":
+        "Designs and protects our clients' network infrastructure, with a focus on security.",
+      "Crea automatizaciones y agentes de IA que ahorran horas de trabajo repetitivo.":
+        "Builds automations and AI agents that save hours of repetitive work.",
+      "Construye webs y aplicaciones rápidas, accesibles y fáciles de gestionar.":
+        "Builds websites and applications that are fast, accessible and easy to manage.",
+      // --- Restos de la portada (reseñas de ejemplo, fechas relativas, hero) ---
+      "hace crecer": "grows your business",
+      "Tecnología clara que": "Clear technology that",
+      "tu negocio": "your business",
+      "Analizamos que necesitas de verdad y trazamos un plan realista, con presupuesto claro.":
+        "We analyse what you really need and draw up a realistic plan, with a clear budget.",
+      "0 incidencias": "0 incidents",
+      "Cliente verificado": "Verified client",
+      "Reseñas de Google": "Google reviews",
+      "Hace 2 semanas": "2 weeks ago", "Hace 3 semanas": "3 weeks ago",
+      "Hace 1 mes": "1 month ago", "Hace 2 meses": "2 months ago",
+      "min": "min",
+      "5 de 5": "5 out of 5",
+      "Foto de": "Photo of", "Retrato de": "Portrait of",
+      "Leer:": "Read:", "Valoración:": "Rating:",
+      "de 5 estrellas": "out of 5 stars",
+      "«Nos renovaron la web y automatizaron los presupuestos. Ahora ahorramos varias horas cada semana y todo es mucho más claro.»":
+        "«They revamped our website and automated our quotes. We now save several hours a week and everything is much clearer.»",
+      "«En una semana teníamos la red y las copias de seguridad funcionando. El soporte responde siempre rápido.»":
+        "«Within a week our network and backups were up and running. Support always responds quickly.»",
+      "«Un asistente de IA atiende nuestras consultas fuera de horario. Ha mejorado la atención al cliente notablemente.»":
+        "«An AI assistant handles our queries outside office hours. Customer service has improved noticeably.»",
+      "Nos renovaron la página web y automatizaron los presupuestos. Cumplieron los plazos y el resultado superó lo que esperábamos. Trato cercano y muy profesional.":
+        "They revamped our website and automated our quotes. They met the deadlines and the result exceeded our expectations. Close and very professional service.",
+      "Implantaron un asistente con IA para atender las consultas de fuera de horario. Ha reducido el trabajo repetitivo del equipo y la atención al cliente ha mejorado notablemente.":
+        "They implemented an AI assistant to handle out-of-hours queries. It has reduced the team's repetitive work and customer service has improved noticeably.",
+      "Montaron la red de la oficina y dejaron todo documentado. El soporte responde rápido cada vez que los necesitamos. Repetiremos sin duda.":
+        "They set up the office network and left everything documented. Support responds quickly whenever we need it. We will definitely come back.",
+      "Nos acompañaron en todo el proceso de digitalización. Comunicación excelente y plazos cumplidos. Es difícil encontrar un proveedor tan atento.":
+        "They supported us throughout the digitalisation process. Excellent communication and deadlines met. It is hard to find such an attentive provider.",
+      "La tienda online funciona perfectamente y por fin podemos gestionar los pedidos sin dolores de cabeza. Muy recomendables para pequeñas empresas.":
+        "The online store works perfectly and we can finally manage orders without headaches. Highly recommended for small businesses.",
+      "Nos montaron la red y las copias de seguridad en tiempo récord. El soporte posterior responde rápido. Solo echo en falta más formación al principio.":
+        "They set up our network and backups in record time. Afterwards, support responds quickly. My only wish is more training at the start.",
+      "Cliente": "Client",
+      "ene": "Jan", "feb": "Feb", "mar": "Mar", "abr": "Apr", "may": "May", "jun": "Jun",
+      "jul": "Jul", "ago": "Aug", "sep": "Sep", "oct": "Oct", "nov": "Nov", "dic": "Dec",
+      "Aviso legal": "Legal notice", "Privacidad": "Privacy", "Cookies": "Cookies",
+      "Logotipo de C-ROTULUS S.U.R.L.": "C-ROTULUS S.U.R.L. logo",
+      "Análisis de datos y gráficas para automatizar tareas con IA":
+        "Data and chart analysis to automate tasks with AI",
+      "Armario de comunicaciones con cableado de red profesional":
+        "Communications cabinet with professional network cabling",
+      "Asistente virtual de inteligencia artificial atendiendo consultas":
+        "Virtual artificial intelligence assistant handling queries",
+      "Comercio local con tienda online y catálogo de productos":
+        "Local shop with an online store and product catalogue",
+      "Equipo de profesionales de C-ROTULUS trabajando en un proyecto":
+        "Team of C-ROTULUS professionals working on a project",
+      "Programador desarrollando una web moderna": "Developer building a modern website",
+      "Seguridad informática: candado y datos protegidos": "IT security: padlock and protected data",
+      "Foto de Marta López": "Photo of Marta López", "Foto de Javier Ruiz": "Photo of Javier Ruiz",
+      "Foto de Cristina Serra": "Photo of Cristina Serra",
+      "Retrato de Marta López, Directora de proyectos": "Portrait of Marta López, Project manager",
+      "Retrato de Javier Ruiz, Ingeniero de redes": "Portrait of Javier Ruiz, Network engineer",
+      "Retrato de Cristina Serra, Especialista en IA": "Portrait of Cristina Serra, AI specialist",
+      "Retrato de Diego Marín, Desarrollador web": "Portrait of Diego Marín, Web developer",
+      "1 estrella": "1 star", "2 estrellas": "2 stars", "3 estrellas": "3 stars",
+      "4 estrellas": "4 stars", "5 estrellas": "5 stars",
+      "4 de 5 estrellas": "4 out of 5 stars", "5 de 5 estrellas": "5 out of 5 stars",
+      "Leer: Cómo la IA puede ahorrar horas a tu pyme": "Read: How AI can save your SME hours",
+      "Leer: Protege tu red: 5 medidas básicas": "Read: Protect your network: 5 basic measures",
+      "Leer: Una web que convierte visitas en clientes": "Read: A website that turns visits into customers",
+      "Servicios tecnológicos para empresas": "Technology services for businesses",
+      "C-ROTULUS S.U.R.L. | Servicios tecnológicos para empresas":
+        "C-ROTULUS S.U.R.L. | Technology services for businesses",
+      "Empresa | C-ROTULUS S.U.R.L. — Sobre nosotros y equipo":
+        "Company | C-ROTULUS S.U.R.L. — About us and team"
     },
     pt: {
-      nav_home: "Início", nav_company: "Empresa", nav_services: "Serviços",
-      nav_projects: "Projetos", nav_process: "Processo", nav_testimonials: "Depoimentos",
-      nav_faq: "FAQ", nav_login: "Entrar", nav_contact: "Contato",
-      aria_search: "Pesquisar no site", aria_lang: "Idioma do site",
-      aria_theme: "Mudar para modo escuro", aria_close: "Fechar pesquisa",
-      search_placeholder: "Pesquisar no site: serviços, projetos, blog, dúvidas…",
-      no_results: "Sem resultados. Tente outra palavra."
+      // --- Navegação e cabeçalho ---
+      "Inicio": "Início", "Empresa": "Empresa", "Servicios": "Serviços",
+      "Proyectos": "Projetos", "Proceso": "Processo", "Testimonios": "Depoimentos",
+      "Sección": "Secção", "Servicio": "Serviço", "Proyecto": "Projeto",
+      "Opinión": "Avaliação", "Testimonio": "Depoimento",
+      "Acceder": "Entrar", "Contacto": "Contato", "Opiniones": "Opiniões",
+      "Blog": "Blog", "Ubicación": "Localização", "Preguntas frecuentes": "Perguntas frequentes",
+      "Español": "Español", "English": "English", "Português": "Português",
+      "Saltar al contenido principal": "Saltar para o conteúdo principal",
+      "Buscar en el sitio": "Pesquisar no site",
+      "Idioma del sitio": "Idioma do site",
+      "Cambiar a modo noche": "Mudar para modo escuro",
+      "Cambiar a modo día": "Mudar para modo claro",
+      "Cerrar búsqueda": "Fechar pesquisa",
+      "Abrir menú de navegación": "Abrir menu de navegação",
+      "Navegación principal": "Navegação principal",
+      "C-ROTULUS, ir al inicio": "C-ROTULUS, ir para o início",
+      "Buscar en el sitio: servicios, proyectos, blog, preguntas…":
+        "Pesquisar no site: serviços, projetos, blog, perguntas…",
+      "Sin resultados. Prueba con otra palabra.": "Sem resultados. Tente outra palavra.",
+      "Enlaces rápidos": "Ligações rápidas", "Síguenos": "Siga-nos",
+      "Ruta de navegación": "Navegação estrutural", "Sitemap": "Mapa do site",
+      "Redes sociales de C-ROTULUS": "Redes sociais da C-ROTULUS",
+      "Volver arriba": "Voltar ao topo",
+
+      // --- Hero ---
+      "Agencia de servicios tecnológicos · Pymes y autónomos":
+        "Agência de serviços tecnológicos · PMEs e autónomos",
+      "Tecnología clara que hace crecer tu negocio":
+        "Tecnologia clara que faz crescer o seu negócio",
+      "Ayudamos a pymes y autónomos a digitalizarse con desarrollo web, automatización e IA, redes seguras y soporte continuo. Menos problemas, más tiempo para lo que importa.":
+        "Ajudamos PMEs e autónomos a digitalizar-se com desenvolvimento web, automação e IA, redes seguras e suporte contínuo. Menos problemas, mais tempo para o que importa.",
+      "Solicitar servicios": "Solicitar serviços",
+      "Escríbenos por WhatsApp": "Escreva-nos no WhatsApp",
+      "Descubre mas": "Descubra mais", "Descubre más": "Descubra mais",
+      "Bajar a la seccion Servicios": "Descer para a secção Serviços",
+      "Cifras de confianza": "Números de confiança",
+      "años de experiencia": "anos de experiência",
+      "clientes satisfechos": "clientes satisfeitos",
+      "proyectos entregados": "projetos entregues",
+      "horas de respuesta": "horas de resposta",
+
+      // --- Maquete do agente IA (hero) ---
+      "Agente IA · Facturas y firmas": "Agente IA · Faturas e assinaturas",
+      "en vivo": "ao vivo", "Entrada": "Entrada",
+      "factura-2026-0412.pdf recibida por correo": "fatura-2026-0412.pdf recebida por e-mail",
+      "Lectura IA": "Leitura IA",
+      "emisor, NIF, importe y fecha extraídos (OCR)": "emissor, NIF, valor e data extraídos (OCR)",
+      "Validación": "Validação",
+      "coincide con el pedido · sin duplicados": "coincide com o pedido · sem duplicados",
+      "Firma digital": "Assinatura digital",
+      "sellada con certificado de la empresa": "selada com o certificado da empresa",
+      "Firmado": "Assinado", "4 pasos · 8 s · 0 errores": "4 passos · 8 s · 0 erros",
+      "Agente de IA que recibe una factura, extrae los datos, valida, la firma digitalmente y la archiva automáticamente":
+        "Agente de IA que recebe uma fatura, extrai os dados, valida, assina digitalmente e arquiva automaticamente",
+
+      // --- Cabeçalhos de secção ---
+      "Sobre nosotros": "Sobre nós", "Equipo": "Equipa", "Cómo trabajamos": "Como trabalhamos",
+      "Reseñas verificadas": "Avaliações verificadas",
+      "Un equipo cercano con soluciones serias": "Uma equipa próxima com soluções sérias",
+      "Las personas detrás de C-ROTULUS": "As pessoas por trás da C-ROTULUS",
+      "Todo lo que tu empresa necesita, en un solo equipo":
+        "Tudo o que a sua empresa precisa, numa só equipa",
+      "Trabajos que ya están dando resultados": "Trabalhos que já estão a dar resultados",
+      "Ideas y consejos para tu negocio": "Ideias e conselhos para o seu negócio",
+      "Un proceso simple, en cuatro pasos": "Um processo simples, em quatro passos",
+      "Lo que opinan nuestros clientes": "O que dizem os nossos clientes",
+      "Lo que opinan de nosotros en Google": "O que dizem de nós no Google",
+      "Lo que dicen en Trustpilot": "O que dizem no Trustpilot",
+      "Cuéntanos tu proyecto": "Conte-nos o seu projeto",
+      "Dónde estamos y cómo contactarnos": "Onde estamos e como contactar-nos",
+      "Resolvemos tus dudas": "Resolvemos as suas dúvidas",
+      "Servicios de ejemplo fáciles de editar. Cada tarjeta incluye icono, descripción, contenido y botón de consulta.":
+        "Serviços de exemplo fáceis de editar. Cada cartão inclui ícone, descrição, conteúdo e botão de consulta.",
+      "Una muestra de proyectos de ejemplo. Sustituye las imágenes, los textos y las etiquetas por tus casos reales.":
+        "Uma amostra de projetos de exemplo. Substitua as imagens, os textos e as etiquetas pelos seus casos reais.",
+      "Publicamos guías sencillas sobre tecnología, seguridad y productividad. Sin tecnicismos innecesarios.":
+        "Publicamos guias simples sobre tecnologia, segurança e produtividade. Sem termos desnecessários.",
+      "Sin sorpresas: te acompañamos desde la primera conversación hasta el soporte del día a día.":
+        "Sem surpresas: acompanhamos desde a primeira conversa até ao suporte do dia a dia.",
+      "Opiniones de clientes reales. Comparte la tuya en un minuto, sin crear ninguna cuenta.":
+        "Opiniões de clientes reais. Partilhe a sua num minuto, sem criar conta.",
+      "Reseñas reales de clientes publicadas en nuestra ficha de Google. Puedes leerlas todas en un clic.":
+        "Avaliações reais de clientes publicadas na nossa ficha do Google. Pode lê-las todas num clique.",
+      "Opiniones reales de clientes publicadas en nuestra ficha de Trustpilot.":
+        "Opiniões reais de clientes publicadas na nossa ficha do Trustpilot.",
+      "Rellena el formulario y te respondemos en menos de 24 horas laborables.":
+        "Preencha o formulário e respondemos em menos de 24 horas úteis.",
+      "Visítanos, llámanos o escríbenos. Estamos a tu disposición en horario de oficina.":
+        "Visite-nos, ligue-nos ou escreva-nos. Estamos à sua disposição em horário de expediente.",
+      "Mostramos las preguntas más relevantes, ordenadas automáticamente por su importancia.":
+        "Mostramos as perguntas mais relevantes, ordenadas automaticamente por importância.",
+      "Desde [AÑO DE FUNDACIÓN] acompañamos a empresas en su transformación digital, combinando tecnología y trato humano.":
+        "Desde [ANO DE FUNDAÇÃO] acompanhamos empresas na sua transformação digital, combinando tecnologia e trato humano.",
+      "Un equipo pequeño, cercano y especializado. Estas son las personas que te atenderán y trabajarán en tu proyecto.":
+        "Uma equipa pequena, próxima e especializada. Estas são as pessoas que o vão atender e trabalhar no seu projeto.",
+
+      // --- Botões e textos comuns ---
+      "Consultar": "Consultar", "Ver caso": "Ver caso", "Deja tu testimonio": "Deixe o seu depoimento",
+      "Ver todas en Google": "Ver todas no Google",
+      "Ver todas en Trustpilot": "Ver todas no Trustpilot",
+      "Basado en": "Baseado em", "reseñas": "avaliações",
+      "Enviar solicitud": "Enviar pedido",
+      "Al enviar aceptas nuestra política de privacidad.":
+        "Ao enviar aceita a nossa política de privacidade.",
+      "Inicia sesión para proponer una pregunta": "Inicie sessão para sugerir uma pergunta",
+      "Cómo llegar en Google Maps": "Como chegar no Google Maps",
+      "C-ROTULUS S.U.R.L. Todos los derechos reservados.":
+        "C-ROTULUS S.U.R.L. Todos os direitos reservados.",
+      "Aviso legal · Privacidad · Cookies": "Aviso legal · Privacidade · Cookies",
+      "Servicios tecnológicos para empresas. Desarrollo, automatización, redes y soporte con trato cercano.":
+        "Serviços tecnológicos para empresas. Desenvolvimento, automação, redes e suporte com trato próximo.",
+
+      // --- Formulários ---
+      "Tu experiencia ayuda a otros": "A sua experiência ajuda outros",
+      "Cuéntanos cómo fue trabajar con nosotros. Tu testimonio se publica en la portada y ayuda a otras empresas a decidirse. No necesitas cuenta.":
+        "Conte-nos como foi trabalhar connosco. O seu depoimento é publicado na página inicial e ajuda outras empresas a decidir. Não precisa de conta.",
+      "Se revisa antes de publicarse.": "É revisto antes de ser publicado.",
+      "Puedes firmar con tu nombre y empresa.": "Pode assinar com o seu nome e empresa.",
+      "Tu correo no se muestra nunca.": "O seu e-mail nunca é mostrado.",
+      "Tu nombre *": "O seu nome *",
+      "Cargo y empresa": "Cargo e empresa", "(opcional)": "(opcional)",
+      "Tu valoración *": "A sua avaliação *",
+      "Tu foto": "A sua foto", "Elegir imagen": "Escolher imagem", "Quitar": "Remover",
+      "JPG, PNG o WebP. Se recorta en cuadrado y se optimiza antes de enviarse.":
+        "JPG, PNG ou WebP. É recortada em quadrado e otimizada antes de ser enviada.",
+      "Tu experiencia *": "A sua experiência *",
+      "Verificacion de seguridad *": "Verificação de segurança *",
+      "Verificación de seguridad *": "Verificação de segurança *",
+      "Cargando reto…": "A carregar desafio…",
+      "Resuelve la operacion para demostrar que eres una persona.":
+        "Resolva a operação para provar que é uma pessoa.",
+      "Resuelve la operación para demostrar que eres una persona.":
+        "Resolva a operação para provar que é uma pessoa.",
+      "No rellenar": "Não preencher",
+      "Publicar mi testimonio": "Publicar o meu depoimento",
+      "Nombre y apellidos *": "Nome completo *",
+      "Correo electrónico *": "E-mail *",
+      "Teléfono *": "Telefone *",
+      "Servicio de interés *": "Serviço de interesse *",
+      "Selecciona un servicio": "Selecione um serviço",
+      "Mensaje *": "Mensagem *",
+      "Otro": "Outro",
+      "Desarrollo web y aplicaciones": "Desenvolvimento web e aplicações",
+      "Automatización y agentes de IA": "Automação e agentes de IA",
+      "Soporte técnico": "Suporte técnico",
+      "Redes y ciberseguridad": "Redes e cibersegurança",
+      "Consultoría tecnológica": "Consultoria tecnológica",
+      "Mantenimiento integral": "Manutenção integral",
+      "Ej.: María Pérez": "Ex.: María Pérez",
+      "Ej.: Gerente · Distribuciones ML": "Ex.: Gestor · Distribuciones ML",
+      "¿Qué problema tenías y cómo lo resolvimos?": "Que problema tinha e como o resolvemos?",
+      "Generar otro reto de seguridad": "Gerar outro desafio de segurança",
+      "Testimonio anterior": "Depoimento anterior", "Testimonio siguiente": "Depoimento seguinte",
+      "Seleccionar testimonio": "Selecionar depoimento",
+      "Testimonios de clientes": "Depoimentos de clientes",
+      "Valoración: 5 de 5 estrellas": "Avaliação: 5 de 5 estrelas",
+      "de 5": "de 5",
+      "Escribe tu nombre.": "Escreva o seu nome.",
+      "Escribe un correo válido.": "Escreva um e-mail válido.",
+      "Escribe un teléfono válido (mín. 9 dígitos).": "Escreva um telefone válido (mín. 9 dígitos).",
+      "Selecciona un servicio.": "Selecione um serviço.",
+      "Cuéntanos un poco más (mín. 10 caracteres).": "Conte-nos um pouco mais (mín. 10 caracteres).",
+      "Escribe tu nombre (mín. 2 caracteres).": "Escreva o seu nome (mín. 2 caracteres).",
+      "Resuelve la operacion de seguridad.": "Resolva a operação de segurança.",
+      "Resuelve la operación de seguridad.": "Resolva a operação de segurança.",
+      "Revisa los campos marcados en rojo.": "Verifique os campos marcados a vermelho.",
+      "Enviando...": "A enviar…", "Enviando…": "A enviar…",
+      "Mensaje enviado. Gracias.": "Mensagem enviada. Obrigado.",
+      "Gracias, hemos recibido tu mensaje. Te responderemos en menos de 24 horas laborables.":
+        "Obrigado, recebemos a sua mensagem. Responderemos em menos de 24 horas úteis.",
+      "¡Gracias! Tu testimonio se revisará antes de publicarse.":
+        "Obrigado! O seu depoimento será revisto antes de ser publicado.",
+      "No se pudo enviar. Inténtalo de nuevo o escríbenos por WhatsApp.":
+        "Não foi possível enviar. Tente novamente ou escreva-nos no WhatsApp.",
+      "No se pudo enviar. Inténtalo de nuevo en unos minutos.":
+        "Não foi possível enviar. Tente novamente em alguns minutos.",
+      "Verificacion no disponible": "Verificação indisponível",
+      "Verificación no disponible": "Verificação indisponível",
+      "Sin conexión con Google en este momento: te mostramos las últimas reseñas guardadas.":
+        "Sem ligação ao Google neste momento: mostramos as últimas avaliações guardadas.",
+      "Mostrando las últimas reseñas guardadas de Trustpilot.":
+        "A mostrar as últimas avaliações guardadas do Trustpilot.",
+      "Formato no válido. Usa JPG, PNG o WebP.": "Formato inválido. Use JPG, PNG ou WebP.",
+      "Procesando la imagen…": "A processar a imagem…",
+      "La imagen es demasiado grande. Prueba con otra más ligera.":
+        "A imagem é demasiado grande. Tente outra mais leve.",
+      "No se pudo leer la imagen. Prueba con otra.": "Não foi possível ler a imagem. Tente outra.",
+      "Foto lista. Se publicará junto a tu testimonio.":
+        "Foto pronta. Será publicada junto ao seu depoimento.",
+      "Formulario no configurado: sustituye TU_ID en js/main.js y en el action del formulario.":
+        "Formulário não configurado: substitua TU_ID em js/main.js e na action do formulário.",
+      "Mapa con la ubicación de C-ROTULUS S.U.R.L. en Artemisa":
+        "Mapa com a localização da C-ROTULUS S.U.R.L. em Artemisa",
+
+      // --- Empresa ---
+      "Quiénes somos": "Quem somos",
+      "Somos C-ROTULUS S.U.R.L., una empresa de servicios tecnológicos. Conoce nuestra historia, lo que nos mueve y al equipo que estará a tu lado.":
+        "Somos a C-ROTULUS S.U.R.L., uma empresa de serviços tecnológicos. Conheça a nossa história, o que nos move e a equipa que estará ao seu lado.",
+      "Nuestra historia": "A nossa história",
+      "C-ROTULUS nació con una idea sencilla: la tecnología no debería ser un dolor de cabeza. Empezamos resolviendo pequeños problemas informáticos para negocios de nuestro entorno y, con el tiempo, ampliamos el servicio hasta diseñar, desplegar y mantener la infraestructura digital completa de nuestros clientes.":
+        "A C-ROTULUS nasceu de uma ideia simples: a tecnologia não devia ser uma dor de cabeça. Começámos por resolver pequenos problemas informáticos para negócios da nossa zona e, com o tempo, ampliámos o serviço até desenhar, implementar e manter toda a infraestrutura digital dos nossos clientes.",
+      "Hoy trabajamos con pymes y autónomos que necesitan soluciones claras, seguras y sin sorpresas: desde una web que convierte visitas en clientes hasta la automatización de tareas con inteligencia artificial o la protección de su red.":
+        "Hoje trabalhamos com PMEs e autónomos que precisam de soluções claras, seguras e sem surpresas: desde um site que converte visitas em clientes até à automação de tarefas com inteligência artificial ou à proteção da sua rede.",
+      "Nuestros valores": "Os nossos valores",
+      "Cercanía y transparencia": "Proximidade e transparência",
+      "Compromiso con los plazos": "Compromisso com os prazos",
+      "Calidad y seguridad": "Qualidade e segurança",
+      "Mejora continua": "Melhoria contínua",
+      "Misión": "Missão",
+      "Aportar tecnología fiable y comprensible que permita a las empresas trabajar mejor, con más seguridad y menos costes ocultos.":
+        "Fornecer tecnologia fiável e compreensível que permita às empresas trabalhar melhor, com mais segurança e menos custos ocultos.",
+      "Visión": "Visão",
+      "Ser el socio tecnológico de referencia de las pymes de nuestro entorno, reconocidos por la cercanía y la calidad del servicio.":
+        "Ser o parceiro tecnológico de referência das PMEs da nossa zona, reconhecidos pela proximidade e pela qualidade do serviço.",
+      "¿Hablamos de tu proyecto?": "Falamos do seu projeto?",
+      "Cuéntanos qué necesitas y te propondremos la mejor solución, sin compromiso.":
+        "Diga-nos o que precisa e proporemos a melhor solução, sem compromisso.",
+      "Solicitar presupuesto": "Solicitar orçamento",
+
+      // --- Contacto (dados) ---
+      "Teléfonos": "Telefones", "Correo": "E-mail", "Dirección": "Endereço", "Horario": "Horário",
+      "Lunes a Viernes de 9:00 am a 5:00 pm": "Segunda a sexta, das 9:00 às 17:00",
+      "Datos de contacto": "Dados de contacto",
+
+      // --- Conteúdo editável (BD) ---
+      "Diseño y programación": "Design e programação",
+      "Productividad": "Produtividade", "Atención continua": "Apoio contínuo",
+      "Infraestructura": "Infraestrutura", "Estrategia": "Estratégia",
+      "Continuidad": "Continuidade",
+      "Webs corporativas, tiendas online y aplicaciones a medida rápidas y fáciles de gestionar.":
+        "Sites corporativos, lojas online e aplicações à medida rápidas e fáceis de gerir.",
+      "Automatizamos tareas repetitivas y creamos asistentes que atienden, filtran y organizan información.":
+        "Automatizamos tarefas repetitivas e criamos assistentes que atendem, filtram e organizam informação.",
+      "Atención rápida para tu equipo: incidencias, equipos y software resueltos sin perder tiempo.":
+        "Apoio rápido à sua equipa: incidentes, equipamentos e software resolvidos sem perder tempo.",
+      "Infraestructura de red estable y protegida, con copias de seguridad y planes de contingencia.":
+        "Infraestrutura de rede estável e protegida, com cópias de segurança e planos de contingência.",
+      "Analizamos qué necesitas de verdad y trazamos un plan realista, con presupuesto claro.":
+        "Analisamos o que precisa realmente e traçamos um plano realista, com orçamento claro.",
+      "Nos ocupamos de que todo siga funcionando: actualizaciones, monitorización y mejoras continuas.":
+        "Encarregamo-nos de que tudo continue a funcionar: atualizações, monitorização e melhorias contínuas.",
+      "Diseño responsive": "Design responsivo", "Panel autogestionable": "Painel autogerido",
+      "SEO técnico incluido": "SEO técnico incluído",
+      "Chatbots y asistentes": "Chatbots e assistentes",
+      "Integración entre herramientas": "Integração entre ferramentas",
+      "Informes automáticos": "Relatórios automáticos",
+      "Helpdesk multicanal": "Helpdesk multicanal",
+      "Soporte remoto y presencial": "Suporte remoto e presencial",
+      "Tiempos de respuesta acordados": "Tempos de resposta acordados",
+      "Wi-Fi y cableado profesional": "Wi-Fi e cablagem profissional",
+      "Firewall y antivirus gestionado": "Firewall e antivírus gerido",
+      "Copias de seguridad": "Cópias de segurança",
+      "Auditoría de sistemas": "Auditoria de sistemas",
+      "Plan de digitalización": "Plano de digitalização",
+      "Optimización de costes": "Otimização de custos",
+      "Monitorización 24/7": "Monitorização 24/7",
+      "Actualizaciones de seguridad": "Atualizações de segurança",
+      "Informe mensual": "Relatório mensal",
+      "Desarrollo web": "Desenvolvimento web", "Automatización e IA": "Automação e IA",
+      "Redes y seguridad": "Redes e segurança", "Automatización": "Automação",
+      "Seguridad": "Segurança",
+      "Tienda online para distribuidora local": "Loja online para distribuidora local",
+      "Catálogo de más de 2.000 referencias, pago integrado y panel de gestión para el equipo.":
+        "Catálogo com mais de 2.000 referências, pagamento integrado e painel de gestão para a equipa.",
+      "Asistente que atiende consultas 24/7": "Assistente que atende consultas 24/7",
+      "Un agente de IA que responde dudas frecuentes y deriva las incidencias al equipo humano.":
+        "Um agente de IA que responde a dúvidas frequentes e encaminha os incidentes para a equipa humana.",
+      "Renovación de red en oficinas": "Renovação de rede em escritórios",
+      "Cableado, Wi-Fi profesional y firewall gestionado para 60 puestos de trabajo.":
+        "Cablagem, Wi-Fi profissional e firewall gerido para 60 postos de trabalho.",
+      "Cómo la IA puede ahorrar horas a tu pyme": "Como a IA pode poupar horas à sua PME",
+      "Descubre qué tareas conviene automatizar primero y cómo empezar sin complicaciones.":
+        "Descubra que tarefas vale a pena automatizar primeiro e como começar sem complicações.",
+      "Protege tu red: 5 medidas básicas": "Proteja a sua rede: 5 medidas básicas",
+      "Cinco acciones sencillas que reducen drásticamente el riesgo de un incidente.":
+        "Cinco ações simples que reduzem drasticamente o risco de um incidente.",
+      "Una web que convierte visitas en clientes": "Um site que converte visitas em clientes",
+      "Qué debe tener tu web para que quien llega termine contactando contigo.":
+        "O que o seu site deve ter para que quem chega acabe por contactá-lo.",
+      "Diagnóstico": "Diagnóstico", "Propuesta": "Proposta",
+      "Implementación": "Implementação", "Soporte": "Suporte",
+      "Escuchamos tus necesidades y analizamos el estado actual de tu tecnología.":
+        "Ouvimos as suas necessidades e analisamos o estado atual da sua tecnologia.",
+      "Recibes una solución clara, con alcance, plazos y precio cerrado.":
+        "Recebe uma solução clara, com âmbito, prazos e preço fixo.",
+      "Ejecutamos el proyecto con seguimiento y pruebas antes de la entrega.":
+        "Executamos o projeto com acompanhamento e testes antes da entrega.",
+      "Te acompañamos después: mantenimiento, mejoras y atención cuando lo necesites.":
+        "Acompanhamos depois: manutenção, melhorias e apoio quando precisar.",
+      "Nos renovaron la web y automatizaron los presupuestos. Ahora ahorramos varias horas cada semana y todo es mucho más claro.":
+        "Renovaram o nosso site e automatizaram os orçamentos. Agora poupamos várias horas por semana e tudo é muito mais claro.",
+      "En una semana teníamos la red y las copias de seguridad funcionando. El soporte responde siempre rápido.":
+        "Numa semana tínhamos a rede e as cópias de segurança a funcionar. O suporte responde sempre rápido.",
+      "Un asistente de IA atiende nuestras consultas fuera de horario. Ha mejorado la atención al cliente notablemente.":
+        "Um assistente de IA atende as nossas consultas fora de horário. A atenção ao cliente melhorou bastante.",
+      "Gerente · Distribuciones ML": "Gestor · Distribuciones ML",
+      "Director · Talleres Ruiz": "Diretor · Talleres Ruiz",
+      "Fundadora · CliniSalud": "Fundadora · CliniSalud",
+      "de solicitudes online en 3 meses": "de pedidos online em 3 meses",
+      "+40% de solicitudes online en 3 meses": "+40% de pedidos online em 3 meses",
+      "0 incidencias críticas en 12 meses": "0 incidentes críticos em 12 meses",
+      "70% de consultas resueltas sin espera": "70% das consultas resolvidas sem espera",
+      "críticas en 12 meses": "incidentes críticos em 12 meses",
+      "de consultas resueltas sin espera": "de consultas resolvidas sem espera",
+      "¿Cuánto cuesta un proyecto?": "Quanto custa um projeto?",
+      "Depende del alcance. Tras el diagnóstico gratuito te entregamos un presupuesto cerrado y sin compromiso, con todo detallado.":
+        "Depende do âmbito. Após o diagnóstico gratuito entregamos um orçamento fixo e sem compromisso, com tudo detalhado.",
+      "¿Cuánto tardáis en entregar?": "Quanto tempo demoram a entregar?",
+      "Una web corporativa suele estar en 2-4 semanas. Los proyectos de automatización o redes dependen del alcance; acordamos plazos antes de empezar.":
+        "Um site corporativo costuma estar pronto em 2-4 semanas. Os projetos de automação ou redes dependem do âmbito; acordamos prazos antes de começar.",
+      "¿Ofrecéis garantía?": "Oferecem garantia?",
+      "Sí. Todo trabajo incluye garantía sobre lo entregado y, opcionalmente, un plan de mantenimiento para mantenerlo actualizado y seguro.":
+        "Sim. Todo o trabalho inclui garantia sobre o que é entregue e, opcionalmente, um plano de manutenção para o manter atualizado e seguro.",
+      "¿Qué incluye el soporte?": "O que inclui o suporte?",
+      "Atención por teléfono, correo o WhatsApp, resolución de incidencias, actualizaciones de seguridad y asesoramiento según el plan contratado.":
+        "Atendimento por telefone, e-mail ou WhatsApp, resolução de incidentes, atualizações de segurança e aconselhamento conforme o plano contratado.",
+      "¿Cómo puedo pagar?": "Como posso pagar?",
+      "Aceptamos transferencia bancaria y pago con tarjeta. En proyectos grandes, un anticipo al empezar y el resto a la entrega.":
+        "Aceitamos transferência bancária e pagamento com cartão. Em projetos grandes, um adiantamento no início e o resto na entrega.",
+      "¿Cómo empiezo?": "Como começo?",
+      "Escríbenos por el formulario o WhatsApp. Concertamos una llamada o reunión sin coste y te proponemos los siguientes pasos.":
+        "Escreva-nos pelo formulário ou WhatsApp. Marcamos uma chamada ou reunião sem custo e propomos os próximos passos.",
+      "Directora de proyectos": "Diretora de projetos",
+      "Ingeniero de redes": "Engenheiro de redes",
+      "Especialista en IA": "Especialista em IA",
+      "Desarrollador web": "Programador web",
+      "Coordina cada proyecto de principio a fin y se asegura de que cumplimos plazos y presupuesto.":
+        "Coordena cada projeto do início ao fim e garante que cumprimos prazos e orçamento.",
+      "Diseña y protege la infraestructura de red de nuestros clientes, con foco en la seguridad.":
+        "Desenha e protege a infraestrutura de rede dos nossos clientes, com foco na segurança.",
+      "Crea automatizaciones y agentes de IA que ahorran horas de trabajo repetitivo.":
+        "Cria automações e agentes de IA que poupam horas de trabalho repetitivo.",
+      "Construye webs y aplicaciones rápidas, accesibles y fáciles de gestionar.":
+        "Constrói sites e aplicações rápidos, acessíveis e fáceis de gerir.",
+      // --- Restos da página inicial (avaliações de exemplo, datas relativas, hero) ---
+      "hace crecer": "faz crescer o seu negócio",
+      "Tecnología clara que": "Tecnologia clara que",
+      "tu negocio": "o seu negócio",
+      "Analizamos que necesitas de verdad y trazamos un plan realista, con presupuesto claro.":
+        "Analisamos o que precisa realmente e traçamos um plano realista, com orçamento claro.",
+      "0 incidencias": "0 incidentes",
+      "Cliente verificado": "Cliente verificado",
+      "Reseñas de Google": "Avaliações do Google",
+      "Hace 2 semanas": "Há 2 semanas", "Hace 3 semanas": "Há 3 semanas",
+      "Hace 1 mes": "Há 1 mês", "Hace 2 meses": "Há 2 meses",
+      "min": "min",
+      "5 de 5": "5 de 5",
+      "Foto de": "Foto de", "Retrato de": "Retrato de",
+      "Leer:": "Ler:", "Valoración:": "Avaliação:",
+      "de 5 estrellas": "de 5 estrelas",
+      "«Nos renovaron la web y automatizaron los presupuestos. Ahora ahorramos varias horas cada semana y todo es mucho más claro.»":
+        "«Renovaram o nosso site e automatizaram os orçamentos. Agora poupamos várias horas por semana e tudo é muito mais claro.»",
+      "«En una semana teníamos la red y las copias de seguridad funcionando. El soporte responde siempre rápido.»":
+        "«Numa semana tínhamos a rede e as cópias de segurança a funcionar. O suporte responde sempre rápido.»",
+      "«Un asistente de IA atiende nuestras consultas fuera de horario. Ha mejorado la atención al cliente notablemente.»":
+        "«Um assistente de IA atende as nossas consultas fora de horário. A atenção ao cliente melhorou bastante.»",
+      "Nos renovaron la página web y automatizaron los presupuestos. Cumplieron los plazos y el resultado superó lo que esperábamos. Trato cercano y muy profesional.":
+        "Renovaram o nosso site e automatizaram os orçamentos. Cumpriram os prazos e o resultado superou o que esperávamos. Trato próximo e muito profissional.",
+      "Implantaron un asistente con IA para atender las consultas de fuera de horario. Ha reducido el trabajo repetitivo del equipo y la atención al cliente ha mejorado notablemente.":
+        "Implementaram um assistente de IA para atender as consultas fora de horário. Reduziu o trabalho repetitivo da equipa e a atenção ao cliente melhorou bastante.",
+      "Montaron la red de la oficina y dejaron todo documentado. El soporte responde rápido cada vez que los necesitamos. Repetiremos sin duda.":
+        "Montaram a rede do escritório e deixaram tudo documentado. O suporte responde rápido sempre que precisamos. Repetiremos sem dúvida.",
+      "Nos acompañaron en todo el proceso de digitalización. Comunicación excelente y plazos cumplidos. Es difícil encontrar un proveedor tan atento.":
+        "Acompanharam-nos em todo o processo de digitalização. Comunicação excelente e prazos cumpridos. É difícil encontrar um fornecedor tão atento.",
+      "La tienda online funciona perfectamente y por fin podemos gestionar los pedidos sin dolores de cabeza. Muy recomendables para pequeñas empresas.":
+        "A loja online funciona perfeitamente e finalmente podemos gerir os pedidos sem dores de cabeça. Muito recomendáveis para pequenas empresas.",
+      "Nos montaron la red y las copias de seguridad en tiempo récord. El soporte posterior responde rápido. Solo echo en falta más formación al principio.":
+        "Montaram a nossa rede e as cópias de segurança em tempo recorde. O suporte posterior responde rápido. Só sinto falta de mais formação no início.",
+      "Cliente": "Cliente",
+      "ene": "jan", "feb": "fev", "mar": "mar", "abr": "abr", "may": "mai", "jun": "jun",
+      "jul": "jul", "ago": "ago", "sep": "set", "oct": "out", "nov": "nov", "dic": "dez",
+      "Aviso legal": "Aviso legal", "Privacidad": "Privacidade", "Cookies": "Cookies",
+      "Logotipo de C-ROTULUS S.U.R.L.": "Logótipo da C-ROTULUS S.U.R.L.",
+      "Análisis de datos y gráficas para automatizar tareas con IA":
+        "Análise de dados e gráficos para automatizar tarefas com IA",
+      "Armario de comunicaciones con cableado de red profesional":
+        "Armário de comunicações com cablagem de rede profissional",
+      "Asistente virtual de inteligencia artificial atendiendo consultas":
+        "Assistente virtual de inteligência artificial a atender consultas",
+      "Comercio local con tienda online y catálogo de productos":
+        "Comércio local com loja online e catálogo de produtos",
+      "Equipo de profesionales de C-ROTULUS trabajando en un proyecto":
+        "Equipa de profissionais da C-ROTULUS a trabalhar num projeto",
+      "Programador desarrollando una web moderna": "Programador a desenvolver um site moderno",
+      "Seguridad informática: candado y datos protegidos": "Segurança informática: cadeado e dados protegidos",
+      "Foto de Marta López": "Foto de Marta López", "Foto de Javier Ruiz": "Foto de Javier Ruiz",
+      "Foto de Cristina Serra": "Foto de Cristina Serra",
+      "Retrato de Marta López, Directora de proyectos": "Retrato de Marta López, Diretora de projetos",
+      "Retrato de Javier Ruiz, Ingeniero de redes": "Retrato de Javier Ruiz, Engenheiro de redes",
+      "Retrato de Cristina Serra, Especialista en IA": "Retrato de Cristina Serra, Especialista em IA",
+      "Retrato de Diego Marín, Desarrollador web": "Retrato de Diego Marín, Programador web",
+      "1 estrella": "1 estrela", "2 estrellas": "2 estrelas", "3 estrellas": "3 estrelas",
+      "4 estrellas": "4 estrelas", "5 estrellas": "5 estrelas",
+      "4 de 5 estrellas": "4 de 5 estrelas", "5 de 5 estrellas": "5 de 5 estrelas",
+      "Leer: Cómo la IA puede ahorrar horas a tu pyme": "Ler: Como a IA pode poupar horas à sua PME",
+      "Leer: Protege tu red: 5 medidas básicas": "Ler: Proteja a sua rede: 5 medidas básicas",
+      "Leer: Una web que convierte visitas en clientes": "Ler: Um site que converte visitas em clientes",
+      "Servicios tecnológicos para empresas": "Serviços tecnológicos para empresas",
+      "C-ROTULUS S.U.R.L. | Servicios tecnológicos para empresas":
+        "C-ROTULUS S.U.R.L. | Serviços tecnológicos para empresas",
+      "Empresa | C-ROTULUS S.U.R.L. — Sobre nosotros y equipo":
+        "Empresa | C-ROTULUS S.U.R.L. — Sobre nós e equipa"
     }
   };
 
-  function t(clave) {
+  /* Traduce una cadena. Si no hay traducción, devuelve el texto original. */
+  function t(texto) {
+    if (texto == null) return "";
     var idioma = document.documentElement.getAttribute("data-lang") || "es";
-    return (I18N[idioma] && I18N[idioma][clave]) || I18N.es[clave] || "";
+    if (idioma === "es") return String(texto);
+    var dic = I18N[idioma] || {};
+    var clave = String(texto).replace(/\s+/g, " ").trim();
+    return dic[clave] !== undefined ? dic[clave] : String(texto);
   }
 
-  /* Aplica el idioma a los textos marcados con data-i18n* y lo recuerda. */
+  /* Idiomas distintos del español, para pedir el contenido traducido a la API. */
+  function idiomaActivo() {
+    return document.documentElement.getAttribute("data-lang") || "es";
+  }
+
+  /* Conjunto de textos en español con traducción disponible (claves del
+     diccionario). Solo se tocan los nodos y atributos cuyo texto esté aquí:
+     así no se traduce por error texto dinámico (importes, fechas, nombres...). */
+  var I18N_CLAVES = (function () {
+    var set = {};
+    ["en", "pt"].forEach(function (idioma) {
+      Object.keys(I18N[idioma] || {}).forEach(function (k) { set[k] = 1; });
+    });
+    return set;
+  })();
+
+  function claveI18n(texto) {
+    return String(texto == null ? "" : texto).replace(/\s+/g, " ").trim();
+  }
+
+  /* Fechas y minutos del contenido de ejemplo ("13 oct 2026", "4 min"). Se
+     traducen por patrón porque el texto no es una clave fija del diccionario. */
+  var MESES_ABREV = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+  function traducirPatron(texto, idioma) {
+    if (idioma === "es") return texto;
+    var sep = "";
+    var cuerpo = texto;
+    var mSep = /^([·•])\s*(.+)$/.exec(texto);
+    if (mSep) { sep = mSep[1] + " "; cuerpo = mSep[2]; }
+    var m = /^(\d{1,2})\s+([a-záéíóúñ]{3})\s+(\d{4})$/.exec(cuerpo);
+    if (m) {
+      var mes = MESES_ABREV.indexOf(m[2]);
+      if (mes !== -1) return sep + m[1] + " " + t(MESES_ABREV[mes]) + " " + m[3];
+    }
+    var mm = /^(\d+)\s+min$/.exec(cuerpo);
+    if (mm) return sep + mm[1] + " " + t("min");
+    return null;
+  }
+
+  /* Originales ya vistos (nodo -> texto en español) para poder volver atrás. */
+  var i18nOriginales = new WeakMap();
+
+  var I18N_ATRIBUTOS = [
+    ["data-i18n-aria", "aria-label"],
+    ["data-i18n-ph", "placeholder"],
+    ["data-i18n-alt", "alt"],
+    ["data-i18n-title", "title"]
+  ];
+
+  var I18N_IGNORAR = { SCRIPT: 1, STYLE: 1, NOSCRIPT: 1 };
+
+  /* Traduce los nodos de texto y los atributos marcados, en el idioma activo.
+     Se puede llamar tantas veces como haga falta: guarda el texto original y
+     siempre parte de él, así cambiar de idioma no encadena traducciones. */
+  function aplicarIdiomaDOM() {
+    var idioma = idiomaActivo();
+    if (!document.body) return;
+
+    var caminante = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
+    var nodo;
+    while ((nodo = caminante.nextNode())) {
+      var padre = nodo.parentNode;
+      if (padre && I18N_IGNORAR[padre.nodeName]) continue;
+      var bruto = nodo.nodeValue;
+      var clave = claveI18n(bruto);
+      if (!clave) continue;
+      var original = i18nOriginales.get(nodo);
+      if (original === undefined) {
+        if (!I18N_CLAVES[clave] && !traducirPatron(clave, "en") && !traducirPatron(clave, "pt")) continue;
+        original = clave;
+        i18nOriginales.set(nodo, original);
+      }
+      // Se conservan los espacios de los extremos (texto en linea junto a <strong>).
+      var mPrefijo = /^\s*/.exec(bruto)[0];
+      var mSufijo = /\s*$/.exec(bruto)[0];
+      var nuevo = idioma === "es" ? original : (traducirPatron(original, idioma) || t(original) || original);
+      if (nodo.nodeValue !== mPrefijo + nuevo + mSufijo) nodo.nodeValue = mPrefijo + nuevo + mSufijo;
+    }
+
+    I18N_ATRIBUTOS.forEach(function (par) {
+      var marcador = par[0], atributo = par[1], guardado = marcador + "-es";
+      $$("[" + marcador + "]").forEach(function (el) {
+        var original = el.getAttribute(guardado);
+        if (original === null) {
+          original = el.getAttribute(atributo) || "";
+          if (!I18N_CLAVES[claveI18n(original)]) return;
+          el.setAttribute(guardado, original);
+        }
+        el.setAttribute(atributo, idioma === "es" ? original : (t(original) || original));
+      });
+    });
+  }
+
+  /* Aplica el idioma a toda la página y lo recuerda. */
   function aplicarIdioma(idioma) {
-    if (!I18N[idioma]) idioma = "es";
+    if (idioma !== "es" && idioma !== "en" && idioma !== "pt") idioma = "es";
     document.documentElement.setAttribute("lang", idioma);
     document.documentElement.setAttribute("data-lang", idioma);
     try { localStorage.setItem("crotulus_lang", idioma); } catch (e) { /* privacidad */ }
-    $$("[data-i18n]").forEach(function (el) {
-      var txt = t(el.getAttribute("data-i18n"));
-      if (txt) el.textContent = txt;
-    });
-    $$("[data-i18n-aria]").forEach(function (el) {
-      var txt = t(el.getAttribute("data-i18n-aria"));
-      if (txt) el.setAttribute("aria-label", txt);
-    });
-    $$("[data-i18n-ph]").forEach(function (el) {
-      var txt = t(el.getAttribute("data-i18n-ph"));
-      if (txt) el.setAttribute("placeholder", txt);
-    });
+    aplicarIdiomaDOM();
     var code = $("#langCode");
     if (code) code.textContent = idioma.toUpperCase();
     $$("#langMenu [data-lang]").forEach(function (b) {
       b.setAttribute("aria-current", b.getAttribute("data-lang") === idioma ? "true" : "false");
     });
-    // El botón de tema cambia su etiqueta según el idioma activo.
+    // El botón de tema cambia su etiqueta según el idioma y el modo activo.
     var themeBtn = $("#themeToggle");
     if (themeBtn) {
       var oscuro = document.documentElement.classList.contains("theme-dark");
-      themeBtn.setAttribute("aria-label", oscuro ? (idioma === "en" ? "Switch to light mode" : idioma === "pt" ? "Mudar para modo claro" : "Cambiar a modo día") : t("aria_theme"));
+      themeBtn.setAttribute("aria-label", oscuro ? t("Cambiar a modo día") : t("Cambiar a modo noche"));
     }
+    // El buscador ya abierto se vuelve a pintar en el idioma nuevo.
+    var panel = $("#siteSearch");
+    var entrada = $("#searchInput");
+    if (panel && entrada && !panel.hidden) {
+      entrada.dispatchEvent(new Event("input"));
+    }
+    aplicarTitulo();
   }
+
+  /* Titulo de la pestaña: se guarda el original en español y se traduce. */
+  var TITULO_ES = null;
+  function aplicarTitulo() {
+    if (TITULO_ES === null) TITULO_ES = document.title;
+    var idioma = idiomaActivo();
+    document.title = idioma === "es" ? TITULO_ES : (t(TITULO_ES) || TITULO_ES);
+  }
+
 
   function setupLangSwitch() {
     var guardado = "";
@@ -1618,11 +2524,31 @@
     }
     $$("#langMenu [data-lang]").forEach(function (b) {
       b.addEventListener("click", function () {
-        aplicarIdioma(b.getAttribute("data-lang"));
+        var idioma = b.getAttribute("data-lang");
+        if (idioma === idiomaActivo()) { if (menu) menu.hidden = true; return; }
+        aplicarIdioma(idioma);
+        // El contenido editable (servicios, proyectos, blog, FAQ...) viene de la
+        // base de datos: se vuelve a pedir para pintarlo en el idioma nuevo.
+        recargarContenidoIdioma();
         if (menu) menu.hidden = true;
         if (toggle) toggle.setAttribute("aria-expanded", "false");
       });
     });
+  }
+
+  /* Vuelve a cargar los datos y el contenido editable en el idioma activo. */
+  function recargarContenidoIdioma() {
+    var idioma = idiomaActivo();
+    if (idioma !== "es") {
+      loadContent();
+      loadBlog();
+      loadTeam();
+      // Los textos de los ajustes (portada, cabeceras, pie) se traducen por
+      // diccionario; al reaplicarlos se pisan con la versión del idioma activo.
+      loadSiteData();
+    } else {
+      location.reload();
+    }
   }
 
   function setupTheme() {
@@ -1731,7 +2657,7 @@
       if (!res.length) {
         var li = document.createElement("li");
         li.className = "search-empty";
-        li.textContent = t("no_results");
+        li.textContent = t("Sin resultados. Prueba con otra palabra.");
         lista.appendChild(li);
         return;
       }
@@ -1739,7 +2665,7 @@
         var a = document.createElement("a");
         a.className = "search-result";
         a.href = it.href;
-        a.innerHTML = '<span class="search-result__tag">' + esc(it.tag) + "</span>" +
+        a.innerHTML = '<span class="search-result__tag">' + esc(t(it.tag)) + "</span>" +
           '<span class="search-result__text"><strong>' + esc(it.titulo) + "</strong>" +
           (it.texto ? "<span>" + esc(it.texto.slice(0, 90)) + "</span>" : "") + "</span>";
         a.addEventListener("click", function () { ocultar(); });
@@ -1873,7 +2799,7 @@
     if (status) {
       if (data.stale) {
         status.hidden = false;
-        status.textContent = "Sin conexión con Google en este momento: te mostramos las últimas reseñas guardadas.";
+        status.textContent = t("Sin conexión con Google en este momento: te mostramos las últimas reseñas guardadas.");
       } else {
         status.hidden = true;
         status.textContent = "";
@@ -1942,7 +2868,7 @@
     if (status) {
       if (data.cached) {
         status.hidden = false;
-        status.textContent = "Mostrando las últimas reseñas guardadas de Trustpilot.";
+        status.textContent = t("Mostrando las últimas reseñas guardadas de Trustpilot.");
       } else {
         status.hidden = true;
         status.textContent = "";
